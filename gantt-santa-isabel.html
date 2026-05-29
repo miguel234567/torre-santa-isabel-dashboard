@@ -9,8 +9,8 @@
 <style>
 /* ═══ VARIABLES ═════════════════════════════════════════════════ */
 :root{
-  --bg-app:#0d1117;--bg-card:#161b22;--bg-el:#1c2128;--bg-input:#0d1117;
-  --border:#21262d;--border-s:#30363d;--border-f:#3b82f6;
+  --bg-app:#13171f;--bg-card:#1a1f2a;--bg-el:#222838;--bg-input:#13171f;
+  --border:#2a3140;--border-s:#3a4458;--border-f:#3b82f6;
   --txt:#e2e8f0;--txt-s:#94a3b8;--txt-m:#64748b;--txt-a:#60a5fa;
   --grp-g:#8b5cf6;--grp-e:#ef4444;--grp-m:#06b6d4;--grp-a:#f59e0b;--grp-x:#10b981;
   --st-pend:#475569;--st-prog:#f97316;--st-done:#22c55e;--st-late:#dc2626;
@@ -20,10 +20,8 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;background:var(--bg-app)}
-body{font-family:'Inter',system-ui,sans-serif;background-color:var(--bg-app);color:var(--txt);font-size:14px;min-height:100vh;line-height:1.5;
-  background-image:linear-gradient(to right,rgba(100,120,150,.18) 1px,transparent 1px),linear-gradient(to bottom,rgba(100,120,150,.18) 1px,transparent 1px);
-  background-size:24px 24px}
-body.light-mode{background-color:var(--bg-app);background-image:linear-gradient(to right,rgba(150,165,185,.35) 1px,transparent 1px),linear-gradient(to bottom,rgba(150,165,185,.35) 1px,transparent 1px);background-size:24px 24px}
+body{font-family:'Inter',system-ui,sans-serif;background-color:var(--bg-app);color:var(--txt);font-size:14px;min-height:100vh;line-height:1.5}
+body.light-mode{background-color:var(--bg-app)}
 .ms{font-family:'Material Symbols Outlined';font-size:1.1em;line-height:1;vertical-align:middle;font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;flex-shrink:0}
 button{cursor:pointer;font-family:inherit}
 input{font-family:inherit}
@@ -81,8 +79,8 @@ body.light-mode .footer-logo{opacity:.5}
 .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);background:rgba(59,130,246,.07)}
 .tab-btn.active::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);border-radius:2px 2px 0 0;filter:blur(1px)}
 .tab-btn:hover:not(.active){color:var(--txt-s);background:rgba(255,255,255,.03)}
-.tab-content{display:none;padding:24px}
-.tab-content.active{display:block}
+.tab-content{display:none;padding:24px;background-color:var(--bg-app)}
+.tab-content.active{display:block;background-color:var(--bg-app)}
 
 /* ═══ KPI CARDS ═════════════════════════════════════════════════ */
 .kpi-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;margin-bottom:8px}
@@ -1555,7 +1553,7 @@ function makeCurvaS(){
   const W=600, H=160, PL=38, PR=16, PT=14, PB=26;
   const cW=W-PL-PR, cH=H-PT-PB;
   const total = daysBetween(PROJECT_START_MS, PROJECT_END_MS);
-  const BG='#0d1117', GRID='#21262d', AXIS='#30363d';
+  const BG='#13171f', GRID='#2a3140', AXIS='#3a4458';
 
   // Planned S-curve (sigmoid-ish: slow start, fast middle, slow end)
   const steps=40;
@@ -1675,7 +1673,7 @@ function makeGroupsDonut(){
   const total=weightedAvgProgress();
   return `<svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}" style="flex-shrink:0">
     ${arcs}
-    <circle cx="${CX}" cy="${CY}" r="${R-STROKE/2-2}" fill="#161b22"/>
+    <circle cx="${CX}" cy="${CY}" r="${R-STROKE/2-2}" fill="#1a1f2a"/>
     <text x="${CX}" y="${CY-5}" text-anchor="middle" font-size="12" fill="#e2e8f0" font-family="JetBrains Mono" font-weight="700">${total}%</text>
     <text x="${CX}" y="${CY+7}" text-anchor="middle" font-size="7" fill="#64748b" font-family="JetBrains Mono">GLOBAL</text>
   </svg>`;
@@ -1939,7 +1937,7 @@ function renderGantt(){
   let phaseLabels = '';
   PHASES.forEach((p, i) => {
     const y = MARGIN_TOP + i * ROW_H;
-    rowBg += `<rect x="${MARGIN_LEFT}" y="${y}" width="${CHART_W+60}" height="${ROW_H}" fill="${i%2===0?'#0d1117':'#111620'}"/>`;
+    rowBg += `<rect x="${MARGIN_LEFT}" y="${y}" width="${CHART_W+60}" height="${ROW_H}" fill="${i%2===0?'#13171f':'#171c25'}"/>`;
     const col = GROUPS[p.group].color;
     // group color dot
     phaseLabels += `<circle cx="10" cy="${y+ROW_H/2}" r="4" fill="${col}"/>`;
@@ -1961,7 +1959,7 @@ function renderGantt(){
     const isDashed = p.status === 'ATRASADO';
     bars += `
       <g class="bar-g" data-id="${p.id}">
-        <rect x="${x}" y="${y}" width="${w}" height="${BAR_H}" rx="3" fill="#161b22" stroke="${col}" stroke-width="1" stroke-opacity="0.55" ${isDashed?'stroke-dasharray="5,3"':''}/>
+        <rect x="${x}" y="${y}" width="${w}" height="${BAR_H}" rx="3" fill="#1a1f2a" stroke="${col}" stroke-width="1" stroke-opacity="0.55" ${isDashed?'stroke-dasharray="5,3"':''}/>
         ${progW>1?`<rect x="${x}" y="${y}" width="${Math.max(2,progW)}" height="${BAR_H}" rx="3" fill="${col}" fill-opacity="0.85"/>`:''}
         ${p.effectiveProgress>0&&p.effectiveProgress<100?`<text x="${x+progW+4}" y="${y+BAR_H-3}" font-size="8" fill="${col}" font-family="JetBrains Mono" font-weight="700">${p.effectiveProgress}%</text>`:''}
         ${p.effectiveProgress===100?`<text x="${x+4}" y="${y+BAR_H-3}" font-size="8" fill="#0f172a" font-family="JetBrains Mono" font-weight="700">✓ 100%</text>`:''}
@@ -1989,9 +1987,9 @@ function renderGantt(){
   });
 
   // Header row
-  const headerRect = `<rect x="0" y="0" width="${SVG_W}" height="${MARGIN_TOP}" fill="#161b22"/>`;
+  const headerRect = `<rect x="0" y="0" width="${SVG_W}" height="${MARGIN_TOP}" fill="#1a1f2a"/>`;
   const headerLine = `<line x1="0" y1="${MARGIN_TOP}" x2="${SVG_W}" y2="${MARGIN_TOP}" stroke="#30363d" stroke-width="1.5"/>`;
-  const leftHeader = `<rect x="0" y="0" width="${MARGIN_LEFT}" height="${SVG_H}" fill="#0d1117"/>`;
+  const leftHeader = `<rect x="0" y="0" width="${MARGIN_LEFT}" height="${SVG_H}" fill="#1a1f2a"/>`;
   const leftBorder = `<line x1="${MARGIN_LEFT}" y1="0" x2="${MARGIN_LEFT}" y2="${SVG_H}" stroke="#30363d" stroke-width="1.5"/>`;
 
   // Title in top-left
@@ -1999,7 +1997,7 @@ function renderGantt(){
 
   const svgHtml = `
     <svg id="ganttSvg" width="${SVG_W}" height="${SVG_H}" xmlns="http://www.w3.org/2000/svg">
-      <rect width="${SVG_W}" height="${SVG_H}" fill="#0d1117"/>
+      <rect width="${SVG_W}" height="${SVG_H}" fill="#13171f"/>
       ${leftHeader}
       ${headerRect}
       ${gridLines}
