@@ -1676,6 +1676,78 @@ function makeRingSVG(pct, color, size=90, stroke=9){
   </svg>`;
 }
 
+/* ── Gauge SVG ───────────────────────────────────────────── */
+function makeGaugeSVG(actual, expected, hColor){
+  const W=220, CX=110, CY=130, R=90, SW=18;
+  // Semicircle: from 180° to 0° (left to right)
+  const toRad = deg => deg * Math.PI / 180;
+  const arcPt = (deg) => {
+    const r = toRad(deg);
+    return [CX + R*Math.cos(r), CY + R*Math.sin(r)];
+  };
+  // Track: 180° to 0° (bottom semicircle going up)
+  const [tx1,ty1]=arcPt(180), [tx2,ty2]=arcPt(0);
+  const track=`M${tx1},${ty1} A${R},${R} 0 0,1 ${tx2},${ty2}`;
+
+  // Expected arc (0 to expected%)
+  const expAng = 180 - expected/100*180;
+  const [ex,ey]=arcPt(expAng);
+  const expArc=`M${tx1},${ty1} A${R},${R} 0 0,1 ${ex.toFixed(1)},${ey.toFixed(1)}`;
+
+  // Actual arc (0 to actual%)
+  const actAng = 180 - actual/100*180;
+  const [ax,ay]=arcPt(actAng);
+  const actArc=actual>0?`M${tx1},${ty1} A${R},${R} 0 0,1 ${ax.toFixed(1)},${ay.toFixed(1)}`:'';
+
+  const bgFill='#0d1117';
+
+  return `<svg viewBox="0 0 ${W} 148" style="width:100%;max-width:240px">
+    <!-- Track -->
+    <path d="${track}" fill="none" stroke="#1e2d35" stroke-width="${SW}" stroke-linecap="round"/>
+    <!-- Expected arc (blue dashed effect via opacity) -->
+    ${expected>0?`<path d="${expArc}" fill="none" stroke="#3b82f6" stroke-width="${SW}" stroke-linecap="round" opacity=".35"/>`:''}
+    <!-- Actual arc -->
+    ${actArc?`<path d="${actArc}" fill="none" stroke="${hColor}" stroke-width="${SW}" stroke-linecap="round" opacity=".9"/>`:''}
+    <!-- Center circle -->
+    <circle cx="${CX}" cy="${CY}" r="${R-SW/2-4}" fill="${bgFill}"/>
+    <!-- Value -->
+    <text x="${CX}" y="${CY-12}" text-anchor="middle" fill="#e2e8f0" font-size="34" font-family="JetBrains Mono,monospace" font-weight="700">${actual}<tspan font-size="18">%</tspan></text>
+    <text x="${CX}" y="${CY+8}" text-anchor="middle" fill="#64748b" font-size="10" font-family="Inter,sans-serif">AVANCE REAL</text>
+    <!-- Scale labels -->
+    <text x="${CX-R-8}" y="${CY+6}" text-anchor="middle" fill="#4a5a72" font-size="9" font-family="JetBrains Mono,monospace">0%</text>
+    <text x="${CX+R+8}" y="${CY+6}" text-anchor="middle" fill="#4a5a72" font-size="9" font-family="JetBrains Mono,monospace">100%</text>
+    <text x="${CX}" y="18" text-anchor="middle" fill="#4a5a72" font-size="9" font-family="JetBrains Mono,monospace">50%</text>
+  </svg>`;
+}
+
+/* ── Barras horizontales por grupo ───────────────────────── */
+function makeGroupBars(expectedPct){
+  const groups=[
+    {k:'GESTION',  label:'Gestión',    col:'#8b5cf6'},
+    {k:'ESTRUCTURA',label:'Estructura',col:'#ef4444'},
+    {k:'MEP',      label:'MEP',        col:'#06b6d4'},
+    {k:'ACABADOS', label:'Acabados',   col:'#f59e0b'},
+    {k:'EXTERIORES',label:'Exteriores',col:'#10b981'},
+  ];
+  const rows = groups.map(g=>{
+    const phases=PHASES.filter(p=>p.group===g.k);
+    const avg=phases.length?Math.round(phases.reduce((a,p)=>a+p.effectiveProgress,0)/phases.length):0;
+    const total=phases.length;
+    const done=phases.filter(p=>p.status==='COMPLETADO').length;
+    return `<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-size:.8rem;font-weight:600;color:${g.col}">${g.label}</span>
+        <span style="font-size:.75rem;color:var(--txt-m);font-family:'JetBrains Mono',monospace">${avg}% <span style="color:var(--txt-m);font-size:.7rem">(${done}/${total})</span></span>
+      </div>
+      <div style="position:relative;height:10px;background:var(--border);border-radius:100px;overflow:hidden">
+        <div style="position:absolute;inset:0;width:${avg}%;background:${g.col};border-radius:100px;transition:width .8s cubic-bezier(.65,0,.35,1);opacity:.85"></div>
+        ${expectedPct>0?`<div style="position:absolute;top:0;bottom:0;left:${Math.min(expectedPct,100)}%;width:2px;background:#3b82f6;opacity:.7"></div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  return `<div style="padding:4px 0">${rows}</div>`;
+}
+
 function makeCurvaS(){
   const W=600, H=160, PL=38, PR=16, PT=14, PB=26;
   const cW=W-PL-PR, cH=H-PT-PB;
@@ -1921,34 +1993,43 @@ function renderKPIs(){
   </div>`;
 
   // ── ROW 2: Curva S + Grupos ───────────────────────────────
-  const mainRow = `<div class="kpi-main-row">
+  const mainRow = `<div class="kpi-main-row" style="grid-template-columns:1fr 2fr">
 
-    <!-- Curva S -->
-    <div class="kpi-card" style="--kc:#06b6d4">
-      <div class="kpi-card-title">
-        <span class="ms" style="color:#06b6d4">show_chart</span>
-        Curva S — Planificado vs Real
-        <div style="margin-left:auto;display:flex;gap:12px;align-items:center">
-          <span style="display:flex;align-items:center;gap:4px;font-size:.7rem;color:var(--txt-m)">
-            <span style="display:inline-block;width:14px;height:2px;background-image:repeating-linear-gradient(90deg,#3b82f6 0,#3b82f6 5px,transparent 5px,transparent 8px)"></span>Plan
-          </span>
-          <span style="display:flex;align-items:center;gap:4px;font-size:.7rem;color:var(--txt-m)">
-            <span style="display:inline-block;width:14px;height:2px;background:#22c55e;border-radius:1px"></span>Real
-          </span>
-          <span style="font-size:.7rem;color:var(--txt-m);font-family:'JetBrains Mono',monospace">⚡${evm.velocity.toFixed(2)}%/d</span>
-        </div>
+    <!-- GAUGE Velocímetro -->
+    <div class="kpi-card" style="--kc:${hColor};display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 16px">
+      <div class="kpi-card-title" style="width:100%;margin-bottom:8px">
+        <span class="ms" style="color:${hColor}">speed</span>
+        Avance del Proyecto
       </div>
-      ${makeCurvaS()}
+      ${makeGaugeSVG(pct, expectedPct, hColor)}
+      <div style="display:flex;gap:16px;margin-top:10px;font-size:.75rem">
+        <span style="display:flex;align-items:center;gap:5px;color:var(--txt-m)">
+          <span style="width:12px;height:12px;border-radius:50%;background:#22c55e;display:inline-block"></span>Real ${pct}%
+        </span>
+        <span style="display:flex;align-items:center;gap:5px;color:var(--txt-m)">
+          <span style="width:12px;height:12px;border-radius:50%;background:#3b82f660;border:2px dashed #3b82f6;display:inline-block"></span>Esp. ${expectedPct}%
+        </span>
+      </div>
+      <div style="margin-top:10px;font-size:.72rem;color:var(--txt-m);text-align:center">
+        SPI <strong style="color:${spiColor};font-family:'JetBrains Mono',monospace">${evm.spi.toFixed(2)}</strong>
+        &nbsp;·&nbsp; SV <strong style="color:${evm.sv>=0?'#22c55e':'#ef4444'};font-family:'JetBrains Mono',monospace">${evm.sv>=0?'+':''}${evm.sv}pp</strong>
+      </div>
     </div>
 
-    <!-- Avance por grupo -->
+    <!-- BARRAS Horizontales por Grupo -->
     <div class="kpi-card" style="--kc:#8b5cf6">
-      <div class="kpi-card-title"><span class="ms" style="color:#8b5cf6">donut_large</span>Avance por Grupo</div>
-      <div style="display:flex;align-items:center;gap:14px">
-        ${makeGroupsDonut()}
-        <div style="flex:1">${makeGroupsLegend()}</div>
+      <div class="kpi-card-title">
+        <span class="ms" style="color:#8b5cf6">bar_chart</span>
+        Avance por Grupo de Obra
+        <span style="margin-left:auto;font-size:.7rem;color:var(--txt-m)">
+          <span style="border:1px dashed #3b82f6;padding:1px 6px;border-radius:3px;color:#3b82f6">Esp ${expectedPct}%</span>
+        </span>
       </div>
-      ${makeForecastChip(evm)}
+      ${makeGroupBars(expectedPct)}
+      <div style="margin-top:12px">
+        <button class="kpi-action-btn" onclick="switchTab('phases')"><span class="ms" style="font-size:.9rem">list_alt</span>Ver Fases</button>
+        <button class="kpi-action-btn" onclick="switchTab('gantt')" style="margin-left:6px"><span class="ms" style="font-size:.9rem">view_timeline</span>Gantt</button>
+      </div>
     </div>
 
   </div>`;
