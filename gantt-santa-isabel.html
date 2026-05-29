@@ -19,7 +19,7 @@
   --r:8px;--r-lg:14px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;background:var(--bg-app)}
 body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-app);color:var(--txt);font-size:14px;min-height:100vh;line-height:1.5;
   background-image:linear-gradient(to right,rgba(30,45,69,.35) 1px,transparent 1px),linear-gradient(to bottom,rgba(30,45,69,.35) 1px,transparent 1px);
   background-size:24px 24px}
@@ -1289,6 +1289,14 @@ function countCritDone(){ return PHASES.filter(p=>p.critical && p.status==='COMP
 function daysElapsed(){ return Math.max(0,daysBetween(PROJECT_START_MS,Date.now())); }
 function daysRemaining(){ return Math.max(0,daysBetween(Date.now(),PROJECT_END_MS)); }
 
+function statusBadge(s){
+  return ({
+    PENDIENTE:  '<span class="badge-status bs-pend">⬜ Pendiente</span>',
+    EN_PROGRESO:'<span class="badge-status bs-prog">🔄 En Progreso</span>',
+    COMPLETADO: '<span class="badge-status bs-done">✅ Completado</span>',
+    ATRASADO:   '<span class="badge-status bs-late">⚠️ Atrasado</span>',
+  }[s] || s);
+}
 function getBarColor(p){
   const s = p.status;
   if(s === 'ATRASADO') return '#dc2626';
@@ -1544,56 +1552,97 @@ function makeRingSVG(pct, color, size=90, stroke=9){
 }
 
 function makeCurvaS(){
-  const W=320, H=110, PL=28, PR=8, PT=8, PB=20;
+  const W=600, H=160, PL=38, PR=16, PT=14, PB=26;
   const cW=W-PL-PR, cH=H-PT-PB;
   const total = daysBetween(PROJECT_START_MS, PROJECT_END_MS);
+  const BG='#0d1526', GRID='#1e2d45', AXIS='#2a3a55';
 
-  // Planned line: linear 0%→100%
-  const steps=20;
+  // Planned S-curve (sigmoid-ish: slow start, fast middle, slow end)
+  const steps=40;
+  const sigmoid = t => 1/(1+Math.exp(-10*(t-0.5)));
+  const s0=sigmoid(0), s1=sigmoid(1);
   const plannedPts = Array.from({length:steps+1},(_,i)=>{
     const frac=i/steps;
-    return [PL+frac*cW, PT+cH*(1-frac)];
+    const v=(sigmoid(frac)-s0)/(s1-s0);
+    return [PL+frac*cW, PT+cH*(1-v)];
   });
-  const plannedD = 'M'+plannedPts.map(p=>p.map(v=>v.toFixed(1)).join(',')).join(' L');
+  const plannedD='M'+plannedPts.map(p=>p.map(v=>v.toFixed(1)).join(',')).join(' L');
+  const plannedAreaD=plannedD+` L${(PL+cW).toFixed(1)},${(PT+cH).toFixed(1)} L${PL},${(PT+cH).toFixed(1)} Z`;
 
   // Actual from history + today
-  const hist = loadKPIHistory();
-  const allPts = [...hist];
-  const today = new Date().toISOString().slice(0,10);
-  if(!allPts.length || allPts[allPts.length-1].date!==today)
-    allPts.push({ date:today, actual:weightedAvgProgress() });
-  const actualPts = allPts.map(h=>{
-    const d = daysBetween(PROJECT_START_MS, new Date(h.date+'T12:00:00').getTime());
-    const frac = Math.max(0,Math.min(1,d/total));
+  const hist=loadKPIHistory();
+  const allPts=[...hist];
+  const today=new Date().toISOString().slice(0,10);
+  if(!allPts.length||allPts[allPts.length-1].date!==today)
+    allPts.push({date:today,actual:weightedAvgProgress()});
+  const actualPts=allPts.map(h=>{
+    const d=daysBetween(PROJECT_START_MS,new Date(h.date+'T12:00:00').getTime());
+    const frac=Math.max(0,Math.min(1,d/total));
     return [PL+frac*cW, PT+cH*(1-h.actual/100)];
   });
-  const actualD = actualPts.length>1 ? 'M'+actualPts.map(p=>p.map(v=>v.toFixed(1)).join(',')).join(' L') : null;
-  const lastPt = actualPts[actualPts.length-1];
+  const actualD=actualPts.length>1?'M'+actualPts.map(p=>p.map(v=>v.toFixed(1)).join(',')).join(' L'):null;
+  const lastPt=actualPts[actualPts.length-1];
+  const areaD=actualPts.length>1?`${actualD} L${lastPt[0].toFixed(1)},${(PT+cH).toFixed(1)} L${actualPts[0][0].toFixed(1)},${(PT+cH).toFixed(1)} Z`:null;
 
-  // Y axis ticks
-  const yTicks = [0,25,50,75,100].map(v=>`
-    <text x="${PL-3}" y="${(PT+cH*(1-v/100)).toFixed(1)}" dy="3.5" font-size="7.5" fill="#475569" text-anchor="end" font-family="JetBrains Mono">${v}%</text>
-    <line x1="${PL}" y1="${(PT+cH*(1-v/100)).toFixed(1)}" x2="${W-PR}" y2="${(PT+cH*(1-v/100)).toFixed(1)}" stroke="#1a2535" stroke-width="0.5"/>`).join('');
+  // Grid lines + Y axis labels
+  const yTicks=[0,25,50,75,100].map(v=>{
+    const y=(PT+cH*(1-v/100)).toFixed(1);
+    return `<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="${GRID}" stroke-width="${v===0||v===100?'1':'0.5'}"/>
+    <text x="${PL-5}" y="${y}" dy="3.5" font-size="8" fill="#4a5a72" text-anchor="end" font-family="JetBrains Mono,monospace">${v}%</text>`;
+  }).join('');
+
+  // X axis: quarter marks
+  const xLabels=[0,0.25,0.5,0.75,1].map(frac=>{
+    const x=(PL+frac*cW).toFixed(1);
+    const ms=PROJECT_START_MS+frac*(PROJECT_END_MS-PROJECT_START_MS);
+    const lbl=new Date(ms).toLocaleDateString('es-CO',{month:'short',year:'2-digit'});
+    return `<line x1="${x}" y1="${PT}" x2="${x}" y2="${(PT+cH).toFixed(1)}" stroke="${frac===0||frac===1?AXIS:GRID}" stroke-width="${frac===0||frac===1?'1':'0.5'}"/>
+    <text x="${x}" y="${(PT+cH+14).toFixed(1)}" font-size="7.5" fill="#4a5a72" text-anchor="middle" font-family="JetBrains Mono,monospace">${lbl}</text>`;
+  }).join('');
 
   // Today marker
-  const todayD = daysElapsed();
-  const todayX = (PL + (todayD/total)*cW).toFixed(1);
-  const todayY = (PT + cH*(1-weightedAvgProgress()/100)).toFixed(1);
+  const todayX=(PL+(daysElapsed()/total)*cW).toFixed(1);
+  const todayY=(PT+cH*(1-weightedAvgProgress()/100)).toFixed(1);
 
-  // Area under actual
-  const areaD = actualPts.length>1 ? `${actualD} L${lastPt[0].toFixed(1)},${(PT+cH).toFixed(1)} L${actualPts[0][0].toFixed(1)},${(PT+cH).toFixed(1)} Z` : null;
+  // Forecast dot (where actual line meets 100%)
+  const vel=computeEVM().velocity;
+  const pct=weightedAvgProgress();
+  const daysToEnd=vel>0?Math.ceil((100-pct)/vel):null;
+  let forecastDot='';
+  if(daysToEnd!==null){
+    const fcFrac=Math.min(1,(daysElapsed()+daysToEnd)/total);
+    const fcX=(PL+fcFrac*cW).toFixed(1);
+    forecastDot=`<line x1="${fcX}" y1="${PT}" x2="${fcX}" y2="${(PT+cH).toFixed(1)}" stroke="#8b5cf6" stroke-width="1" stroke-dasharray="3,2" opacity="0.6"/>
+    <text x="${fcX}" y="${PT-2}" font-size="7" fill="#8b5cf6" text-anchor="middle" font-family="JetBrains Mono,monospace">FIN EST.</text>`;
+  }
 
-  return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;overflow:visible">
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;border-radius:8px;overflow:hidden">
+    <!-- Background -->
+    <rect width="${W}" height="${H}" fill="${BG}" rx="8"/>
+    <!-- Grid & axes -->
     ${yTicks}
-    ${areaD?`<path d="${areaD}" fill="#22c55e" opacity="0.07"/>`:''}
-    <path d="${plannedD}" fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.75"/>
-    ${actualD?`<path d="${actualD}" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round"/>`:
-      `<circle cx="${lastPt[0].toFixed(1)}" cy="${lastPt[1].toFixed(1)}" r="4" fill="#22c55e"/>`}
-    <line x1="${todayX}" y1="${PT}" x2="${todayX}" y2="${PT+cH}" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,2" opacity="0.7"/>
-    <circle cx="${todayX}" cy="${todayY}" r="4.5" fill="#22c55e" stroke="#0d1729" stroke-width="2"/>
-    <text x="${todayX}" y="${PT-1}" font-size="7" fill="#ef4444" text-anchor="middle" font-family="JetBrains Mono">HOY</text>
-    <line x1="${PL}" y1="${PT}" x2="${PL}" y2="${PT+cH}" stroke="#2a3a55" stroke-width="1"/>
-    <line x1="${PL}" y1="${PT+cH}" x2="${W-PR}" y2="${PT+cH}" stroke="#2a3a55" stroke-width="1"/>
+    ${xLabels}
+    <!-- Planned area (subtle fill) -->
+    <path d="${plannedAreaD}" fill="#3b82f6" opacity="0.04"/>
+    <!-- Planned line -->
+    <path d="${plannedD}" fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.6"/>
+    <!-- Actual area -->
+    ${areaD?`<path d="${areaD}" fill="#22c55e" opacity="0.1"/>`:''}
+    <!-- Actual line -->
+    ${actualD
+      ?`<path d="${actualD}" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`
+      :`<circle cx="${lastPt[0].toFixed(1)}" cy="${lastPt[1].toFixed(1)}" r="4" fill="#22c55e"/>`}
+    <!-- Today line -->
+    <line x1="${todayX}" y1="${PT}" x2="${todayX}" y2="${(PT+cH).toFixed(1)}" stroke="#f97316" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.8"/>
+    <text x="${todayX}" y="${PT-2}" font-size="7.5" fill="#f97316" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="700">HOY</text>
+    <!-- Forecast -->
+    ${forecastDot}
+    <!-- Today dot -->
+    <circle cx="${todayX}" cy="${todayY}" r="5" fill="${BG}" stroke="#22c55e" stroke-width="2"/>
+    <circle cx="${todayX}" cy="${todayY}" r="2.5" fill="#22c55e"/>
+    <!-- Axis frame -->
+    <line x1="${PL}" y1="${PT}" x2="${PL}" y2="${(PT+cH).toFixed(1)}" stroke="${AXIS}" stroke-width="1.5"/>
+    <line x1="${PL}" y1="${(PT+cH).toFixed(1)}" x2="${W-PR}" y2="${(PT+cH).toFixed(1)}" stroke="${AXIS}" stroke-width="1.5"/>
   </svg>`;
 }
 
@@ -1722,18 +1771,27 @@ function renderKPIs(){
   </div>`;
 
   // ── CARD 4: Curva S (span 8 en 12-col) ─────────────────
-  const c4 = `<div class="kpi-chart-card kpi-curvas" style="--accent-color:#06b6d4">
+  const c4 = `<div class="kpi-chart-card kpi-curvas" style="--accent-color:#06b6d4;padding:14px 16px">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-      <span style="font-size:1.1rem">📈</span>
-      <strong style="font-size:.9rem">Curva S — Planificado vs Real</strong>
-      <span style="margin-left:auto;font-size:.75rem;color:var(--txt-m)">Vel. actual: <strong style="color:#22c55e;font-family:'JetBrains Mono',monospace">${evm.velocity.toFixed(2)}%/día</strong></span>
+      <span class="ms" style="color:#06b6d4;font-size:1.15rem">show_chart</span>
+      <strong style="font-size:.88rem;color:var(--txt)">Curva S — Planificado vs Real</strong>
+      <div style="margin-left:auto;display:flex;gap:14px;align-items:center">
+        <div style="display:flex;align-items:center;gap:5px;font-size:.72rem">
+          <div style="width:16px;height:2px;background:#3b82f6;opacity:.7;border-radius:1px;background-image:repeating-linear-gradient(90deg,#3b82f6 0,#3b82f6 5px,transparent 5px,transparent 9px)"></div>
+          <span style="color:var(--txt-s)">Planificado</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:.72rem">
+          <div style="width:16px;height:2.5px;background:#22c55e;border-radius:1px"></div>
+          <span style="color:var(--txt-s)">Real</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:.72rem">
+          <div style="width:2px;height:12px;background:#f97316;border-radius:1px"></div>
+          <span style="color:var(--txt-s)">Hoy</span>
+        </div>
+        <span style="font-size:.72rem;color:var(--txt-m);padding:2px 8px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:100px;font-family:'JetBrains Mono',monospace">⚡ ${evm.velocity.toFixed(2)}%/d</span>
+      </div>
     </div>
     ${makeCurvaS()}
-    <div style="display:flex;gap:16px;margin-top:8px;font-size:.75rem;color:var(--txt-s)">
-      <span>━━ <span style="color:#3b82f6">Planificado</span></span>
-      <span>━━ <span style="color:#22c55e">Real</span></span>
-      <span style="color:#ef4444">— Hoy</span>
-    </div>
   </div>`;
 
   // ── CARD 5: Donut por grupos ────────────────────────────
