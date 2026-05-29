@@ -83,49 +83,88 @@ body.light-mode .footer-logo{opacity:.5}
 .tab-content.active{display:block;background-color:var(--bg-app)}
 
 /* ═══ KPI CARDS ═════════════════════════════════════════════════ */
-.kpi-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;margin-bottom:8px}
-.kpi-grid > *{grid-column:span 3}  /* default: 4 per row */
-@keyframes kpiFadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.kpi-card,.kpi-chart-card{animation:kpiFadeIn .38s ease both}
-.kpi-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;transition:.2s;position:relative;overflow:hidden}
-.kpi-chart-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;transition:.2s;position:relative;overflow:hidden}
-.kpi-card:hover,.kpi-chart-card:hover{border-color:var(--border-s);transform:translateY(-2px);box-shadow:var(--sh-md)}
-.kpi-card::before,.kpi-chart-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent-color,var(--accent));border-radius:var(--r-lg) var(--r-lg) 0 0}
-.kpi-icon{font-size:1.4rem;margin-bottom:8px}
-.kpi-value{font-family:'JetBrains Mono',monospace;font-size:1.7rem;font-weight:600;line-height:1;margin-bottom:4px;color:var(--txt)}
-.kpi-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--txt-s);margin-bottom:6px}
-.kpi-sub{font-size:.78rem;color:var(--txt-m)}
-.kpi-bar{height:4px;background:var(--border);border-radius:100px;overflow:hidden;margin-top:8px}
-.kpi-bar-fill{height:100%;border-radius:100px;background:var(--accent);transition:width .8s}
+/* ═══ KPI DASHBOARD ═════════════════════════════════════════════ */
+@keyframes kpiFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Stat cards row */
+.kpi-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+@media(max-width:1100px){.kpi-stats-row{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:580px){.kpi-stats-row{grid-template-columns:1fr}}
+
+.kpi-stat{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;position:relative;overflow:hidden;animation:kpiFadeIn .35s ease both;transition:.2s}
+.kpi-stat:hover{border-color:var(--border-s);transform:translateY(-2px);box-shadow:var(--sh-md)}
+.kpi-stat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kc,var(--accent));border-radius:var(--r-lg) var(--r-lg) 0 0}
+.kpi-stat-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.kpi-stat-icon{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;background:var(--kc-bg,rgba(59,130,246,.12));flex-shrink:0}
+.kpi-stat-icon .ms{font-size:1.1rem;color:var(--kc,var(--accent))}
+.kpi-stat-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--txt-m);font-weight:600}
+.kpi-stat-value{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--txt);line-height:1;margin-bottom:6px}
+.kpi-stat-sub{font-size:.78rem;color:var(--txt-m);margin-bottom:8px}
+.kpi-stat-bar{height:4px;background:var(--border);border-radius:100px;overflow:hidden}
+.kpi-stat-bar-fill{height:100%;border-radius:100px;transition:width .8s cubic-bezier(.65,0,.35,1)}
+.kpi-stat-badge{display:inline-flex;align-items:center;gap:4px;font-size:.72rem;font-weight:700;padding:3px 8px;border-radius:100px;margin-top:8px}
+
+/* Main chart row */
+.kpi-main-row{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:16px}
+@media(max-width:1024px){.kpi-main-row{grid-template-columns:1fr}}
+
+.kpi-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;position:relative;overflow:hidden;animation:kpiFadeIn .35s ease both;transition:.2s}
+.kpi-card:hover{border-color:var(--border-s)}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kc,var(--accent));border-radius:var(--r-lg) var(--r-lg) 0 0}
+.kpi-card-title{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--txt-m);font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+
+/* Support row */
+.kpi-support-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:900px){.kpi-support-row{grid-template-columns:1fr}}
+
+/* Health badge */
+.health-badge{display:inline-flex;align-items:center;gap:7px;font-size:.9rem;font-weight:700;padding:6px 14px;border-radius:100px}
+.health-green{background:rgba(34,197,94,.12);color:#22c55e;border:1px solid rgba(34,197,94,.25)}
+.health-yellow{background:rgba(234,179,8,.12);color:#eab308;border:1px solid rgba(234,179,8,.25)}
+.health-red{background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.25)}
+
+/* Semaphore (kept for compat) */
 .semaphore{display:inline-flex;align-items:center;gap:6px;font-size:1rem;font-weight:700;padding:4px 12px;border-radius:100px}
 .sem-green{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3)}
 .sem-yellow{background:rgba(234,179,8,.15);color:#eab308;border:1px solid rgba(234,179,8,.3)}
 .sem-red{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3)}
+
 /* Ring chart */
-.kpi-ring-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center;margin:6px 0}
+.kpi-ring-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center}
 .kpi-ring-svg{transform:rotate(-90deg)}
 .kpi-ring-text{position:absolute;text-align:center;pointer-events:none}
+
 /* Trend */
-.kpi-trend{display:inline-flex;align-items:center;gap:4px;font-size:.78rem;font-weight:600;margin-top:6px}
+.kpi-trend{display:inline-flex;align-items:center;gap:4px;font-size:.78rem;font-weight:600;margin-top:4px}
 .trend-up{color:#22c55e}.trend-down{color:#ef4444}.trend-flat{color:#eab308}
+
 /* Action buttons */
-.kpi-action-btn{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:5px;font-size:.75rem;font-weight:600;border:1px solid var(--border);background:none;color:var(--txt-m);cursor:pointer;transition:.15s;margin-top:8px}
+.kpi-action-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 11px;border-radius:6px;font-size:.75rem;font-weight:600;border:1px solid var(--border);background:none;color:var(--txt-m);cursor:pointer;transition:.15s}
 .kpi-action-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(59,130,246,.07)}
-/* EVM */
-.evm-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border)}
-.evm-row:last-child{border-bottom:none}
-.evm-key{font-size:.75rem;color:var(--txt-m)}
-.evm-val{font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:700}
+
 /* Groups legend */
-.grp-leg-row{display:flex;align-items:center;gap:6px;font-size:.75rem;padding:2px 0}
-.grp-leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
-.grp-leg-name{flex:1;color:var(--txt-s);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.grp-leg-pct{font-family:'JetBrains Mono',monospace;font-weight:700;min-width:32px;text-align:right}
+.grp-leg-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)}
+.grp-leg-row:last-child{border-bottom:none}
+.grp-leg-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.grp-leg-name{flex:1;color:var(--txt-s);font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grp-leg-pct{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.82rem;min-width:32px;text-align:right}
+
+/* EVM compact */
+.evm-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)}
+.evm-row:last-child{border-bottom:none}
+.evm-key{font-size:.78rem;color:var(--txt-m)}
+.evm-val{font-family:'JetBrains Mono',monospace;font-size:.88rem;font-weight:700}
+
 /* Forecast chip */
-.forecast-chip{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:var(--r);padding:8px 12px;margin-top:10px}
-.forecast-label{font-size:.72rem;color:var(--txt-m);margin-bottom:3px}
+.forecast-chip{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.18);border-radius:var(--r);padding:10px 12px;margin-top:10px}
+.forecast-label{font-size:.7rem;color:var(--txt-m);margin-bottom:3px;text-transform:uppercase;letter-spacing:.06em}
 .forecast-date{font-weight:700;color:var(--txt);font-size:.88rem}
 .forecast-diff{font-size:.75rem;margin-top:2px}
+
+/* Legacy (keep for compat) */
+.kpi-grid{display:none}
+.evm-bento-row{display:none}
+.kpi-hero{display:none}
 
 /* ═══ PAGE HEADER ═══════════════════════════════════════════════ */
 .page-header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
@@ -893,14 +932,13 @@ body.light-mode .status-bar{background:#e8edf3}
 <!-- ══ TAB: KPIs ════════════════════════════════════════════════ -->
 <section class="tab-content active" id="tab-kpis">
   <div class="page-header">
-    <div><h2 class="page-title">Salud del Proyecto</h2><p class="page-subtitle">Resumen ejecutivo y métricas de desempeño</p></div>
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-      <span style="font-size:.75rem;color:var(--txt-m);text-transform:uppercase;letter-spacing:.07em">Fecha de corte:</span>
+    <div><h2 class="page-title">Salud del Proyecto</h2><p class="page-subtitle">Resumen ejecutivo — Torre Santa Isabel</p></div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="ms" style="color:var(--txt-m);font-size:1rem">calendar_today</span>
       <span class="mono" style="background:var(--bg-el);border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-size:.8rem;color:var(--txt)" id="phCorteDate">—</span>
     </div>
   </div>
-  <div class="evm-bento-row" id="evmBentoRow"></div>
-  <div class="kpi-grid" id="kpiGrid"></div>
+  <div id="kpiDash"></div>
 </section>
 
 <!-- ══ TAB: GANTT ═══════════════════════════════════════════════ -->
@@ -1695,194 +1733,138 @@ function makeGroupsLegend(){
    RENDER: KPIs
    ═══════════════════════════════════════════════════════════ */
 function renderKPIs(){
-  const pct       = weightedAvgProgress();
-  const elapsed   = daysElapsed();
-  const total     = daysBetween(PROJECT_START_MS, PROJECT_END_MS);
-  const remaining = daysRemaining();
-  const completed = countByStatus('COMPLETADO');
-  const inprog    = countByStatus('EN_PROGRESO') + countByStatus('ATRASADO');
-  const critDone  = countCritDone();
-  const critTotal = countCritical();
-  const health    = healthSemaphore();
+  const pct        = weightedAvgProgress();
+  const elapsed    = daysElapsed();
+  const total      = daysBetween(PROJECT_START_MS, PROJECT_END_MS);
+  const remaining  = daysRemaining();
+  const completed  = countByStatus('COMPLETADO');
+  const late       = countByStatus('ATRASADO');
+  const inprog     = countByStatus('EN_PROGRESO');
+  const critDone   = countCritDone();
+  const critTotal  = countCritical();
+  const health     = healthSemaphore();
   const expectedPct = total>0 ? Math.round(elapsed/total*100) : 0;
-  const diff      = pct - expectedPct;
-  const evm       = computeEVM();
+  const diff       = pct - expectedPct;
+  const evm        = computeEVM();
   snapshotKPI();
 
-  const semHtml = health==='GREEN'
-    ? '<span class="semaphore sem-green">🟢 En riesgo bajo</span>'
-    : health==='YELLOW'
-    ? '<span class="semaphore sem-yellow">🟡 Revisar avance</span>'
-    : '<span class="semaphore sem-red">🔴 Alerta retraso</span>';
-
-  const trendHtml = diff>=0
-    ? `<div class="kpi-trend trend-up">▲ ${diff}pp por encima del plan</div>`
-    : diff>=-5
-    ? `<div class="kpi-trend trend-flat">≈ ${Math.abs(diff)}pp bajo el plan</div>`
-    : `<div class="kpi-trend trend-down">▼ ${Math.abs(diff)}pp de retraso</div>`;
-
-  // ── CARD 1: Hero salud ──────────────────────────────────
-  const c1 = `<div class="kpi-card kpi-hero" style="--accent-color:${health==='GREEN'?'#22c55e':health==='YELLOW'?'#eab308':'#ef4444'}">
-    <div style="display:flex;align-items:flex-start;gap:18px;flex-wrap:wrap">
-      <div>
-        <div class="kpi-icon" style="font-size:2rem">🚦</div>
-        ${semHtml}
-        <div class="kpi-label" style="margin-top:10px">Salud del Proyecto</div>
-        ${trendHtml}
-        <div style="margin-top:10px;display:flex;gap:6px">
-          <button class="kpi-action-btn" onclick="switchTab('gantt')">📅 Gantt</button>
-          <button class="kpi-action-btn" onclick="switchTab('update')">✏️ Actualizar</button>
-          <button class="kpi-action-btn" onclick="toggleAlerts()">🔔 Alertas</button>
-        </div>
-      </div>
-      <div style="flex:1;min-width:160px">${makeForecastChip(evm)}</div>
-    </div>
-  </div>`;
-
-  // ── CARD 2: Avance con ring ─────────────────────────────
-  const c2 = `<div class="kpi-card" style="grid-column:span 4;--accent-color:#3b82f6;text-align:center">
-    <div class="kpi-icon">📊</div>
-    <div class="kpi-ring-wrap">
-      ${makeRingSVG(pct,'#3b82f6',88,9)}
-      <div class="kpi-ring-text">
-        <div class="kpi-value" style="font-size:1.4rem">${pct}%</div>
-        <div style="font-size:.72rem;color:var(--txt-m)">real</div>
-      </div>
-    </div>
-    <div class="kpi-label">Avance Global</div>
-    <div class="kpi-sub">Esperado: ${expectedPct}%</div>
-    ${trendHtml}
-  </div>`;
-
-  // ── CARD 3: Tiempo ──────────────────────────────────────
-  const c3 = `<div class="kpi-card" style="grid-column:span 4;--accent-color:#8b5cf6">
-    <div class="kpi-icon">⏱</div>
-    <div class="kpi-value">${elapsed}<span style="font-size:1rem;color:var(--txt-m)">d</span></div>
-    <div class="kpi-label">Días Transcurridos</div>
-    <div class="kpi-sub">de ${total} días totales</div>
-    <div class="kpi-bar" style="margin-top:10px"><div class="kpi-bar-fill" style="width:${Math.min(100,elapsed/total*100)}%;background:#8b5cf6"></div></div>
-    <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:.75rem;color:var(--txt-m)">
-      <span>Inicio<br><strong style="color:var(--txt)">01/May/26</strong></span>
-      <span style="text-align:right">Fin<br><strong style="color:var(--txt)">16/Feb/28</strong></span>
-    </div>
-    <div style="margin-top:8px;font-size:.78rem;color:var(--txt-s)">Restan <strong style="color:#8b5cf6">${remaining}d</strong></div>
-  </div>`;
-
-  // ── CARD 4: Curva S (span 8 en 12-col) ─────────────────
-  const c4 = `<div class="kpi-chart-card kpi-curvas" style="--accent-color:#06b6d4;padding:14px 16px">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-      <span class="ms" style="color:#06b6d4;font-size:1.15rem">show_chart</span>
-      <strong style="font-size:.88rem;color:var(--txt)">Curva S — Planificado vs Real</strong>
-      <div style="margin-left:auto;display:flex;gap:14px;align-items:center">
-        <div style="display:flex;align-items:center;gap:5px;font-size:.72rem">
-          <div style="width:16px;height:2px;background:#3b82f6;opacity:.7;border-radius:1px;background-image:repeating-linear-gradient(90deg,#3b82f6 0,#3b82f6 5px,transparent 5px,transparent 9px)"></div>
-          <span style="color:var(--txt-s)">Planificado</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:5px;font-size:.72rem">
-          <div style="width:16px;height:2.5px;background:#22c55e;border-radius:1px"></div>
-          <span style="color:var(--txt-s)">Real</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:5px;font-size:.72rem">
-          <div style="width:2px;height:12px;background:#f97316;border-radius:1px"></div>
-          <span style="color:var(--txt-s)">Hoy</span>
-        </div>
-        <span style="font-size:.72rem;color:var(--txt-m);padding:2px 8px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:100px;font-family:'JetBrains Mono',monospace">⚡ ${evm.velocity.toFixed(2)}%/d</span>
-      </div>
-    </div>
-    ${makeCurvaS()}
-  </div>`;
-
-  // ── CARD 5: Donut por grupos ────────────────────────────
-  const c5 = `<div class="kpi-chart-card" style="grid-column:span 4;--accent-color:#8b5cf6">
-    <div style="font-size:1.1rem;margin-bottom:8px">🍩</div>
-    <strong style="font-size:.88rem">Avance por Grupo</strong>
-    <div style="display:flex;align-items:center;gap:12px;margin-top:10px">
-      ${makeGroupsDonut()}
-      <div style="flex:1">${makeGroupsLegend()}</div>
-    </div>
-    <button class="kpi-action-btn" onclick="switchTab('phases')" style="margin-top:10px">📋 Ver Fases</button>
-  </div>`;
-
-  // ── CARD 6: EVM ─────────────────────────────────────────
-  const spiColor = evm.spi>=1?'#22c55e':evm.spi>=0.9?'#eab308':'#ef4444';
-  const c6 = `<div class="kpi-chart-card" style="grid-column:span 4;--accent-color:#f59e0b">
-    <div style="font-size:1.1rem;margin-bottom:8px">⚡</div>
-    <strong style="font-size:.88rem">Valor Ganado (EVM)</strong>
-    <div style="margin-top:10px">
-      <div class="evm-row">
-        <span class="evm-key">SPI — Rendimiento</span>
-        <span class="evm-val" style="color:${spiColor}">${evm.spi.toFixed(2)} ${evm.spi>=1?'✅':evm.spi>=0.9?'⚠️':'🔴'}</span>
-      </div>
-      <div class="evm-row">
-        <span class="evm-key">SV — Variación</span>
-        <span class="evm-val" style="color:${evm.sv>=0?'#22c55e':'#ef4444'}">${evm.sv>=0?'+':''}${evm.sv}pp</span>
-      </div>
-      <div class="evm-row">
-        <span class="evm-key">PV — Planificado</span>
-        <span class="evm-val">${expectedPct}%</span>
-      </div>
-      <div class="evm-row">
-        <span class="evm-key">EV — Ganado</span>
-        <span class="evm-val" style="color:#3b82f6">${pct}%</span>
-      </div>
-    </div>
-    <button class="kpi-action-btn" onclick="switchTab('equipos')" style="margin-top:6px">👷 Ver Equipos</button>
-  </div>`;
-
-  // ── CARDS 7-10: Stats pequeños ──────────────────────────
-  const statCards = [
-    { icon:'✅', val:`${completed}`,  sub:`de 29 fases`, label:'Completadas', bar:completed/29*100, color:'#22c55e', act:"switchTab('phases')" },
-    { icon:'🔥', val:`${critDone}`,   sub:`de ${critTotal} críticas`, label:'Críticas Listas', bar:critTotal>0?critDone/critTotal*100:0, color:'#ef4444', act:"switchTab('gantt')" },
-    { icon:'🔄', val:`${inprog}`,     sub:'fases activas', label:'En Progreso', bar:null, color:'#f97316', act:"switchTab('board')" },
-    { icon:'📍', val:new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'short'}), sub:new Date().getFullYear()+'', label:'Corte', bar:elapsed/total*100, color:'#06b6d4', act:null },
-  ].map((c,i)=>`<div class="kpi-card" style="--accent-color:${c.color};animation-delay:${i*60}ms">
-    <div class="kpi-icon">${c.icon}</div>
-    <div class="kpi-value" style="font-size:2rem">${c.val}</div>
-    <div class="kpi-sub">${c.sub}</div>
-    <div class="kpi-label">${c.label}</div>
-    ${c.bar!==null?`<div class="kpi-bar"><div class="kpi-bar-fill" style="width:${c.bar}%;background:${c.color}"></div></div>`:''}
-    ${c.act?`<button class="kpi-action-btn" onclick="${c.act}">Ver →</button>`:''}
-  </div>`).join('');
-
-  document.getElementById('kpiGrid').innerHTML = c1+c2+c3+c4+c5+c6+statCards;
   const corteEl = document.getElementById('phCorteDate');
   if(corteEl) corteEl.textContent = new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'});
 
-  // ── EVM bento mini cards ────────────────────────────────
-  const bentoEl = document.getElementById('evmBentoRow');
-  if(bentoEl){
-    const spiOk = evm.spi>=1, spiWarn = evm.spi>=0.9;
-    const svOk  = evm.sv>=0,  svWarn  = evm.sv>=-5;
-    const velOk = evm.velocity>=0.15;
-    const daysLeft = remaining;
-    const bentoItems = [
-      { icon:'⚡', label:'SPI — Índice Schedule', val:evm.spi.toFixed(2),
-        color: spiOk?'#22c55e':spiWarn?'#eab308':'#ef4444',
-        badge: spiOk?'✅ En tiempo':spiWarn?'⚠️ Leve':'🔴 Retraso',
-        badgeBg: spiOk?'rgba(34,197,94,.15)':spiWarn?'rgba(234,179,8,.15)':'rgba(239,68,68,.15)' },
-      { icon:'📐', label:'SV — Variación Schedule', val:(evm.sv>=0?'+':'')+evm.sv+'pp',
-        color: svOk?'#22c55e':svWarn?'#eab308':'#ef4444',
-        badge: svOk?'Adelantado':svWarn?'Leve atraso':'Atrasado',
-        badgeBg: svOk?'rgba(34,197,94,.15)':svWarn?'rgba(234,179,8,.15)':'rgba(239,68,68,.15)' },
-      { icon:'🏃', label:'Velocidad de Avance', val:evm.velocity.toFixed(3)+'%/d',
-        color: velOk?'#3b82f6':'#f59e0b',
-        badge: velOk?'Ritmo OK':'Revisar',
-        badgeBg: velOk?'rgba(59,130,246,.15)':'rgba(245,158,11,.15)' },
-      { icon:'📅', label:'Días Restantes', val:daysLeft+'d',
-        color:'#8b5cf6',
-        badge: evm.forecastDate ? new Date(evm.forecastDate+'T12:00:00').toLocaleDateString('es-CO',{day:'2-digit',month:'short',year:'2-digit'}) : '—',
-        badgeBg:'rgba(139,92,246,.15)' },
-    ];
-    bentoEl.innerHTML = bentoItems.map(b=>`
-      <div class="evm-bento" style="--evm-color:${b.color}">
-        <div class="evm-bento-icon" style="background:${b.color}22">${b.icon}</div>
-        <div class="evm-bento-body">
-          <div class="evm-bento-val" style="color:${b.color}">${b.val}</div>
-          <div class="evm-bento-label">${b.label}</div>
+  // ── Colores de estado ─────────────────────────────────────
+  const hColor = health==='GREEN'?'#22c55e':health==='YELLOW'?'#eab308':'#ef4444';
+  const hLabel = health==='GREEN'?'En tiempo':health==='YELLOW'?'Revisar avance':'Alerta retraso';
+  const hIcon  = health==='GREEN'?'check_circle':health==='YELLOW'?'warning':'error';
+  const hCls   = health==='GREEN'?'health-green':health==='YELLOW'?'health-yellow':'health-red';
+  const diffTxt= diff>=0?`+${diff}pp adelantado`:diff>=-5?`${diff}pp leve atraso`:`${diff}pp retraso`;
+  const diffCol= diff>=0?'#22c55e':diff>=-5?'#eab308':'#ef4444';
+  const spiColor= evm.spi>=1?'#22c55e':evm.spi>=0.9?'#eab308':'#ef4444';
+
+  // ── ROW 1: 4 stat cards ───────────────────────────────────
+  const statsRow = `<div class="kpi-stats-row">
+
+    <!-- Avance -->
+    <div class="kpi-stat" style="--kc:#3b82f6;--kc-bg:rgba(59,130,246,.1)">
+      <div class="kpi-stat-header">
+        <div class="kpi-stat-icon"><span class="ms">trending_up</span></div>
+        <span class="kpi-stat-label">Avance actual</span>
+      </div>
+      <div class="kpi-stat-value">${pct}<span style="font-size:1.2rem;color:var(--txt-m)">%</span></div>
+      <div class="kpi-stat-sub">Esperado: <strong style="color:var(--txt)">${expectedPct}%</strong></div>
+      <div class="kpi-stat-bar"><div class="kpi-stat-bar-fill" style="width:${pct}%;background:#3b82f6"></div></div>
+      <div style="margin-top:6px;font-size:.72rem;font-weight:700;color:${diffCol}">${diffTxt}</div>
+    </div>
+
+    <!-- Estado salud -->
+    <div class="kpi-stat" style="--kc:${hColor};--kc-bg:${hColor}18">
+      <div class="kpi-stat-header">
+        <div class="kpi-stat-icon"><span class="ms">${hIcon}</span></div>
+        <span class="kpi-stat-label">Estado del proyecto</span>
+      </div>
+      <div style="margin-bottom:10px">
+        <span class="health-badge ${hCls}">
+          <span class="ms" style="font-size:1rem">${hIcon}</span>${hLabel}
+        </span>
+      </div>
+      <div class="kpi-stat-sub">SPI: <strong style="color:${spiColor};font-family:'JetBrains Mono',monospace">${evm.spi.toFixed(2)}</strong> &nbsp;·&nbsp; SV: <strong style="color:${evm.sv>=0?'#22c55e':'#ef4444'};font-family:'JetBrains Mono',monospace">${evm.sv>=0?'+':''}${evm.sv}pp</strong></div>
+      <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
+        <button class="kpi-action-btn" onclick="switchTab('gantt')"><span class="ms" style="font-size:.9rem">view_timeline</span>Gantt</button>
+        <button class="kpi-action-btn" onclick="switchTab('update')"><span class="ms" style="font-size:.9rem">edit_note</span>Actualizar</button>
+        <button class="kpi-action-btn" onclick="toggleAlerts()"><span class="ms" style="font-size:.9rem">notifications</span>Alertas</button>
+      </div>
+    </div>
+
+    <!-- Cronograma -->
+    <div class="kpi-stat" style="--kc:#8b5cf6;--kc-bg:rgba(139,92,246,.1)">
+      <div class="kpi-stat-header">
+        <div class="kpi-stat-icon"><span class="ms">schedule</span></div>
+        <span class="kpi-stat-label">Cronograma</span>
+      </div>
+      <div class="kpi-stat-value">${remaining}<span style="font-size:1rem;color:var(--txt-m)">d</span></div>
+      <div class="kpi-stat-sub">restantes de ${total} días totales</div>
+      <div class="kpi-stat-bar" style="margin-top:8px"><div class="kpi-stat-bar-fill" style="width:${Math.min(100,elapsed/total*100)}%;background:#8b5cf6"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:.72rem;color:var(--txt-m)">
+        <span>Día <strong style="color:var(--txt)">${elapsed}</strong></span>
+        <span>01 May 26 → 16 Feb 28</span>
+      </div>
+    </div>
+
+    <!-- Fases -->
+    <div class="kpi-stat" style="--kc:#10b981;--kc-bg:rgba(16,185,129,.1)">
+      <div class="kpi-stat-header">
+        <div class="kpi-stat-icon"><span class="ms">task_alt</span></div>
+        <span class="kpi-stat-label">Fases del proyecto</span>
+      </div>
+      <div class="kpi-stat-value">${completed}<span style="font-size:1rem;color:var(--txt-m)">/29</span></div>
+      <div class="kpi-stat-sub">fases completadas</div>
+      <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px">
+        <div style="display:flex;justify-content:space-between;font-size:.72rem">
+          <span style="color:#f97316"><span class="ms" style="font-size:.85rem;vertical-align:middle">sync</span> ${inprog} en progreso</span>
+          <span style="color:#ef4444"><span class="ms" style="font-size:.85rem;vertical-align:middle">warning</span> ${late} atrasadas</span>
         </div>
-        <div class="evm-bento-badge" style="background:${b.badgeBg};color:${b.color};border:1px solid ${b.color}44">${b.badge}</div>
-      </div>`).join('');
-  }
+        <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--txt-m)">
+          <span>Críticas: ${critDone}/${critTotal} listas</span>
+          <button class="kpi-action-btn" style="margin:0;padding:2px 8px" onclick="switchTab('phases')">Ver →</button>
+        </div>
+      </div>
+    </div>
+
+  </div>`;
+
+  // ── ROW 2: Curva S + Grupos ───────────────────────────────
+  const mainRow = `<div class="kpi-main-row">
+
+    <!-- Curva S -->
+    <div class="kpi-card" style="--kc:#06b6d4">
+      <div class="kpi-card-title">
+        <span class="ms" style="color:#06b6d4">show_chart</span>
+        Curva S — Planificado vs Real
+        <div style="margin-left:auto;display:flex;gap:12px;align-items:center">
+          <span style="display:flex;align-items:center;gap:4px;font-size:.7rem;color:var(--txt-m)">
+            <span style="display:inline-block;width:14px;height:2px;background-image:repeating-linear-gradient(90deg,#3b82f6 0,#3b82f6 5px,transparent 5px,transparent 8px)"></span>Plan
+          </span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:.7rem;color:var(--txt-m)">
+            <span style="display:inline-block;width:14px;height:2px;background:#22c55e;border-radius:1px"></span>Real
+          </span>
+          <span style="font-size:.7rem;color:var(--txt-m);font-family:'JetBrains Mono',monospace">⚡${evm.velocity.toFixed(2)}%/d</span>
+        </div>
+      </div>
+      ${makeCurvaS()}
+    </div>
+
+    <!-- Avance por grupo -->
+    <div class="kpi-card" style="--kc:#8b5cf6">
+      <div class="kpi-card-title"><span class="ms" style="color:#8b5cf6">donut_large</span>Avance por Grupo</div>
+      <div style="display:flex;align-items:center;gap:14px">
+        ${makeGroupsDonut()}
+        <div style="flex:1">${makeGroupsLegend()}</div>
+      </div>
+      ${makeForecastChip(evm)}
+    </div>
+
+  </div>`;
+
+  document.getElementById('kpiDash').innerHTML = statsRow + mainRow;
 }
 
 /* ═══════════════════════════════════════════════════════════
