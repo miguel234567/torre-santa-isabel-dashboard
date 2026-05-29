@@ -1939,7 +1939,7 @@ function renderGantt(){
   let phaseLabels = '';
   PHASES.forEach((p, i) => {
     const y = MARGIN_TOP + i * ROW_H;
-    rowBg += `<rect x="${MARGIN_LEFT}" y="${y}" width="${CHART_W+60}" height="${ROW_H}" fill="${i%2===0?'#0a0f1c':'#0d1220'}" fill-opacity="0.6"/>`;
+    rowBg += `<rect x="${MARGIN_LEFT}" y="${y}" width="${CHART_W+60}" height="${ROW_H}" fill="${i%2===0?'#080e1c':'#0b1120'}"/>`;
     const col = GROUPS[p.group].color;
     // group color dot
     phaseLabels += `<circle cx="10" cy="${y+ROW_H/2}" r="4" fill="${col}"/>`;
@@ -1961,10 +1961,10 @@ function renderGantt(){
     const isDashed = p.status === 'ATRASADO';
     bars += `
       <g class="bar-g" data-id="${p.id}">
-        <rect class="bar-bg" x="${x}" y="${y}" width="${w}" height="${BAR_H}" rx="3" fill="${col}" fill-opacity="0.22" stroke="${col}" stroke-width="1" ${isDashed?'stroke-dasharray="4,2"':''}/>
-        <rect x="${x}" y="${y}" width="${Math.max(2,progW)}" height="${BAR_H}" rx="3" fill="${col}" fill-opacity="0.9"/>
-        ${p.effectiveProgress > 0 && p.effectiveProgress < 100 ? `<text x="${x+progW+4}" y="${y+BAR_H-3}" font-size="8.5" fill="${col}" font-family="JetBrains Mono" font-weight="600">${p.effectiveProgress}%</text>` : ''}
-        ${p.effectiveProgress === 100 ? `<text x="${x+4}" y="${y+BAR_H-3}" font-size="8" fill="#0f172a" font-family="JetBrains Mono">✓ 100%</text>` : ''}
+        <rect x="${x}" y="${y}" width="${w}" height="${BAR_H}" rx="3" fill="#0d1626" stroke="${col}" stroke-width="1" stroke-opacity="0.55" ${isDashed?'stroke-dasharray="5,3"':''}/>
+        ${progW>1?`<rect x="${x}" y="${y}" width="${Math.max(2,progW)}" height="${BAR_H}" rx="3" fill="${col}" fill-opacity="0.85"/>`:''}
+        ${p.effectiveProgress>0&&p.effectiveProgress<100?`<text x="${x+progW+4}" y="${y+BAR_H-3}" font-size="8" fill="${col}" font-family="JetBrains Mono" font-weight="700">${p.effectiveProgress}%</text>`:''}
+        ${p.effectiveProgress===100?`<text x="${x+4}" y="${y+BAR_H-3}" font-size="8" fill="#0f172a" font-family="JetBrains Mono" font-weight="700">✓ 100%</text>`:''}
         <rect x="${x}" y="${y}" width="${w}" height="${BAR_H}" rx="3" fill="transparent" class="bar-hit"/>
       </g>`;
   });
