@@ -1873,8 +1873,8 @@ function renderKPIs(){
 function renderGantt(){
   const MARGIN_LEFT = 230;
   const MARGIN_TOP  = 56;
-  const ROW_H       = 26;
-  const BAR_H       = 16;
+  const ROW_H       = 30;
+  const BAR_H       = 18;
   const CHART_W     = 1550;
   const SVG_W       = MARGIN_LEFT + CHART_W + 60;
   const SVG_H       = MARGIN_TOP + PHASES.length * ROW_H + 30;
@@ -1919,7 +1919,9 @@ function renderGantt(){
   let phaseLabels = '';
   PHASES.forEach((p, i) => {
     const y = MARGIN_TOP + i * ROW_H;
+    const grpC = GROUPS[p.group].color;
     rowBg += `<rect x="${MARGIN_LEFT}" y="${y}" width="${CHART_W+60}" height="${ROW_H}" fill="${i%2===0?'#13171f':'#171c25'}"/>`;
+    rowBg += `<rect x="${MARGIN_LEFT}" y="${y}" width="${CHART_W+60}" height="${ROW_H}" fill="${grpC}" fill-opacity="0.025"/>`;
     const col = GROUPS[p.group].color;
     // group color dot
     phaseLabels += `<circle cx="10" cy="${y+ROW_H/2}" r="4" fill="${col}"/>`;
@@ -1933,19 +1935,43 @@ function renderGantt(){
   // Bars
   let bars = '';
   PHASES.forEach((p, i) => {
-    const y = MARGIN_TOP + i * ROW_H + (ROW_H - BAR_H) / 2;
-    const x = xOf(p.startMs);
-    const w = wOf(p.startMs, p.endMs);
-    const col = getBarColor(p);
-    const progW = w * p.effectiveProgress / 100;
-    const isDashed = p.status === 'ATRASADO';
+    const y    = MARGIN_TOP + i * ROW_H + (ROW_H - BAR_H) / 2;
+    const x    = xOf(p.startMs);
+    const w    = wOf(p.startMs, p.endMs);
+    const grpCol  = GROUPS[p.group].color;  // color por grupo (siempre)
+    const progW   = Math.max(0, w * p.effectiveProgress / 100);
+    const isLate  = p.status === 'ATRASADO';
+    const isDone  = p.status === 'COMPLETADO';
+    const isCrit  = p.critical;
+
+    // Barra fondo: color grupo al 22% — siempre visible y coloreada
+    const bgFill  = grpCol + '38';      // ~22% opacidad hex
+    const progFill= isDone ? '#22c55e' : isLate ? '#ef4444' : grpCol;
+    const strokeCol = isLate ? '#ef4444' : isDone ? '#22c55e' : grpCol;
+
     bars += `
       <g class="bar-g" data-id="${p.id}">
-        <rect x="${x}" y="${y}" width="${w}" height="${BAR_H}" rx="3" fill="#1a1f2a" stroke="${col}" stroke-width="1" stroke-opacity="0.55" ${isDashed?'stroke-dasharray="5,3"':''}/>
-        ${progW>1?`<rect x="${x}" y="${y}" width="${Math.max(2,progW)}" height="${BAR_H}" rx="3" fill="${col}" fill-opacity="0.85"/>`:''}
-        ${p.effectiveProgress>0&&p.effectiveProgress<100?`<text x="${x+progW+4}" y="${y+BAR_H-3}" font-size="8" fill="${col}" font-family="JetBrains Mono" font-weight="700">${p.effectiveProgress}%</text>`:''}
-        ${p.effectiveProgress===100?`<text x="${x+4}" y="${y+BAR_H-3}" font-size="8" fill="#0f172a" font-family="JetBrains Mono" font-weight="700">✓ 100%</text>`:''}
-        <rect x="${x}" y="${y}" width="${w}" height="${BAR_H}" rx="3" fill="transparent" class="bar-hit"/>
+        <!-- Fondo de barra (grupo color) -->
+        <rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${BAR_H}" rx="4"
+          fill="${bgFill}" stroke="${strokeCol}" stroke-width="${isCrit?1.5:0.8}" stroke-opacity="${isLate?1:0.6}"
+          ${isLate?'stroke-dasharray="6,3"':''}/>
+        <!-- Progreso relleno -->
+        ${progW>1?`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${progW.toFixed(1)}" height="${BAR_H}" rx="4"
+          fill="${progFill}" fill-opacity="${isDone?0.9:0.75}"/>`:''}
+        <!-- Línea de progreso (borde derecho del avance) -->
+        ${progW>1&&!isDone?`<line x1="${(x+progW).toFixed(1)}" y1="${y.toFixed(1)}" x2="${(x+progW).toFixed(1)}" y2="${(y+BAR_H).toFixed(1)}"
+          stroke="${progFill}" stroke-width="2" opacity="0.9"/>`:''}
+        <!-- Etiqueta de porcentaje -->
+        ${p.effectiveProgress>5&&p.effectiveProgress<100
+          ?`<text x="${(x+progW-4).toFixed(1)}" y="${(y+BAR_H/2+3.5).toFixed(1)}" font-size="7.5" fill="white"
+              font-family="JetBrains Mono" font-weight="700" text-anchor="end" opacity="0.95">${p.effectiveProgress}%</text>`
+          :''}
+        ${isDone
+          ?`<text x="${(x+6).toFixed(1)}" y="${(y+BAR_H/2+3.5).toFixed(1)}" font-size="8" fill="white"
+              font-family="JetBrains Mono" font-weight="700" opacity="0.95">✓</text>`
+          :''}
+        <!-- Hit area -->
+        <rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${BAR_H}" rx="4" fill="transparent" class="bar-hit"/>
       </g>`;
   });
 
