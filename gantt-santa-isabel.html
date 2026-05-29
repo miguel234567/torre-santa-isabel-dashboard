@@ -634,6 +634,32 @@ body.role-admin .requires-admin-flex{display:flex!important}
 .phase-check-item input{accent-color:var(--accent)}
 .admin-actions{display:flex;gap:10px;margin-top:20px;justify-content:flex-end}
 
+/* ═══ PERSONAL TAB ══════════════════════════════════════════════ */
+.personal-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.personal-stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
+@media(max-width:900px){.personal-stats-row{grid-template-columns:repeat(3,1fr)}}
+.personal-stat-chip{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-lg);padding:12px 14px;text-align:center;position:relative;overflow:hidden}
+.personal-stat-chip::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--pc,var(--accent))}
+.psc-num{font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--txt);line-height:1}
+.psc-lbl{font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--txt-m);margin-top:3px}
+.personal-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.personal-table th{background:var(--bg-el);color:var(--txt-s);padding:10px 12px;text-align:left;font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--border);white-space:nowrap}
+.personal-table td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.personal-table tr:hover td{background:rgba(255,255,255,.025)}
+.cargo-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-size:.72rem;font-weight:700;white-space:nowrap;border:1px solid}
+.cb-encargado{background:rgba(59,130,246,.12);color:#60a5fa;border-color:rgba(59,130,246,.3)}
+.cb-oficial{background:rgba(139,92,246,.12);color:#a78bfa;border-color:rgba(139,92,246,.3)}
+.cb-maestro{background:rgba(245,158,11,.12);color:#fbbf24;border-color:rgba(245,158,11,.3)}
+.cb-ayudante{background:rgba(16,185,129,.12);color:#34d399;border-color:rgba(16,185,129,.3)}
+.cb-practico{background:rgba(100,116,139,.12);color:#94a3b8;border-color:rgba(100,116,139,.3)}
+.personal-modal-overlay{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.65)}
+.personal-modal-box{background:var(--bg-card);border:1px solid var(--border-s);border-radius:14px;padding:28px;width:480px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.pm-field{margin-bottom:12px}
+.pm-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--txt-m);margin-bottom:5px;font-weight:600}
+.pm-input{width:100%;background:var(--bg-el);border:1px solid var(--border);border-radius:8px;color:var(--txt);padding:9px 12px;font-family:inherit;font-size:.88rem;outline:none;box-sizing:border-box;transition:.15s}
+.pm-input:focus{border-color:var(--accent)}
+.pm-select{width:100%;background:var(--bg-el);border:1px solid var(--border);border-radius:8px;color:var(--txt);padding:9px 12px;font-family:inherit;font-size:.88rem;outline:none;box-sizing:border-box;cursor:pointer}
+.pm-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 /* ═══ EQUIPOS TAB ═══════════════════════════════════════════════ */
 .equipos-grid{display:flex;flex-direction:column;gap:14px}
 .equipo-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;transition:.18s}
@@ -830,6 +856,9 @@ body.light-mode .status-bar{background:#e8edf3}
     <button class="sni" data-tab="equipos" onclick="switchTab('equipos')">
       <span class="ms">engineering</span>Equipos
     </button>
+    <button class="sni" data-tab="personal" onclick="switchTab('personal')">
+      <span class="ms">groups</span>Personal
+    </button>
     <button class="sni" data-tab="planeacion" onclick="switchTab('planeacion')">
       <span class="ms">account_tree</span>Planeación 360
     </button>
@@ -974,6 +1003,7 @@ body.light-mode .status-bar{background:#e8edf3}
   <button class="tab-btn" data-tab="calendar" onclick="switchTab('calendar')"><span class="ms">calendar_month</span> Calendario</button>
   <button class="tab-btn" data-tab="bitacora" onclick="switchTab('bitacora')"><span class="ms">history</span> Bitácora</button>
   <button class="tab-btn" data-tab="equipos" onclick="switchTab('equipos')"><span class="ms">engineering</span> Equipos</button>
+  <button class="tab-btn" data-tab="personal" onclick="switchTab('personal')"><span class="ms">groups</span> Personal</button>
   <button class="tab-btn" data-tab="planeacion" onclick="switchTab('planeacion')"><span class="ms">account_tree</span> Planeación 360</button>
   <button class="tab-btn requires-admin" data-tab="admin" onclick="switchTab('admin')" style="color:#f87171"><span class="ms">manage_accounts</span> Admin</button>
 </nav>
@@ -1240,6 +1270,55 @@ body.light-mode .status-bar{background:#e8edf3}
     <div><h2 class="page-title">Planeación 360°</h2><p class="page-subtitle">Diagnóstico ejecutivo, ruta crítica, riesgos y auditoría de datos</p></div>
   </div>
   <div id="planning360"></div>
+</section>
+
+<!-- ══ TAB: PERSONAL ═════════════════════════════════════════════ -->
+<section class="tab-content" id="tab-personal">
+  <div class="page-header">
+    <div><h2 class="page-title">Personal de Obra</h2><p class="page-subtitle">Registro de trabajadores por contratista, cargo y frente de trabajo</p></div>
+    <button class="btn-primary" onclick="openPersonalModal()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:.85rem;font-weight:600;border:none;cursor:pointer">
+      <span class="ms">person_add</span>Agregar Personal
+    </button>
+  </div>
+  <div class="personal-stats-row" id="personalStatsRow"></div>
+  <div class="personal-toolbar">
+    <input class="search-input" type="text" id="personalSearch" placeholder="🔍 Buscar nombre, contratista..." oninput="renderPersonal()" style="width:260px"/>
+    <select id="personalFiltCargo" onchange="renderPersonal()" class="search-input" style="width:180px">
+      <option value="">Todos los cargos</option>
+      <option value="Encargado">Encargado</option>
+      <option value="Oficial">Oficial</option>
+      <option value="Maestro">Maestro</option>
+      <option value="Ayudante">Ayudante</option>
+      <option value="Ayudante Práctico">Ayudante Práctico</option>
+    </select>
+    <select id="personalFiltContrat" onchange="renderPersonal()" class="search-input" style="width:180px">
+      <option value="">Todos los contratistas</option>
+    </select>
+    <span style="margin-left:auto;font-size:.78rem;color:var(--txt-m)" id="personalCount">—</span>
+  </div>
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden">
+    <table class="personal-table" id="personalTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre Completo</th>
+          <th>Cargo</th>
+          <th>Contratista</th>
+          <th>Frente / Fase</th>
+          <th>Cédula</th>
+          <th>Teléfono</th>
+          <th>Ingreso</th>
+          <th style="width:80px">Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="personalBody">
+        <tr><td colspan="9" style="text-align:center;padding:40px;color:var(--txt-m)">
+          <span class="ms" style="font-size:2rem;display:block;margin-bottom:8px">groups</span>
+          Agrega personal con el botón "Agregar Personal"
+        </td></tr>
+      </tbody>
+    </table>
+  </div>
 </section>
 
 <!-- ══ ALERTS OVERLAY ════════════════════════════════════════════ -->
@@ -1947,7 +2026,7 @@ function renderKPIs(){
    ═══════════════════════════════════════════════════════════ */
 function renderGantt(){
   const MARGIN_LEFT = 230;
-  const MARGIN_TOP  = 56;
+  const MARGIN_TOP  = 68;
   const ROW_H       = 30;
   const BAR_H       = 18;
   const CHART_W     = 1550;
@@ -1966,15 +2045,31 @@ function renderGantt(){
     cur = new Date(cur.getFullYear(), cur.getMonth()+1, 1);
   }
 
-  // Grid lines + month labels
+  // Grid lines + month/year labels (two-row header)
   let gridLines = '';
   let monthLabels = '';
+  let yearBands = '';
+  // Year bands background
+  const years = [...new Set(months.map(m=>m.getFullYear()))];
+  years.forEach(yr => {
+    const yMonths = months.filter(m=>m.getFullYear()===yr);
+    if(!yMonths.length) return;
+    const x1 = xOf(yMonths[0].getTime());
+    const lastM = yMonths[yMonths.length-1];
+    const nextM = new Date(lastM.getFullYear(), lastM.getMonth()+1, 1);
+    const x2 = Math.min(xOf(nextM.getTime()), MARGIN_LEFT+CHART_W+60);
+    const w = x2-x1;
+    yearBands += `<rect x="${x1.toFixed(1)}" y="0" width="${w.toFixed(1)}" height="28" fill="${yr%2===0?'rgba(255,255,255,.018)':'rgba(0,0,0,.0)'}"/>`;
+    yearBands += `<text x="${(x1+w/2).toFixed(1)}" y="18" text-anchor="middle" font-size="11" fill="#94a3b8" font-family="Inter,sans-serif" font-weight="700">${yr}</text>`;
+  });
   months.forEach((m, mi) => {
     const mx = xOf(m.getTime());
     const isQ = m.getMonth() % 3 === 0;
-    gridLines += `<line x1="${mx}" y1="${MARGIN_TOP-10}" x2="${mx}" y2="${SVG_H-10}" stroke="${isQ?'#30363d':'#21262d'}" stroke-width="${isQ?1.5:0.8}" stroke-dasharray="${isQ?'':'3,4'}"/>`;
-    const mLabel = m.toLocaleDateString('es-CO',{month:'short',year:'2-digit'}).replace(' ','\'');
-    monthLabels += `<text x="${mx+4}" y="${MARGIN_TOP-16}" font-size="9.5" fill="${isQ?'#64748b':'#475569'}" font-family="JetBrains Mono" font-weight="${isQ?'600':'400'}">${mLabel}</text>`;
+    const isJan = m.getMonth() === 0;
+    gridLines += `<line x1="${mx.toFixed(1)}" y1="${MARGIN_TOP-8}" x2="${mx.toFixed(1)}" y2="${SVG_H-10}" stroke="${isJan?'#3a4458':isQ?'#30363d':'#21262d'}" stroke-width="${isJan?2:isQ?1.2:0.6}" stroke-dasharray="${isQ||isJan?'':'3,4'}"/>`;
+    const mo = m.toLocaleDateString('es-CO',{month:'short'}).replace('.','');
+    const moLbl = mo.charAt(0).toUpperCase()+mo.slice(1);
+    monthLabels += `<text x="${(mx+4).toFixed(1)}" y="${MARGIN_TOP-8}" font-size="${isQ?10:8.5}" fill="${isJan?'#e2e8f0':isQ?'#94a3b8':'#64748b'}" font-family="Inter,sans-serif" font-weight="${isQ?'700':'500'}">${moLbl}</text>`;
   });
 
   // Group colored backgrounds on left
@@ -2076,15 +2171,28 @@ function renderGantt(){
   const leftBorder = `<line x1="${MARGIN_LEFT}" y1="0" x2="${MARGIN_LEFT}" y2="${SVG_H}" stroke="#30363d" stroke-width="1.5"/>`;
 
   // Title in top-left
-  const titleText = `<text x="8" y="22" font-size="11" fill="#60a5fa" font-family="JetBrains Mono" font-weight="600">FASE</text><text x="50" y="22" font-size="11" fill="#64748b">Nombre de la Fase</text>`;
+  const titleText = `
+    <rect x="0" y="0" width="${MARGIN_LEFT}" height="${MARGIN_TOP}" fill="#161b22"/>
+    <text x="12" y="17" font-size="9" fill="#60a5fa" font-family="JetBrains Mono" font-weight="700" letter-spacing="1">FASE</text>
+    <text x="52" y="17" font-size="9" fill="#64748b" font-family="Inter,sans-serif">Nombre de la Fase</text>
+    <line x1="0" y1="28" x2="${MARGIN_LEFT}" y2="28" stroke="#30363d" stroke-width="1"/>
+    <text x="12" y="50" font-size="9" fill="#94a3b8" font-family="Inter,sans-serif" font-weight="600">ID</text>
+    <text x="52" y="50" font-size="9" fill="#94a3b8" font-family="Inter,sans-serif" font-weight="600">ACTIVIDAD</text>`;
 
   const headerSvg = `<svg width="${SVG_W}" height="${MARGIN_TOP}" viewBox="0 0 ${SVG_W} ${MARGIN_TOP}" xmlns="http://www.w3.org/2000/svg" style="display:block">
     <rect width="${SVG_W}" height="${MARGIN_TOP}" fill="#1a1f2a"/>
+    <!-- Year row background -->
+    <rect x="${MARGIN_LEFT}" y="0" width="${CHART_W+60}" height="28" fill="rgba(0,0,0,.15)"/>
+    ${yearBands}
+    <!-- Divider year/month -->
+    <line x1="${MARGIN_LEFT}" y1="28" x2="${SVG_W}" y2="28" stroke="#30363d" stroke-width="1"/>
+    <!-- Month row background -->
+    <rect x="${MARGIN_LEFT}" y="29" width="${CHART_W+60}" height="${MARGIN_TOP-29}" fill="rgba(255,255,255,.02)"/>
     ${gridLines}
     ${monthLabels}
     ${titleText}
     ${leftBorder}
-    <line x1="0" y1="${MARGIN_TOP-1}" x2="${SVG_W}" y2="${MARGIN_TOP-1}" stroke="#30363d" stroke-width="1.5"/>
+    <line x1="0" y1="${MARGIN_TOP-1}" x2="${SVG_W}" y2="${MARGIN_TOP-1}" stroke="#3a4458" stroke-width="1.5"/>
   </svg>`;
 
   const bodySvgH = SVG_H - MARGIN_TOP;
@@ -3044,7 +3152,7 @@ function renderCalYear(){
 /* ═══════════════════════════════════════════════════════════
    TABS
    ═══════════════════════════════════════════════════════════ */
-const renderedTabs = { kpis:false, gantt:false, phases:false, update:false, board:false, calendar:false, bitacora:false, equipos:false, planeacion:false, admin:false };
+const renderedTabs = { kpis:false, gantt:false, phases:false, update:false, board:false, calendar:false, bitacora:false, equipos:false, personal:false, planeacion:false, admin:false };
 
 function switchTab(name){
   document.querySelectorAll('.tab-btn').forEach(t=>t.classList.toggle('active', t.dataset.tab===name));
@@ -3059,6 +3167,7 @@ function switchTab(name){
   if(name==='calendar'){ if(!renderedTabs.calendar) renderedTabs.calendar=true; renderCalendar(); }
   if(name==='bitacora'){ if(!renderedTabs.bitacora) renderedTabs.bitacora=true; renderBitacora(); }
   if(name==='equipos'){ if(!renderedTabs.equipos) renderedTabs.equipos=true; renderEquipos(); }
+  if(name==='personal'){ if(!renderedTabs.personal) renderedTabs.personal=true; renderPersonal(); }
   if(name==='planeacion'){ if(!renderedTabs.planeacion) renderedTabs.planeacion=true; renderPlanning360(); }
   if(name==='admin'){
     if(CURRENT_USER?.role !== 'ADMIN'){ showToast('🔒 Acceso solo para administradores'); return; }
@@ -3400,6 +3509,185 @@ function changePassword(id){
    EQUIPOS TAB
    ═══════════════════════════════════════════════════════════ */
 const openEquipos = new Set();
+
+/* ═══════════════════════════════════════════════════════════
+   PERSONAL TAB
+   ═══════════════════════════════════════════════════════════ */
+const LS_PERSONAL = 'tsi_personal_v1';
+const CARGOS = ['Encargado','Oficial','Maestro','Ayudante','Ayudante Práctico'];
+const CARGO_CSS = {Encargado:'cb-encargado',Oficial:'cb-oficial',Maestro:'cb-maestro',Ayudante:'cb-ayudante','Ayudante Práctico':'cb-practico'};
+const CARGO_COLOR = {Encargado:'#60a5fa',Oficial:'#a78bfa',Maestro:'#fbbf24',Ayudante:'#34d399','Ayudante Práctico':'#94a3b8'};
+
+function loadPersonal(){ try{return JSON.parse(localStorage.getItem(LS_PERSONAL)||'[]');}catch(e){return [];} }
+function savePersonal(d){ try{localStorage.setItem(LS_PERSONAL,JSON.stringify(d));}catch(e){} }
+
+function renderPersonal(){
+  const data = loadPersonal();
+  const search = (document.getElementById('personalSearch')?.value||'').toLowerCase();
+  const filtCargo = document.getElementById('personalFiltCargo')?.value||'';
+  const filtCont  = document.getElementById('personalFiltContrat')?.value||'';
+
+  // Populate contratista filter
+  const contrats = [...new Set(data.map(p=>p.contratista).filter(Boolean))].sort();
+  const selEl = document.getElementById('personalFiltContrat');
+  if(selEl){
+    const cur = selEl.value;
+    selEl.innerHTML = '<option value="">Todos los contratistas</option>' + contrats.map(c=>`<option value="${c}"${c===cur?' selected':''}>${c}</option>`).join('');
+  }
+
+  let list = data;
+  if(search) list = list.filter(p=>(p.nombre||'').toLowerCase().includes(search)||(p.contratista||'').toLowerCase().includes(search)||(p.frente||'').toLowerCase().includes(search));
+  if(filtCargo) list = list.filter(p=>p.cargo===filtCargo);
+  if(filtCont)  list = list.filter(p=>p.contratista===filtCont);
+
+  document.getElementById('personalCount').textContent = `${list.length} trabajador(es)`;
+
+  // Stats
+  const statsEl = document.getElementById('personalStatsRow');
+  if(statsEl){
+    const byC = {};
+    CARGOS.forEach(c=>{ byC[c]=data.filter(p=>p.cargo===c).length; });
+    statsEl.innerHTML = CARGOS.map(c=>`
+      <div class="personal-stat-chip" style="--pc:${CARGO_COLOR[c]}">
+        <div class="psc-num" style="color:${CARGO_COLOR[c]}">${byC[c]}</div>
+        <div class="psc-lbl">${c}</div>
+      </div>`).join('') + `<div class="personal-stat-chip" style="--pc:#3b82f6">
+        <div class="psc-num" style="color:#3b82f6">${data.length}</div>
+        <div class="psc-lbl">Total</div>
+      </div>`;
+  }
+
+  const tbody = document.getElementById('personalBody');
+  if(!tbody) return;
+  if(!list.length){
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--txt-m)">
+      <span class="ms" style="font-size:2rem;display:block;margin-bottom:8px">search_off</span>
+      Sin resultados para el filtro aplicado
+    </td></tr>`;
+    return;
+  }
+  tbody.innerHTML = list.map((p,i)=>`
+    <tr>
+      <td class="mono" style="color:var(--txt-m);font-size:.75rem">${i+1}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:30px;height:30px;border-radius:50%;background:${CARGO_COLOR[p.cargo]||'#64748b'}22;border:1px solid ${CARGO_COLOR[p.cargo]||'#64748b'}44;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:${CARGO_COLOR[p.cargo]||'#64748b'};flex-shrink:0">
+            ${(p.nombre||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}
+          </div>
+          <div>
+            <div style="font-weight:600;color:var(--txt)">${p.nombre||'—'}</div>
+            ${p.cedula?`<div style="font-size:.72rem;color:var(--txt-m)">CC ${p.cedula}</div>`:''}
+          </div>
+        </div>
+      </td>
+      <td><span class="cargo-badge ${CARGO_CSS[p.cargo]||''}">${p.cargo||'—'}</span></td>
+      <td style="color:var(--txt-s);font-size:.82rem">${p.contratista||'—'}</td>
+      <td style="color:var(--txt-m);font-size:.8rem">${p.frente||'—'}</td>
+      <td class="mono" style="font-size:.78rem;color:var(--txt-m)">${p.cedula||'—'}</td>
+      <td style="font-size:.8rem;color:var(--txt-s)">${p.tel||'—'}</td>
+      <td class="mono" style="font-size:.78rem;color:var(--txt-m)">${p.ingreso||'—'}</td>
+      <td>
+        <div style="display:flex;gap:4px">
+          <button onclick="openPersonalModal(${p.id})" title="Editar" style="background:none;border:1px solid var(--border);border-radius:5px;color:var(--txt-m);cursor:pointer;padding:3px 7px;font-size:.75rem;transition:.15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--txt-m)'">
+            <span class="ms" style="font-size:.9rem">edit</span>
+          </button>
+          <button onclick="deletePersonal(${p.id})" title="Eliminar" style="background:none;border:1px solid var(--border);border-radius:5px;color:var(--txt-m);cursor:pointer;padding:3px 7px;font-size:.75rem;transition:.15s" onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--txt-m)'">
+            <span class="ms" style="font-size:.9rem">delete</span>
+          </button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+function deletePersonal(id){
+  if(!confirm('¿Eliminar este trabajador del registro?')) return;
+  const data = loadPersonal().filter(p=>p.id!==id);
+  savePersonal(data);
+  renderPersonal();
+}
+
+function openPersonalModal(editId){
+  const existing = document.getElementById('personalModal'); if(existing) existing.remove();
+  const data = loadPersonal();
+  const edit = editId ? data.find(p=>p.id===editId) : null;
+  const phases = PHASES.map(p=>`<option value="${p.name}"${edit?.frente===p.name?' selected':''}>${p.id} — ${p.name.slice(0,35)}</option>`).join('');
+  const overlay = document.createElement('div');
+  overlay.id='personalModal'; overlay.className='personal-modal-overlay';
+  overlay.innerHTML=`<div class="personal-modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div>
+        <div style="font-size:.7rem;color:var(--txt-m);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px">${edit?'Editar':'Nuevo'} Trabajador</div>
+        <strong style="font-size:1rem">Personal de Obra</strong>
+      </div>
+      <button onclick="document.getElementById('personalModal').remove()" style="background:none;border:none;color:var(--txt-m);font-size:1.3rem;cursor:pointer">✕</button>
+    </div>
+    <div class="pm-grid-2">
+      <div class="pm-field" style="grid-column:span 2">
+        <div class="pm-label">Nombre Completo *</div>
+        <input id="pmNombre" class="pm-input" type="text" placeholder="Ej: Juan Carlos Pérez" value="${edit?.nombre||''}"/>
+      </div>
+      <div class="pm-field">
+        <div class="pm-label">Cargo *</div>
+        <select id="pmCargo" class="pm-select">
+          ${CARGOS.map(c=>`<option value="${c}"${edit?.cargo===c?' selected':''}>${c}</option>`).join('')}
+        </select>
+      </div>
+      <div class="pm-field">
+        <div class="pm-label">Contratista *</div>
+        <input id="pmContrat" class="pm-input" type="text" placeholder="Empresa o nombre" value="${edit?.contratista||''}"/>
+      </div>
+      <div class="pm-field">
+        <div class="pm-label">Cédula</div>
+        <input id="pmCedula" class="pm-input" type="text" placeholder="N° de cédula" value="${edit?.cedula||''}"/>
+      </div>
+      <div class="pm-field">
+        <div class="pm-label">Teléfono</div>
+        <input id="pmTel" class="pm-input" type="text" placeholder="Celular contacto" value="${edit?.tel||''}"/>
+      </div>
+      <div class="pm-field">
+        <div class="pm-label">Frente / Fase asignada</div>
+        <select id="pmFrente" class="pm-select">
+          <option value="">Sin asignar</option>
+          ${phases}
+        </select>
+      </div>
+      <div class="pm-field">
+        <div class="pm-label">Fecha Ingreso</div>
+        <input id="pmIngreso" class="pm-input" type="date" value="${edit?.ingreso||new Date().toISOString().slice(0,10)}"/>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:18px;justify-content:flex-end">
+      <button onclick="document.getElementById('personalModal').remove()" class="kpi-action-btn" style="padding:7px 16px">Cancelar</button>
+      <button onclick="submitPersonal(${editId||'null'})" style="background:var(--accent);color:white;border:none;border-radius:8px;padding:9px 22px;font-weight:700;cursor:pointer;font-size:.88rem;display:flex;align-items:center;gap:6px">
+        <span class="ms" style="font-size:1rem">${edit?'save':'person_add'}</span>${edit?'Guardar cambios':'Agregar'}
+      </button>
+    </div>
+  </div>`;
+  overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});
+  document.body.appendChild(overlay);
+  document.getElementById('pmNombre')?.focus();
+}
+
+function submitPersonal(editId){
+  const nombre = (document.getElementById('pmNombre')?.value||'').trim();
+  const cargo  = document.getElementById('pmCargo')?.value||'';
+  const contrat= (document.getElementById('pmContrat')?.value||'').trim();
+  if(!nombre||!cargo||!contrat){ alert('Nombre, cargo y contratista son obligatorios.'); return; }
+  const data = loadPersonal();
+  const rec = {
+    id: editId||Date.now(),
+    nombre, cargo, contratista:contrat,
+    cedula:  (document.getElementById('pmCedula')?.value||'').trim(),
+    tel:     (document.getElementById('pmTel')?.value||'').trim(),
+    frente:  document.getElementById('pmFrente')?.value||'',
+    ingreso: document.getElementById('pmIngreso')?.value||''
+  };
+  if(editId){ const idx=data.findIndex(p=>p.id===editId); if(idx>=0)data[idx]=rec; else data.push(rec); }
+  else data.push(rec);
+  savePersonal(data);
+  document.getElementById('personalModal')?.remove();
+  renderPersonal();
+}
 
 function renderEquipos(){
   const search = (document.getElementById('equiposSearch')?.value||'').toLowerCase();
