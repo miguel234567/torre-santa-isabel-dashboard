@@ -9,8 +9,8 @@
 <style>
 /* ═══ VARIABLES ═════════════════════════════════════════════════ */
 :root{
-  --bg-app:#080e1c;--bg-card:#111827;--bg-el:#172033;--bg-input:#0c1221;
-  --border:#1e2d45;--border-s:#2d3f5c;--border-f:#3b82f6;
+  --bg-app:#0d1117;--bg-card:#161b22;--bg-el:#1c2128;--bg-input:#0d1117;
+  --border:#21262d;--border-s:#30363d;--border-f:#3b82f6;
   --txt:#e2e8f0;--txt-s:#94a3b8;--txt-m:#64748b;--txt-a:#60a5fa;
   --grp-g:#8b5cf6;--grp-e:#ef4444;--grp-m:#06b6d4;--grp-a:#f59e0b;--grp-x:#10b981;
   --st-pend:#475569;--st-prog:#f97316;--st-done:#22c55e;--st-late:#dc2626;
@@ -20,17 +20,17 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;background:var(--bg-app)}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-app);color:var(--txt);font-size:14px;min-height:100vh;line-height:1.5;
-  background-image:linear-gradient(to right,rgba(30,45,69,.35) 1px,transparent 1px),linear-gradient(to bottom,rgba(30,45,69,.35) 1px,transparent 1px);
+body{font-family:'Inter',system-ui,sans-serif;background-color:var(--bg-app);color:var(--txt);font-size:14px;min-height:100vh;line-height:1.5;
+  background-image:linear-gradient(to right,rgba(100,120,150,.18) 1px,transparent 1px),linear-gradient(to bottom,rgba(100,120,150,.18) 1px,transparent 1px);
   background-size:24px 24px}
-body.light-mode{background-image:linear-gradient(to right,rgba(180,195,215,.4) 1px,transparent 1px),linear-gradient(to bottom,rgba(180,195,215,.4) 1px,transparent 1px);background-size:24px 24px}
+body.light-mode{background-color:var(--bg-app);background-image:linear-gradient(to right,rgba(150,165,185,.35) 1px,transparent 1px),linear-gradient(to bottom,rgba(150,165,185,.35) 1px,transparent 1px);background-size:24px 24px}
 .ms{font-family:'Material Symbols Outlined';font-size:1.1em;line-height:1;vertical-align:middle;font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;flex-shrink:0}
 button{cursor:pointer;font-family:inherit}
 input{font-family:inherit}
 .mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
 
 /* ═══ HEADER ════════════════════════════════════════════════════ */
-.app-header{background:linear-gradient(135deg,#0d1626,#111d33);border-bottom:1px solid var(--border);padding:8px 20px;position:sticky;top:0;z-index:50}
+.app-header{background:linear-gradient(135deg,#161b22,#1c2128);border-bottom:1px solid var(--border);padding:8px 20px;position:sticky;top:0;z-index:50}
 .header-row1{display:flex;align-items:center;gap:10px;flex-wrap:nowrap}
 .logo-box{height:34px;display:flex;align-items:center;flex-shrink:0;gap:8px}
 .logo-tsi{height:34px;width:34px;flex-shrink:0;filter:drop-shadow(0 1px 3px rgba(0,0,0,.4))}
@@ -247,11 +247,11 @@ input[type=range]::-webkit-slider-thumb:hover{background:#60a5fa}
 .phase-row td{transition:background .12s}
 .sub-count-badge{font-size:.75rem;color:var(--txt-m);font-weight:400;margin-left:6px;background:var(--bg-input);border:1px solid var(--border);padding:1px 6px;border-radius:100px;transition:.15s;cursor:default}
 .phase-row:hover .sub-count-badge{border-color:var(--border-s);color:var(--txt-s)}
-.subact-tr td{background:#060b17;padding:5px 10px;border-bottom:1px solid #0c1622;font-size:.78rem;transition:background .1s}
+.subact-tr td{background:#0d1117;padding:5px 10px;border-bottom:1px solid #21262d;font-size:.78rem;transition:background .1s}
 .subact-tr:last-of-type td{border-bottom:2px solid var(--border)}
-.subact-tr:hover td{background:#08101f!important}
+.subact-tr:hover td{background:#111620!important}
 .subact-edt-cell{padding-left:26px!important}
-.subact-edt{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--txt-m);background:#0d1526;padding:2px 5px;border-radius:3px;border:1px solid #1a2535;white-space:nowrap}
+.subact-edt{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--txt-m);background:#0d1117;padding:2px 5px;border-radius:3px;border:1px solid #21262d;white-space:nowrap}
 .subact-name{color:var(--txt-s)}
 .subact-name.is-hito{color:#f59e0b;font-weight:600;font-size:.77rem}
 .hito-badge{font-size:.75rem;font-weight:700;color:#f59e0b;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);padding:2px 7px;border-radius:100px;white-space:nowrap;display:inline-flex;align-items:center;gap:3px}
@@ -272,7 +272,7 @@ body.light-mode .subact-tr td{background:#f5f8fc;border-bottom:1px solid #dde5ee
 body.light-mode .subact-tr:hover td{background:#edf1f7!important}
 body.light-mode .subact-edt{background:#e8edf3;border-color:#d1dbe8}
 body.light-mode input[type=range]{background:#d1dbe8}
-body.light-mode .app-header{background:linear-gradient(135deg,#ffffff,#f0f4f8)}
+body.light-mode .app-header{background:linear-gradient(135deg,#ffffff,#f0f4f8);border-bottom:1px solid #d0d7de}
 body.light-mode .gantt-scroll::-webkit-scrollbar-thumb{background:#b0c0d4}
 .theme-toggle-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--border-s);background:var(--bg-el);color:var(--txt-s);display:grid;place-items:center;font-size:1rem;transition:.2s;cursor:pointer}
 .theme-toggle-btn:hover{border-color:var(--accent);color:var(--accent)}
@@ -394,7 +394,7 @@ body.light-mode .gantt-scroll::-webkit-scrollbar-thumb{background:#b0c0d4}
 .alerts-overlay.open{pointer-events:all}
 .alerts-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;transition:opacity .25s;cursor:pointer}
 .alerts-overlay.open .alerts-backdrop{opacity:1}
-.alerts-sidebar{position:absolute;right:0;top:0;bottom:0;width:360px;max-width:95vw;background:#0d1729;border-left:1px solid var(--border);transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow:hidden}
+.alerts-sidebar{position:absolute;right:0;top:0;bottom:0;width:360px;max-width:95vw;background:#161b22;border-left:1px solid var(--border);transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow:hidden}
 .alerts-overlay.open .alerts-sidebar{transform:translateX(0)}
 .alerts-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0;background:linear-gradient(135deg,rgba(239,68,68,.1),rgba(249,115,22,.06))}
 .alerts-head-title{font-size:.95rem;font-weight:700;flex:1}
@@ -482,7 +482,7 @@ body.light-mode .gantt-scroll::-webkit-scrollbar-thumb{background:#b0c0d4}
 /* ═══ LOGIN MODAL ═══════════════════════════════════════════════ */
 .modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(4,8,20,.92);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
 .modal-overlay.hidden{display:none}
-.login-card{background:#0d1729;border:1px solid var(--border-s);border-radius:18px;padding:40px 44px;width:420px;max-width:95vw;box-shadow:0 30px 80px rgba(0,0,0,.7)}
+.login-card{background:#161b22;border:1px solid var(--border-s);border-radius:18px;padding:40px 44px;width:420px;max-width:95vw;box-shadow:0 30px 80px rgba(0,0,0,.7)}
 .login-logo{width:52px;height:52px;background:linear-gradient(135deg,#ef4444,#dc2626);border-radius:14px;display:grid;place-items:center;font-size:1.6rem;margin:0 auto 16px}
 .login-title{text-align:center;font-size:1.25rem;font-weight:700;margin-bottom:4px}
 .login-sub{text-align:center;font-size:.8rem;color:var(--txt-m);margin-bottom:28px}
@@ -540,7 +540,7 @@ body.role-admin .requires-admin-flex{display:flex!important}
 /* User create/edit modal */
 .admin-modal{position:fixed;inset:0;z-index:800;background:rgba(4,8,20,.85);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 .admin-modal.hidden{display:none}
-.admin-card{background:#0d1729;border:1px solid var(--border-s);border-radius:14px;padding:32px 36px;width:460px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.admin-card{background:#161b22;border:1px solid var(--border-s);border-radius:14px;padding:32px 36px;width:460px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.6)}
 .admin-card-title{font-size:1rem;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:8px}
 .admin-field{margin-bottom:14px}
 .admin-label{display:block;font-size:.75rem;font-weight:600;color:var(--txt-s);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em}
@@ -592,7 +592,7 @@ body.role-admin .requires-admin-flex{display:flex!important}
 .subact-num:focus{border-color:var(--border-f)}
 
 /* ═══ STATUS BAR ════════════════════════════════════════════════ */
-.status-bar{background:#070c18;border-bottom:1px solid var(--border);padding:5px 20px;display:flex;align-items:center;gap:0;font-size:.75rem;color:var(--txt-m);font-family:'JetBrains Mono',monospace;flex-wrap:wrap;overflow:hidden}
+.status-bar{background:#0d1117;border-bottom:1px solid var(--border);padding:5px 20px;display:flex;align-items:center;gap:0;font-size:.75rem;color:var(--txt-m);font-family:'JetBrains Mono',monospace;flex-wrap:wrap;overflow:hidden}
 .sb-item{display:flex;align-items:center;gap:5px;padding:2px 12px;border-right:1px solid var(--border);white-space:nowrap}
 .sb-item:first-child{padding-left:0}
 .sb-item:last-child{border-right:none}
@@ -1555,7 +1555,7 @@ function makeCurvaS(){
   const W=600, H=160, PL=38, PR=16, PT=14, PB=26;
   const cW=W-PL-PR, cH=H-PT-PB;
   const total = daysBetween(PROJECT_START_MS, PROJECT_END_MS);
-  const BG='#0d1526', GRID='#1e2d45', AXIS='#2a3a55';
+  const BG='#0d1117', GRID='#21262d', AXIS='#30363d';
 
   // Planned S-curve (sigmoid-ish: slow start, fast middle, slow end)
   const steps=40;
@@ -1675,7 +1675,7 @@ function makeGroupsDonut(){
   const total=weightedAvgProgress();
   return `<svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}" style="flex-shrink:0">
     ${arcs}
-    <circle cx="${CX}" cy="${CY}" r="${R-STROKE/2-2}" fill="#0d1729"/>
+    <circle cx="${CX}" cy="${CY}" r="${R-STROKE/2-2}" fill="#161b22"/>
     <text x="${CX}" y="${CY-5}" text-anchor="middle" font-size="12" fill="#e2e8f0" font-family="JetBrains Mono" font-weight="700">${total}%</text>
     <text x="${CX}" y="${CY+7}" text-anchor="middle" font-size="7" fill="#64748b" font-family="JetBrains Mono">GLOBAL</text>
   </svg>`;
@@ -1917,7 +1917,7 @@ function renderGantt(){
   months.forEach((m, mi) => {
     const mx = xOf(m.getTime());
     const isQ = m.getMonth() % 3 === 0;
-    gridLines += `<line x1="${mx}" y1="${MARGIN_TOP-10}" x2="${mx}" y2="${SVG_H-10}" stroke="${isQ?'#2a3a55':'#1a2535'}" stroke-width="${isQ?1.5:0.8}" stroke-dasharray="${isQ?'':'3,4'}"/>`;
+    gridLines += `<line x1="${mx}" y1="${MARGIN_TOP-10}" x2="${mx}" y2="${SVG_H-10}" stroke="${isQ?'#30363d':'#21262d'}" stroke-width="${isQ?1.5:0.8}" stroke-dasharray="${isQ?'':'3,4'}"/>`;
     const mLabel = m.toLocaleDateString('es-CO',{month:'short',year:'2-digit'}).replace(' ','\'');
     monthLabels += `<text x="${mx+4}" y="${MARGIN_TOP-16}" font-size="9.5" fill="${isQ?'#64748b':'#475569'}" font-family="JetBrains Mono" font-weight="${isQ?'600':'400'}">${mLabel}</text>`;
   });
@@ -1939,7 +1939,7 @@ function renderGantt(){
   let phaseLabels = '';
   PHASES.forEach((p, i) => {
     const y = MARGIN_TOP + i * ROW_H;
-    rowBg += `<rect x="${MARGIN_LEFT}" y="${y}" width="${CHART_W+60}" height="${ROW_H}" fill="${i%2===0?'#080e1c':'#0b1120'}"/>`;
+    rowBg += `<rect x="${MARGIN_LEFT}" y="${y}" width="${CHART_W+60}" height="${ROW_H}" fill="${i%2===0?'#0d1117':'#111620'}"/>`;
     const col = GROUPS[p.group].color;
     // group color dot
     phaseLabels += `<circle cx="10" cy="${y+ROW_H/2}" r="4" fill="${col}"/>`;
@@ -1947,7 +1947,7 @@ function renderGantt(){
     const shortName = p.name.length > 28 ? p.name.slice(0,27)+'…' : p.name;
     phaseLabels += `<text x="55" y="${y+ROW_H/2+4}" font-size="10" fill="${i%2===0?'#94a3b8':'#7e99b8'}">${shortName}</text>`;
     // horizontal separator
-    phaseLabels += `<line x1="0" y1="${y+ROW_H}" x2="${SVG_W}" y2="${y+ROW_H}" stroke="#1a2535" stroke-width="0.8"/>`;
+    phaseLabels += `<line x1="0" y1="${y+ROW_H}" x2="${SVG_W}" y2="${y+ROW_H}" stroke="#21262d" stroke-width="0.8"/>`;
   });
 
   // Bars
@@ -1961,7 +1961,7 @@ function renderGantt(){
     const isDashed = p.status === 'ATRASADO';
     bars += `
       <g class="bar-g" data-id="${p.id}">
-        <rect x="${x}" y="${y}" width="${w}" height="${BAR_H}" rx="3" fill="#0d1626" stroke="${col}" stroke-width="1" stroke-opacity="0.55" ${isDashed?'stroke-dasharray="5,3"':''}/>
+        <rect x="${x}" y="${y}" width="${w}" height="${BAR_H}" rx="3" fill="#161b22" stroke="${col}" stroke-width="1" stroke-opacity="0.55" ${isDashed?'stroke-dasharray="5,3"':''}/>
         ${progW>1?`<rect x="${x}" y="${y}" width="${Math.max(2,progW)}" height="${BAR_H}" rx="3" fill="${col}" fill-opacity="0.85"/>`:''}
         ${p.effectiveProgress>0&&p.effectiveProgress<100?`<text x="${x+progW+4}" y="${y+BAR_H-3}" font-size="8" fill="${col}" font-family="JetBrains Mono" font-weight="700">${p.effectiveProgress}%</text>`:''}
         ${p.effectiveProgress===100?`<text x="${x+4}" y="${y+BAR_H-3}" font-size="8" fill="#0f172a" font-family="JetBrains Mono" font-weight="700">✓ 100%</text>`:''}
@@ -1989,17 +1989,17 @@ function renderGantt(){
   });
 
   // Header row
-  const headerRect = `<rect x="0" y="0" width="${SVG_W}" height="${MARGIN_TOP}" fill="#0d1626"/>`;
-  const headerLine = `<line x1="0" y1="${MARGIN_TOP}" x2="${SVG_W}" y2="${MARGIN_TOP}" stroke="#1e2d45" stroke-width="1.5"/>`;
-  const leftHeader = `<rect x="0" y="0" width="${MARGIN_LEFT}" height="${SVG_H}" fill="#0a0f1c"/>`;
-  const leftBorder = `<line x1="${MARGIN_LEFT}" y1="0" x2="${MARGIN_LEFT}" y2="${SVG_H}" stroke="#1e2d45" stroke-width="1.5"/>`;
+  const headerRect = `<rect x="0" y="0" width="${SVG_W}" height="${MARGIN_TOP}" fill="#161b22"/>`;
+  const headerLine = `<line x1="0" y1="${MARGIN_TOP}" x2="${SVG_W}" y2="${MARGIN_TOP}" stroke="#30363d" stroke-width="1.5"/>`;
+  const leftHeader = `<rect x="0" y="0" width="${MARGIN_LEFT}" height="${SVG_H}" fill="#0d1117"/>`;
+  const leftBorder = `<line x1="${MARGIN_LEFT}" y1="0" x2="${MARGIN_LEFT}" y2="${SVG_H}" stroke="#30363d" stroke-width="1.5"/>`;
 
   // Title in top-left
   const titleText = `<text x="8" y="22" font-size="11" fill="#60a5fa" font-family="JetBrains Mono" font-weight="600">FASE</text><text x="50" y="22" font-size="11" fill="#64748b">Nombre de la Fase</text>`;
 
   const svgHtml = `
     <svg id="ganttSvg" width="${SVG_W}" height="${SVG_H}" xmlns="http://www.w3.org/2000/svg">
-      <rect width="${SVG_W}" height="${SVG_H}" fill="#080e1c"/>
+      <rect width="${SVG_W}" height="${SVG_H}" fill="#0d1117"/>
       ${leftHeader}
       ${headerRect}
       ${gridLines}
