@@ -271,6 +271,142 @@ body.light-mode .footer-logo-pill img{filter:none;opacity:.65}
 body.light-mode .oc-tbl tr:hover td{background:rgba(0,0,0,.02)}
 body.light-mode .oc-bt{background:rgba(0,0,0,.06)}
 
+/* ═══ MÓDULO PRESUPUESTO BIM (.bp-*) ═══════════════════════════════ */
+.bp-wrap{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r-lg);overflow:hidden}
+.bp-topbar{background:var(--surf2);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--bdr);flex-wrap:wrap;gap:10px}
+.bp-topbar h2{font-family:'Plus Jakarta Sans',sans-serif;font-size:.95rem;font-weight:700;margin:0;letter-spacing:-.02em;display:flex;align-items:center;gap:6px}
+.bp-topbar p{font-size:.72rem;color:var(--txt-s);margin:2px 0 0}
+.bp-acts{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.bp-bim-tag{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:var(--r);background:rgba(139,92,246,.15);color:var(--vlt);border:1px solid rgba(139,92,246,.30);font-size:.7rem;font-weight:700;letter-spacing:.04em}
+.bp-tabs{display:flex;gap:0;border-bottom:1px solid var(--bdr);padding:0 20px;overflow-x:auto;scrollbar-width:none}
+.bp-tabs::-webkit-scrollbar{display:none}
+.bp-tab{padding:10px 14px;font-size:.78rem;font-weight:600;color:var(--txt-s);border:none;background:none;border-bottom:2px solid transparent;cursor:pointer;margin-bottom:-1px;white-space:nowrap;transition:.15s}
+.bp-tab:hover{color:var(--txt)}
+.bp-tab.on{color:var(--acc);border-bottom-color:var(--acc)}
+.bp-panel{display:none}
+.bp-panel.on{display:block}
+.bp-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;padding:16px 20px}
+@media(max-width:1100px){.bp-kpis{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.bp-kpis{grid-template-columns:repeat(2,1fr)}}
+.bp-kpi{background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--r-md);padding:12px 14px;transition:.15s}
+.bp-kpi:hover{border-color:var(--bdr-m)}
+.bp-kl{font-size:.66rem;color:var(--txt-m);margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.bp-kv{font-family:'Plus Jakarta Sans',sans-serif;font-size:1.45rem;font-weight:800;line-height:1;letter-spacing:-.03em}
+.bp-kd{font-size:.7rem;color:var(--txt-m);margin-top:3px}
+.bp-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 20px 16px}
+@media(max-width:900px){.bp-row2{grid-template-columns:1fr}}
+.bp-box{background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--r-md);padding:14px}
+.bp-box h4{font-size:.68rem;font-weight:700;color:var(--txt-m);margin:0 0 12px;text-transform:uppercase;letter-spacing:.08em}
+.bp-br{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.bp-blab{font-size:.72rem;color:var(--txt-s);width:100px;flex-shrink:0}
+.bp-bt{flex:1;background:rgba(255,255,255,0.05);border-radius:3px;height:7px;overflow:hidden}
+.bp-bf{height:7px;border-radius:3px;transition:width .6s ease}
+.bp-bval{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;width:60px;text-align:right;color:var(--txt)}
+.bp-pl{margin-bottom:10px}
+.bp-plh{display:flex;justify-content:space-between;font-size:.74rem;margin-bottom:3px;font-weight:600}
+.bp-plt{background:rgba(255,255,255,0.05);border-radius:3px;height:6px;overflow:hidden}
+.bp-plf{height:6px;border-radius:3px}
+.bp-pld{font-size:.68rem;color:var(--txt-m);margin-top:2px}
+.bp-div{border:none;border-top:1px solid var(--bdr);margin:0 20px 14px}
+.bp-st{font-size:.65rem;font-weight:700;color:var(--txt-m);letter-spacing:.1em;text-transform:uppercase;padding:0 20px;margin-bottom:10px}
+.bp-fb{display:flex;gap:8px;padding:0 20px 12px;flex-wrap:wrap;align-items:center}
+.bp-fb input,.bp-fb select{font-size:.78rem;padding:5px 10px;border-radius:var(--r);border:1px solid var(--bdr);background:var(--surf2);color:var(--txt);outline:none;font-family:inherit;transition:.15s}
+.bp-fb input:focus,.bp-fb select:focus{border-color:var(--bdr-m);box-shadow:0 0 0 3px var(--acc-s)}
+.bp-fb input[type="text"]{width:220px}
+.bp-tw{padding:0 20px 18px;overflow-x:auto}
+.bp-tbl{width:100%;border-collapse:collapse;font-size:.78rem;min-width:680px}
+.bp-tbl th{font-size:.65rem;font-weight:700;color:var(--txt-m);padding:8px 10px;border-bottom:1px solid var(--bdr-m);text-align:left;text-transform:uppercase;letter-spacing:.08em;background:var(--surf2);white-space:nowrap}
+.bp-tbl td{padding:7px 10px;border-bottom:1px solid var(--bdr);color:var(--txt);vertical-align:middle}
+.bp-tbl tr:last-child td{border-bottom:none}
+.bp-tbl tr:hover td{background:rgba(255,255,255,.02)}
+.bp-tbl tr.bp-chapter{background:rgba(77,142,255,.05);font-weight:600}
+.bp-tbl tr.bp-chapter:hover td{background:rgba(77,142,255,.08)}
+.bp-tbl td.bp-indent{padding-left:24px;color:var(--txt-s)}
+.bp-tbl td.bp-indent2{padding-left:40px;color:var(--txt-m)}
+.bp-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:100px;font-size:.7rem;font-weight:600;white-space:nowrap;border:1px solid}
+.bp-b-ok{background:var(--grn-s);color:var(--grn);border-color:var(--grn-b)}
+.bp-b-warn{background:var(--amb-s);color:var(--amb);border-color:var(--amb-b)}
+.bp-b-info{background:var(--acc-s);color:var(--acc);border-color:var(--acc-b)}
+.bp-b-re{background:var(--red-s);color:var(--red);border-color:var(--red-b)}
+.bp-b-pu{background:rgba(139,92,246,.10);color:var(--vlt);border-color:rgba(139,92,246,.25)}
+.bp-b-gr{background:rgba(100,116,139,.12);color:var(--txt-m);border-color:rgba(100,116,139,.25)}
+.bp-b-bim{background:rgba(139,92,246,.12);color:var(--vlt);border-color:rgba(139,92,246,.30)}
+.bp-dg{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 20px 16px}
+@media(max-width:900px){.bp-dg{grid-template-columns:1fr}}
+.bp-db{background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--r-md);padding:14px 16px}
+.bp-db h4{font-size:.75rem;font-weight:700;margin:0 0 12px;color:var(--txt);display:flex;align-items:center;gap:6px}
+.bp-dr{display:flex;justify-content:space-between;font-size:.78rem;padding:5px 0;border-bottom:1px solid var(--bdr)}
+.bp-dr:last-child{border-bottom:none}
+.bp-dl{color:var(--txt-m)}
+.bp-dv{font-weight:600;color:var(--txt)}
+.bp-dr-sum{border-top:1px solid var(--bdr-m);margin-top:5px;padding-top:8px;border-bottom:none}
+.bp-foot{padding:10px 20px;border-top:1px solid var(--bdr);display:flex;justify-content:space-between;font-size:.7rem;color:var(--txt-m);flex-wrap:wrap;gap:8px}
+.bp-apu-head{display:flex;justify-content:space-between;align-items:center;padding:14px 20px 8px;flex-wrap:wrap;gap:10px}
+.bp-apu-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bp-variance{font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;padding:3px 10px;border-radius:var(--r);border:1px solid}
+.bp-v-ok{background:var(--grn-s);color:var(--grn);border-color:var(--grn-b)}
+.bp-v-re{background:var(--red-s);color:var(--red);border-color:var(--red-b)}
+.bp-v-am{background:var(--amb-s);color:var(--amb);border-color:var(--amb-b)}
+.bp-apu-summary{padding:0 20px 16px}
+.bp-apu-summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+@media(max-width:900px){.bp-apu-summary-grid{grid-template-columns:repeat(2,1fr)}}
+.bp-curve-wrap{padding:6px 4px}
+.bp-curve-wrap svg{width:100%;height:120px}
+.bp-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--r);border:1px solid var(--bdr);background:transparent;color:var(--txt);font-size:.75rem;font-weight:600;cursor:pointer;transition:.15s}
+.bp-btn:hover{border-color:var(--bdr-m);background:var(--surf2)}
+.bp-btn-p{background:var(--acc-s);color:var(--acc);border-color:var(--acc-b)}
+.bp-btn-p:hover{background:rgba(77,142,255,0.18)}
+.bp-conclusion{background:linear-gradient(135deg,rgba(77,142,255,.05),rgba(139,92,246,.05));border:1px solid var(--bdr);border-left:3px solid var(--vlt);border-radius:var(--r-md);padding:14px 16px;margin:0 20px 16px}
+.bp-conclusion-label{font-size:.65rem;font-weight:700;color:var(--vlt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.bp-conclusion-text{font-size:.82rem;color:var(--txt-s);line-height:1.6}
+.bp-c-grn{color:var(--grn)}.bp-c-amb{color:var(--amb)}.bp-c-red{color:var(--red)}.bp-c-blu{color:var(--acc)}.bp-c-vlt{color:var(--vlt)}
+/* Light-mode Presupuesto */
+body.light-mode .bp-wrap{background:#ffffff;border-color:#d1dbe8}
+body.light-mode .bp-topbar{background:#f5f7fa;border-bottom-color:#d1dbe8}
+body.light-mode .bp-topbar h2{color:#1e293b}
+body.light-mode .bp-topbar p{color:#64748b}
+body.light-mode .bp-bim-tag{background:rgba(139,92,246,.10);color:#6d28d9;border-color:rgba(139,92,246,.30)}
+body.light-mode .bp-tabs{border-bottom-color:#d1dbe8}
+body.light-mode .bp-tab{color:#64748b}
+body.light-mode .bp-tab:hover{color:#1e293b}
+body.light-mode .bp-tab.on{color:#2563eb;border-bottom-color:#2563eb}
+body.light-mode .bp-kpi{background:#f5f7fa;border-color:#d1dbe8}
+body.light-mode .bp-kl,body.light-mode .bp-kd{color:#64748b}
+body.light-mode .bp-kv{color:#1e293b}
+body.light-mode .bp-box{background:#f5f7fa;border-color:#d1dbe8}
+body.light-mode .bp-box h4{color:#64748b}
+body.light-mode .bp-blab{color:#475569}
+body.light-mode .bp-bval{color:#1e293b}
+body.light-mode .bp-bt,body.light-mode .bp-plt{background:rgba(0,0,0,0.06)}
+body.light-mode .bp-pld{color:#64748b}
+body.light-mode .bp-div{border-top-color:#d1dbe8}
+body.light-mode .bp-st{color:#64748b}
+body.light-mode .bp-fb input,body.light-mode .bp-fb select{background:#ffffff;border-color:#d1dbe8;color:#1e293b}
+body.light-mode .bp-tbl th{background:#f5f7fa;color:#64748b;border-bottom-color:#d1dbe8}
+body.light-mode .bp-tbl td{color:#1e293b;border-bottom-color:#e8edf3}
+body.light-mode .bp-tbl tr:hover td{background:#f5f7fa}
+body.light-mode .bp-tbl tr.bp-chapter{background:rgba(77,142,255,.06)}
+body.light-mode .bp-db{background:#f5f7fa;border-color:#d1dbe8}
+body.light-mode .bp-db h4{color:#1e293b}
+body.light-mode .bp-dl{color:#64748b}
+body.light-mode .bp-dv{color:#1e293b}
+body.light-mode .bp-foot{border-top-color:#d1dbe8;color:#64748b}
+body.light-mode .bp-btn{border-color:#d1dbe8;color:#1e293b;background:#ffffff}
+body.light-mode .bp-btn:hover{background:#f5f7fa}
+body.light-mode .bp-btn-p{background:rgba(77,142,255,.12);color:#2563eb;border-color:rgba(77,142,255,.35)}
+body.light-mode .bp-conclusion{background:linear-gradient(135deg,rgba(77,142,255,.04),rgba(139,92,246,.04));border-left-color:#6d28d9;border-color:#d1dbe8}
+body.light-mode .bp-conclusion-text{color:#475569}
+body.light-mode .bp-b-ok{color:#15803d;background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.35)}
+body.light-mode .bp-b-warn{color:#92400e;background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.40)}
+body.light-mode .bp-b-info{color:#1d4ed8;background:rgba(77,142,255,.10);border-color:rgba(77,142,255,.35)}
+body.light-mode .bp-b-re{color:#b91c1c;background:rgba(239,68,68,.10);border-color:rgba(239,68,68,.35)}
+body.light-mode .bp-b-pu,body.light-mode .bp-b-bim{color:#6d28d9;background:rgba(139,92,246,.10);border-color:rgba(139,92,246,.30)}
+body.light-mode .bp-b-gr{color:#475569;background:rgba(100,116,139,.10);border-color:rgba(100,116,139,.30)}
+body.light-mode .bp-v-ok{color:#15803d;background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.35)}
+body.light-mode .bp-v-re{color:#b91c1c;background:rgba(239,68,68,.10);border-color:rgba(239,68,68,.35)}
+body.light-mode .bp-v-am{color:#92400e;background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.40)}
+body.light-mode .bp-c-grn{color:#15803d}body.light-mode .bp-c-amb{color:#92400e}body.light-mode .bp-c-red{color:#b91c1c}body.light-mode .bp-c-blu{color:#2563eb}body.light-mode .bp-c-vlt{color:#6d28d9}
+
 /* ═══ PAGE HEADER (v2 .pg-hd) ════════════════════════════════════ */
 .page-header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid var(--bdr)}
 .page-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:1.5rem;font-weight:800;color:var(--txt);letter-spacing:-.035em;line-height:1.2}
@@ -1116,6 +1252,11 @@ body.light-mode .status-bar{background:#e8edf3}
     <button class="sni" data-tab="proveedores" onclick="switchTab('proveedores')">
       <span class="ms">storefront</span>Proveedores
     </button>
+    <div class="ng-lbl">Finanzas</div>
+    <button class="sni" data-tab="presupuesto" onclick="switchTab('presupuesto')">
+      <span class="ms">receipt_long</span>Presupuesto BIM
+      <span class="sni-bdg" style="background:var(--vlt);color:#fff;font-size:.55rem;padding:1px 5px">BIM</span>
+    </button>
     <div class="ng-lbl">Registro</div>
     <button class="sni" data-tab="bitacora" onclick="switchTab('bitacora')">
       <span class="ms">history_edu</span>Bitácora
@@ -1578,6 +1719,20 @@ body.light-mode .status-bar{background:#e8edf3}
     </div>
   </div>
   <div id="comprasPv"></div>
+</section>
+
+<!-- ══ TAB: PRESUPUESTO BIM ═════════════════════════════════════════ -->
+<section class="tab-content" id="tab-presupuesto">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Presupuesto de Obra BIM</h1>
+      <p class="page-subtitle">$4.820M presupuesto total · 186 partidas vinculadas al modelo IFC</p>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <span class="badge bg-r" style="background:var(--red-s);color:var(--red);border:1px solid var(--red-b);padding:3px 9px;border-radius:100px;font-size:.72rem;font-weight:600">CPI 0.91 — sobrecosto</span>
+    </div>
+  </div>
+  <div id="presupuestoWrap"></div>
 </section>
 
 <!-- ══ ALERTS OVERLAY ════════════════════════════════════════════ -->
@@ -3466,7 +3621,7 @@ function renderCalYear(){
 /* ═══════════════════════════════════════════════════════════
    TABS
    ═══════════════════════════════════════════════════════════ */
-const renderedTabs = { kpis:false, gantt:false, phases:false, update:false, board:false, calendar:false, bitacora:false, equipos:false, personal:false, planeacion:false, admin:false, requisiciones:false, compras:false, proveedores:false };
+const renderedTabs = { kpis:false, gantt:false, phases:false, update:false, board:false, calendar:false, bitacora:false, equipos:false, personal:false, planeacion:false, admin:false, requisiciones:false, compras:false, proveedores:false, presupuesto:false };
 
 function switchTab(name){
   document.querySelectorAll('.tab-btn').forEach(t=>t.classList.toggle('active', t.dataset.tab===name));
@@ -3486,6 +3641,7 @@ function switchTab(name){
   if(name==='requisiciones'){ if(!renderedTabs.requisiciones) renderedTabs.requisiciones=true; renderRequisiciones(); }
   if(name==='compras'){ if(!renderedTabs.compras) renderedTabs.compras=true; renderCompras(); }
   if(name==='proveedores'){ if(!renderedTabs.proveedores) renderedTabs.proveedores=true; renderProveedores(); }
+  if(name==='presupuesto'){ if(!renderedTabs.presupuesto) renderedTabs.presupuesto=true; renderPresupuesto(); }
   if(name==='admin'){
     if(CURRENT_USER?.role !== 'ADMIN'){ showToast('🔒 Acceso solo para administradores'); return; }
     if(!renderedTabs.admin) renderedTabs.admin=true;
@@ -4911,6 +5067,382 @@ function fetchComprasFromSheet(){
   // siguiendo el mismo patrón que syncWithSheet() del módulo principal.
   // Por cada hoja → poblar MOCK_RQ / MOCK_OC / MOCK_PROVEEDORES con datos reales.
   // Luego: if(renderedTabs.requisiciones) renderRequisiciones(); etc.
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MÓDULO PRESUPUESTO BIM (Capa 2 del roadmap)
+   ───────────────────────────────────────────────────────────
+   TODO conectar al Sheet de presupuesto del cuantificador:
+   El presupuesto base normalmente vive en un Sheet maestro con
+   columnas: Código, Descripción, Unidad, Metrado, V.Unit, Total.
+   Para activar:
+   1. Sheet con hojas: "EDT", "APU", "OrdenesCambio"
+   2. Pegar ID en SHEET_ID_PRESUPUESTO
+   ═══════════════════════════════════════════════════════════ */
+const SHEET_ID_PRESUPUESTO = '';
+
+const MOCK_BUDGET_TOTAL = 4820;           // M COP
+const MOCK_BUDGET_COMMITTED = 1240;       // M COP
+const MOCK_BUDGET_EXECUTED = 398;         // M COP
+const MOCK_BUDGET_DEVIATION = 42;         // M COP
+const MOCK_BUDGET_BIM_ITEMS = 186;
+
+const MOCK_BUDGET_EVM = {
+  cpi: 0.91, pv: 434, ev: 362, ac: 398, cv: -36, sv: -72, eac: 5296
+};
+
+const MOCK_BUDGET_CHAPTERS = [
+  {code:'01', name:'Preliminares', presup:385, ejec:385, status:'Cerrada', estado:'ok', color:'amb', items:[
+    {code:'01.01', name:'Cerramiento provisional',     unit:'ml', metrado:240,   vunit:85000,  presup:20,  ejec:20,  status:'Cerrada',     estado:'ok'},
+    {code:'01.02', name:'Descapote y limpieza',        unit:'m²', metrado:1800,  vunit:12000,  presup:21,  ejec:21,  status:'Cerrada',     estado:'ok'},
+  ]},
+  {code:'02', name:'Estructura', presup:3278, ejec:398, status:'En ejecución', estado:'warn', color:'blu', items:[
+    {code:'02.01', name:'Excavación manual',           unit:'m³', metrado:3200,  vunit:45000,  presup:144, ejec:144, status:'Cerrada',     estado:'ok'},
+    {code:'02.02', name:'Pilotes D=60cm',              unit:'ml', metrado:860,   vunit:280000, presup:241, ejec:241, status:'Cerrada',     estado:'ok'},
+    {code:'02.03', name:'Concreto muros cimentación',  unit:'m³', metrado:420,   vunit:380000, presup:160, ejec:188, status:'Sobrecosto',  estado:'re', bim:true},
+    {code:'02.04', name:'Acero longitudinal Ø3/8"',    unit:'kg', metrado:48000, vunit:3800,   presup:182, ejec:25,  status:'En ejecución', estado:'warn'},
+    {code:'02.05', name:'Estructura sótanos nivel -3', unit:'m²', metrado:2400,  vunit:520000, presup:1248,ejec:0,   status:'Sin iniciar',  estado:'gray'},
+  ]},
+  {code:'03', name:'MEP', presup:1349, ejec:0, status:'Sin iniciar', estado:'gray', color:'vlt', items:[
+    {code:'03.01', name:'Red hidrosanitaria',          unit:'pto', metrado:840,  vunit:320000, presup:269, ejec:0,   status:'Sin iniciar',  estado:'gray'},
+    {code:'03.02', name:'Red eléctrica circuitos',     unit:'pto', metrado:1200, vunit:185000, presup:222, ejec:0,   status:'Sin iniciar',  estado:'gray'},
+  ]},
+];
+
+const MOCK_BUDGET_DISTRIB = [
+  {name:'Estructura',   value:3278, pct:68, color:'var(--acc)'},
+  {name:'MEP',          value:1349, pct:28, color:'var(--vlt)'},
+  {name:'Acabados',     value:675,  pct:14, color:'var(--grn)'},
+  {name:'Preliminares', value:385,  pct:8,  color:'var(--amb)'},
+  {name:'Urbanismo',    value:241,  pct:5,  color:'#64748b'},
+];
+
+const MOCK_BUDGET_DEVIATIONS = [
+  {name:'02.03 Concreto',    pct:18,  estado:'re'},
+  {name:'02.04 Acero 3/8"',  pct:8,   estado:'warn'},
+  {name:'01.01 Cerramiento', pct:4,   estado:'warn'},
+  {name:'01.02 Descapote',   pct:-1,  estado:'ok'},
+  {name:'02.02 Pilotes',     pct:0,   estado:'ok'},
+];
+
+const MOCK_BUDGET_OCC = [
+  {code:'OC-C001', desc:'Sobrecosto concreto muros',  phase:'F2', value:28, plazoImpact:'0 días',  requestedBy:'R. Gómez',  status:'En revisión', estado:'warn'},
+  {code:'OC-C002', desc:'Refuerzo adicional pilotes', phase:'F1', value:14, plazoImpact:'+3 días', requestedBy:'C. Torres', status:'Aprobada',    estado:'ok'},
+];
+
+function bpBadge(label, estado){
+  const cls = {ok:'bp-b-ok', warn:'bp-b-warn', re:'bp-b-re', gray:'bp-b-gr', pu:'bp-b-pu', info:'bp-b-info', bim:'bp-b-bim'}[estado] || 'bp-b-gr';
+  return `<span class="bp-badge ${cls}">${label}</span>`;
+}
+
+function showBPSubTab(tabId){
+  const wrap = document.getElementById('presupuestoWrap'); if(!wrap) return;
+  wrap.querySelectorAll('.bp-tab').forEach(t=>t.classList.toggle('on', t.dataset.subtab===tabId));
+  wrap.querySelectorAll('.bp-panel').forEach(p=>p.classList.toggle('on', p.dataset.subtab===tabId));
+}
+
+/* ════════════════════════════════════════
+   RENDER: PRESUPUESTO BIM
+   ════════════════════════════════════════ */
+function renderPresupuesto(){
+  // EDT — filas anidadas
+  const edtRows = MOCK_BUDGET_CHAPTERS.map(ch => {
+    const chapterRow = `
+      <tr class="bp-chapter">
+        <td style="font-weight:700">${ch.code}</td>
+        <td style="font-weight:700">${ch.name}</td>
+        <td></td><td></td><td></td>
+        <td class="bp-c-blu" style="font-weight:700;font-family:'JetBrains Mono',monospace">$${ch.presup}M</td>
+        <td class="bp-c-${ch.estado==='ok'?'grn':ch.estado==='warn'?'amb':'gray'}" style="font-family:'JetBrains Mono',monospace">$${ch.ejec}M</td>
+        <td>${bpBadge(ch.status, ch.estado)}</td>
+      </tr>`;
+    const itemRows = ch.items.map(it => `
+      <tr>
+        <td class="bp-indent" style="font-family:'JetBrains Mono',monospace">${it.code}</td>
+        <td class="bp-indent">${it.name}${it.bim?' <span class="bp-badge bp-b-bim" style="margin-left:5px;font-size:.62rem">BIM</span>':''}</td>
+        <td>${it.unit}</td>
+        <td style="font-family:'JetBrains Mono',monospace">${it.metrado.toLocaleString('es-CO')}</td>
+        <td style="font-family:'JetBrains Mono',monospace;color:var(--txt-s)">$${it.vunit.toLocaleString('es-CO')}</td>
+        <td class="bp-c-blu" style="font-family:'JetBrains Mono',monospace">$${it.presup}M</td>
+        <td class="bp-c-${it.estado==='ok'?'grn':it.estado==='re'?'red':it.estado==='warn'?'amb':'gray'}" style="font-family:'JetBrains Mono',monospace">$${it.ejec}M</td>
+        <td>${bpBadge(it.status, it.estado)}</td>
+      </tr>`).join('');
+    return chapterRow + itemRows;
+  }).join('');
+
+  // Curva S — datos del SVG del boceto adaptados
+  const sCurveSVG = `
+    <svg viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="evGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="var(--grn)" stop-opacity="0.25"/>
+          <stop offset="100%" stop-color="var(--grn)" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <line x1="35" y1="15" x2="35" y2="100" stroke="var(--bdr)" stroke-width="1"/>
+      <line x1="35" y1="100" x2="305" y2="100" stroke="var(--bdr)" stroke-width="1"/>
+      <text x="32" y="20" text-anchor="end" font-size="8" fill="var(--txt-m)" font-family="JetBrains Mono">100%</text>
+      <text x="32" y="60" text-anchor="end" font-size="8" fill="var(--txt-m)" font-family="JetBrains Mono">50%</text>
+      <text x="32" y="100" text-anchor="end" font-size="8" fill="var(--txt-m)" font-family="JetBrains Mono">0%</text>
+      <line x1="35" y1="60" x2="305" y2="60" stroke="var(--bdr)" stroke-width="0.5" stroke-dasharray="2 2"/>
+      <!-- PV planificado (dashed) -->
+      <polyline points="35,98 80,88 125,70 170,50 215,32 260,18 305,12" fill="none" stroke="var(--acc)" stroke-width="1.8" stroke-dasharray="4 3"/>
+      <!-- EV ganado (sólida verde) -->
+      <polyline points="35,98 80,90 125,76 170,65" fill="none" stroke="var(--grn)" stroke-width="2"/>
+      <polyline points="35,98 80,90 125,76 170,65 170,100 35,100" fill="url(#evGrad)" stroke="none"/>
+      <!-- AC real (sólida roja) -->
+      <polyline points="35,98 80,91 125,79 170,68" fill="none" stroke="var(--red)" stroke-width="2"/>
+      <!-- Punto hoy -->
+      <circle cx="170" cy="65" r="3.5" fill="var(--grn)" stroke="var(--surf)" stroke-width="1.5"/>
+      <circle cx="170" cy="68" r="3.5" fill="var(--red)" stroke="var(--surf)" stroke-width="1.5"/>
+      <line x1="170" y1="15" x2="170" y2="100" stroke="var(--txt-m)" stroke-width="0.5" stroke-dasharray="2 2"/>
+      <!-- Etiquetas -->
+      <text x="260" y="22" font-size="9" fill="var(--acc)" font-weight="600">Plan (PV)</text>
+      <text x="176" y="62" font-size="9" fill="var(--grn)" font-weight="600">EV</text>
+      <text x="176" y="78" font-size="9" fill="var(--red)" font-weight="600">AC</text>
+      <text x="48" y="115" font-size="8.5" fill="var(--txt-m)" font-family="JetBrains Mono">May</text>
+      <text x="95" y="115" font-size="8.5" fill="var(--txt-m)" font-family="JetBrains Mono">Jun</text>
+      <text x="140" y="115" font-size="8.5" fill="var(--txt)" font-weight="700" font-family="JetBrains Mono">Hoy</text>
+      <text x="185" y="115" font-size="8.5" fill="var(--txt-m)" font-family="JetBrains Mono">Jul</text>
+      <text x="230" y="115" font-size="8.5" fill="var(--txt-m)" font-family="JetBrains Mono">Ago</text>
+      <text x="275" y="115" font-size="8.5" fill="var(--txt-m)" font-family="JetBrains Mono">Sep</text>
+    </svg>`;
+
+  // Filas órdenes de cambio
+  const occRows = MOCK_BUDGET_OCC.map(o => `
+    <tr>
+      <td style="font-family:'JetBrains Mono',monospace;font-weight:700">${o.code}</td>
+      <td>${o.desc}</td>
+      <td>${o.phase}</td>
+      <td class="bp-c-red" style="font-family:'JetBrains Mono',monospace">+$${o.value}M</td>
+      <td style="font-family:'JetBrains Mono',monospace">${o.plazoImpact}</td>
+      <td>${o.requestedBy}</td>
+      <td>${bpBadge(o.status, o.estado)}</td>
+    </tr>`).join('');
+
+  // Filas Top desviaciones
+  const devRows = MOCK_BUDGET_DEVIATIONS.map(d => {
+    const colorMap = {re:'var(--red)', warn:'var(--amb)', ok:'var(--grn)'};
+    const widthPct = Math.min(100, Math.abs(d.pct)*5);
+    return `
+      <div class="bp-br">
+        <span class="bp-blab">${d.name}</span>
+        <div class="bp-bt"><div class="bp-bf" style="width:${widthPct}%;background:${colorMap[d.estado]}"></div></div>
+        <span class="bp-bval bp-c-${d.estado==='re'?'red':d.estado==='warn'?'amb':'grn'}">${d.pct>0?'+':''}${d.pct}%</span>
+      </div>`;
+  }).join('');
+
+  const distribRows = MOCK_BUDGET_DISTRIB.map(d=>`
+    <div class="bp-br">
+      <span class="bp-blab">${d.name}</span>
+      <div class="bp-bt"><div class="bp-bf" style="width:${d.pct}%;background:${d.color}"></div></div>
+      <span class="bp-bval" style="color:${d.color}">$${d.value.toLocaleString('es-CO')}M</span>
+    </div>`).join('');
+
+  const html = `
+  <div class="bp-wrap">
+    <div class="bp-topbar">
+      <div>
+        <h2><span class="ms" style="font-size:1rem">receipt_long</span>Presupuesto de obra BIM</h2>
+        <p>Torre Santa Isabel · $${MOCK_BUDGET_TOTAL.toLocaleString('es-CO')}M presupuesto total · vinculado al modelo IFC</p>
+      </div>
+      <div class="bp-acts">
+        <span class="bp-bim-tag"><span class="ms" style="font-size:.85rem">view_in_ar</span>BIM vinculado</span>
+        <button class="bp-btn"><span class="ms" style="font-size:.95rem">download</span>Exportar</button>
+        <button class="bp-btn bp-btn-p"><span class="ms" style="font-size:.95rem">add</span>Nueva partida</button>
+      </div>
+    </div>
+    <div class="bp-tabs">
+      <button class="bp-tab on" data-subtab="dash"    onclick="showBPSubTab('dash')">Dashboard</button>
+      <button class="bp-tab"     data-subtab="edt"     onclick="showBPSubTab('edt')">EDT presupuestal</button>
+      <button class="bp-tab"     data-subtab="apu"     onclick="showBPSubTab('apu')">APU</button>
+      <button class="bp-tab"     data-subtab="control" onclick="showBPSubTab('control')">Control de costos</button>
+      <button class="bp-tab"     data-subtab="reporte" onclick="showBPSubTab('reporte')">Reporte gerencial</button>
+    </div>
+
+    <!-- ─── DASHBOARD ─── -->
+    <div class="bp-panel on" data-subtab="dash">
+      <div class="bp-kpis">
+        <div class="bp-kpi"><div class="bp-kl">Presupuesto total</div><div class="bp-kv bp-c-blu">$${MOCK_BUDGET_TOTAL.toLocaleString('es-CO')}M</div><div class="bp-kd">línea base aprobada</div></div>
+        <div class="bp-kpi"><div class="bp-kl">Comprometido</div><div class="bp-kv bp-c-amb">$${MOCK_BUDGET_COMMITTED.toLocaleString('es-CO')}M</div><div class="bp-kd">${(MOCK_BUDGET_COMMITTED/MOCK_BUDGET_TOTAL*100).toFixed(1)}% del total</div></div>
+        <div class="bp-kpi"><div class="bp-kl">Ejecutado</div><div class="bp-kv bp-c-grn">$${MOCK_BUDGET_EXECUTED.toLocaleString('es-CO')}M</div><div class="bp-kd">${(MOCK_BUDGET_EXECUTED/MOCK_BUDGET_TOTAL*100).toFixed(1)}% ejecutado</div></div>
+        <div class="bp-kpi"><div class="bp-kl">Desviación</div><div class="bp-kv bp-c-red">+$${MOCK_BUDGET_DEVIATION}M</div><div class="bp-kd">sobrecosto 3.4%</div></div>
+        <div class="bp-kpi"><div class="bp-kl">Partidas BIM</div><div class="bp-kv bp-c-vlt">${MOCK_BUDGET_BIM_ITEMS}</div><div class="bp-kd">con metrado IFC</div></div>
+      </div>
+      <div class="bp-row2">
+        <div class="bp-box">
+          <h4>Distribución por capítulo</h4>
+          ${distribRows}
+        </div>
+        <div class="bp-box">
+          <h4>Presupuestado vs ejecutado por fase activa</h4>
+          <div class="bp-pl">
+            <div class="bp-plh"><span>F2 · Cimentación</span><span class="bp-c-grn">52% ejec.</span></div>
+            <div class="bp-plt"><div class="bp-plf" style="width:52%;background:var(--grn)"></div></div>
+            <div class="bp-pld">Presup: $765M · Ejecutado: $398M · Resto: $367M</div>
+          </div>
+          <div class="bp-pl">
+            <div class="bp-plh"><span>F3 · Estructura sótanos</span><span class="bp-c-red">0% ejec.</span></div>
+            <div class="bp-plt"><div class="bp-plf" style="width:1%;background:var(--red)"></div></div>
+            <div class="bp-pld">Presup: $1.240M · Sin iniciar</div>
+          </div>
+          <div class="bp-pl">
+            <div class="bp-plh"><span>F0–F1 · Cerradas</span><span class="bp-c-grn">100% ejec.</span></div>
+            <div class="bp-plt"><div class="bp-plf" style="width:100%;background:var(--grn)"></div></div>
+            <div class="bp-pld">Presup: $385M · Ejecutado: $385M · Desv: +$0</div>
+          </div>
+        </div>
+      </div>
+      <hr class="bp-div">
+      <div class="bp-st">Alertas de costo</div>
+      <div style="padding:0 20px 16px">
+        <div class="oc-alert-item oc-a-red"><span class="ms" style="font-size:1rem">warning</span><div><strong>Partida 02.03 Concreto muros</strong> — sobrecosto $28M (+18%) vs presupuesto. Requiere orden de cambio.</div></div>
+        <div class="oc-alert-item oc-a-warn"><span class="ms" style="font-size:1rem">schedule</span><div><strong>F3 sin comprometer</strong> — $1.240M de estructura sótanos sin OC asociadas. Fase con retraso activo.</div></div>
+      </div>
+    </div>
+
+    <!-- ─── EDT ─── -->
+    <div class="bp-panel" data-subtab="edt">
+      <div class="bp-fb">
+        <input type="text" placeholder="🔍 Buscar partida, código, descripción...">
+        <select><option>Todos los capítulos</option><option>Preliminares</option><option>Estructura</option><option>MEP</option><option>Acabados</option></select>
+        <select><option>Todos los estados</option><option>Sin iniciar</option><option>En ejecución</option><option>Cerrada</option><option>Sobrecosto</option></select>
+      </div>
+      <div class="bp-tw">
+        <table class="bp-tbl">
+          <thead><tr><th>Código</th><th>Descripción</th><th>Unid.</th><th>Metrado</th><th>V. unit.</th><th>Presup.</th><th>Ejec.</th><th>Estado</th></tr></thead>
+          <tbody>${edtRows}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── APU ─── -->
+    <div class="bp-panel" data-subtab="apu">
+      <div class="bp-apu-head">
+        <div class="bp-apu-title">
+          <span>APU · 02.03 Concreto muros cimentación</span>
+          <span class="bp-badge bp-b-bim"><span class="ms" style="font-size:.85rem;margin-right:3px">view_in_ar</span>BIM · 420 m³ IFC</span>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span class="bp-variance bp-v-re">Desviación +18%</span>
+          <button class="bp-btn"><span class="ms" style="font-size:.95rem">view_in_ar</span>Ver en BIM</button>
+        </div>
+      </div>
+      <div class="bp-dg">
+        <div class="bp-db">
+          <h4><span class="ms" style="font-size:1rem;color:var(--amb)">build</span>Materiales</h4>
+          <div class="bp-dr"><span class="bp-dl">Concreto 3000 PSI</span><span class="bp-dv">0.95 m³ · $360.000</span></div>
+          <div class="bp-dr"><span class="bp-dl">Acero corrugado 3/8"</span><span class="bp-dv">95 kg · $361.000</span></div>
+          <div class="bp-dr"><span class="bp-dl">Formaleta metálica</span><span class="bp-dv">2.0 m² · $40.000</span></div>
+          <div class="bp-dr"><span class="bp-dl">Aditivos plastificantes</span><span class="bp-dv">1.5 lt · $18.000</span></div>
+          <div class="bp-dr bp-dr-sum"><span class="bp-dl" style="font-weight:700">Subtotal materiales</span><span class="bp-dv bp-c-grn" style="font-family:'JetBrains Mono',monospace">$779.000/m³</span></div>
+        </div>
+        <div class="bp-db">
+          <h4><span class="ms" style="font-size:1rem;color:var(--acc)">groups</span>Mano de obra y equipo</h4>
+          <div class="bp-dr"><span class="bp-dl">Oficial concreto</span><span class="bp-dv">0.8 jor · $52.000</span></div>
+          <div class="bp-dr"><span class="bp-dl">Ayudante</span><span class="bp-dv">1.6 jor · $72.000</span></div>
+          <div class="bp-dr"><span class="bp-dl">Vibrador concreto</span><span class="bp-dv">0.5 hr · $18.000</span></div>
+          <div class="bp-dr"><span class="bp-dl">Bomba concreto</span><span class="bp-dv">0.25 hr · $85.000</span></div>
+          <div class="bp-dr bp-dr-sum"><span class="bp-dl" style="font-weight:700">Subtotal MO + equipo</span><span class="bp-dv bp-c-amb" style="font-family:'JetBrains Mono',monospace">$227.000/m³</span></div>
+        </div>
+      </div>
+      <div class="bp-apu-summary">
+        <div class="bp-db">
+          <div class="bp-apu-summary-grid">
+            <div><div class="bp-kl">Costo directo</div><div class="bp-kv bp-c-blu">$380K/m³</div></div>
+            <div><div class="bp-kl">AIU (30%)</div><div class="bp-kv bp-c-amb">$114K/m³</div></div>
+            <div><div class="bp-kl">V. unit. presup.</div><div class="bp-kv">$380K/m³</div></div>
+            <div><div class="bp-kl">V. unit. real</div><div class="bp-kv bp-c-red">$447K/m³</div><div class="bp-kd">+$67K desviación</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── CONTROL DE COSTOS (EVM) ─── -->
+    <div class="bp-panel" data-subtab="control">
+      <div class="bp-kpis">
+        <div class="bp-kpi"><div class="bp-kl">CPI</div><div class="bp-kv bp-c-red">${MOCK_BUDGET_EVM.cpi.toFixed(2)}</div><div class="bp-kd">cost performance &lt; 1.0</div></div>
+        <div class="bp-kpi"><div class="bp-kl">Valor ganado (EV)</div><div class="bp-kv bp-c-blu">$${MOCK_BUDGET_EVM.ev}M</div><div class="bp-kd">trabajo completado</div></div>
+        <div class="bp-kpi"><div class="bp-kl">Costo real (AC)</div><div class="bp-kv bp-c-red">$${MOCK_BUDGET_EVM.ac}M</div><div class="bp-kd">gastado a la fecha</div></div>
+        <div class="bp-kpi"><div class="bp-kl">Variación CV</div><div class="bp-kv bp-c-red">$${MOCK_BUDGET_EVM.cv}M</div><div class="bp-kd">por encima del plan</div></div>
+        <div class="bp-kpi"><div class="bp-kl">Estimado EAC</div><div class="bp-kv bp-c-amb">$${MOCK_BUDGET_EVM.eac.toLocaleString('es-CO')}M</div><div class="bp-kd">proyección final</div></div>
+      </div>
+      <div class="bp-row2">
+        <div class="bp-box">
+          <h4>Curva S — Plan (PV) vs Ganado (EV) vs Real (AC)</h4>
+          <div class="bp-curve-wrap">${sCurveSVG}</div>
+        </div>
+        <div class="bp-box">
+          <h4>Partidas con mayor desviación</h4>
+          ${devRows}
+        </div>
+      </div>
+      <hr class="bp-div">
+      <div class="bp-st">Órdenes de cambio</div>
+      <div class="bp-tw">
+        <table class="bp-tbl">
+          <thead><tr><th>Código</th><th>Descripción</th><th>Fase</th><th>Valor</th><th>Impacto plazo</th><th>Solicitado por</th><th>Estado</th></tr></thead>
+          <tbody>${occRows}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── REPORTE GERENCIAL ─── -->
+    <div class="bp-panel" data-subtab="reporte">
+      <div class="bp-fb">
+        <input type="date" value="2026-05-01">
+        <input type="date" value="2026-06-02">
+        <select><option>Todos los capítulos</option><option>Estructura</option><option>MEP</option><option>Acabados</option></select>
+        <button class="bp-btn"><span class="ms" style="font-size:.95rem">download</span>PDF</button>
+        <button class="bp-btn"><span class="ms" style="font-size:.95rem">table_chart</span>Excel</button>
+      </div>
+      <div class="bp-kpis">
+        <div class="bp-kpi"><div class="bp-kl">Presupuesto base</div><div class="bp-kv bp-c-blu">$${MOCK_BUDGET_TOTAL.toLocaleString('es-CO')}M</div><div class="bp-kd">aprobado</div></div>
+        <div class="bp-kpi"><div class="bp-kl">Ejecución acumulada</div><div class="bp-kv bp-c-grn">$${MOCK_BUDGET_EXECUTED}M</div><div class="bp-kd">${(MOCK_BUDGET_EXECUTED/MOCK_BUDGET_TOTAL*100).toFixed(1)}%</div></div>
+        <div class="bp-kpi"><div class="bp-kl">Desviación total</div><div class="bp-kv bp-c-red">+$${MOCK_BUDGET_DEVIATION}M</div><div class="bp-kd">órdenes de cambio</div></div>
+        <div class="bp-kpi"><div class="bp-kl">CPI período</div><div class="bp-kv bp-c-red">${MOCK_BUDGET_EVM.cpi.toFixed(2)}</div><div class="bp-kd">eficiencia de costo</div></div>
+        <div class="bp-kpi"><div class="bp-kl">Proyección EAC</div><div class="bp-kv bp-c-amb">$${MOCK_BUDGET_EVM.eac.toLocaleString('es-CO')}M</div><div class="bp-kd">+$${MOCK_BUDGET_EVM.eac-MOCK_BUDGET_TOTAL}M sobre base</div></div>
+      </div>
+      <div class="bp-row2">
+        <div class="bp-box">
+          <h4>Ejecución por capítulo</h4>
+          <div class="bp-br"><span class="bp-blab">Preliminares</span><div class="bp-bt"><div class="bp-bf" style="width:100%;background:var(--grn)"></div></div><span class="bp-bval bp-c-grn">100%</span></div>
+          <div class="bp-br"><span class="bp-blab">Estructura</span><div class="bp-bt"><div class="bp-bf" style="width:12%;background:var(--acc)"></div></div><span class="bp-bval bp-c-blu">12%</span></div>
+          <div class="bp-br"><span class="bp-blab">MEP</span><div class="bp-bt"><div class="bp-bf" style="width:0%;background:#64748b"></div></div><span class="bp-bval" style="color:var(--txt-m)">0%</span></div>
+          <div class="bp-br"><span class="bp-blab">Acabados</span><div class="bp-bt"><div class="bp-bf" style="width:0%;background:#64748b"></div></div><span class="bp-bval" style="color:var(--txt-m)">0%</span></div>
+        </div>
+        <div class="bp-box">
+          <h4>Resumen financiero del período</h4>
+          <div class="bp-dr"><span class="bp-dl">Valor planificado (PV)</span><span class="bp-dv bp-c-blu" style="font-family:'JetBrains Mono',monospace">$${MOCK_BUDGET_EVM.pv}M</span></div>
+          <div class="bp-dr"><span class="bp-dl">Valor ganado (EV)</span><span class="bp-dv bp-c-grn" style="font-family:'JetBrains Mono',monospace">$${MOCK_BUDGET_EVM.ev}M</span></div>
+          <div class="bp-dr"><span class="bp-dl">Costo real (AC)</span><span class="bp-dv bp-c-red" style="font-family:'JetBrains Mono',monospace">$${MOCK_BUDGET_EVM.ac}M</span></div>
+          <div class="bp-dr"><span class="bp-dl">Variación costo (CV)</span><span class="bp-dv bp-c-red" style="font-family:'JetBrains Mono',monospace">$${MOCK_BUDGET_EVM.cv}M</span></div>
+          <div class="bp-dr"><span class="bp-dl">Variación plazo (SV)</span><span class="bp-dv bp-c-red" style="font-family:'JetBrains Mono',monospace">$${MOCK_BUDGET_EVM.sv}M</span></div>
+          <div class="bp-dr bp-dr-sum"><span class="bp-dl" style="font-weight:700">Proyección EAC</span><span class="bp-dv bp-c-amb" style="font-weight:700;font-family:'JetBrains Mono',monospace">$${MOCK_BUDGET_EVM.eac.toLocaleString('es-CO')}M</span></div>
+        </div>
+      </div>
+      <div class="bp-conclusion">
+        <div class="bp-conclusion-label"><span class="ms" style="font-size:.95rem">auto_awesome</span>Conclusión gerencial automática</div>
+        <div class="bp-conclusion-text">El proyecto presenta un <strong style="color:var(--red)">CPI de ${MOCK_BUDGET_EVM.cpi.toFixed(2)}</strong>, indicando que por cada $1 presupuestado se están gastando $${(1/MOCK_BUDGET_EVM.cpi).toFixed(2)}. La partida <strong>02.03 Concreto muros</strong> es la principal fuente de desviación (+18%). Se recomienda <strong>revisar el APU de concreto</strong> para las fases F3 y F4 antes de comprometer los recursos restantes ($${(MOCK_BUDGET_TOTAL-MOCK_BUDGET_COMMITTED).toLocaleString('es-CO')}M sin comprometer).</div>
+      </div>
+    </div>
+
+    <div class="bp-foot">
+      <span>Contro360 · Presupuesto BIM</span>
+      <span>Torre Santa Isabel · ${MOCK_BUDGET_BIM_ITEMS} partidas vinculadas al modelo IFC</span>
+      <span>${new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'short',year:'numeric'})}</span>
+    </div>
+  </div>`;
+  document.getElementById('presupuestoWrap').innerHTML = html;
+}
+
+function fetchPresupuestoFromSheet(){
+  if(!SHEET_ID_PRESUPUESTO){
+    console.log('[presupuesto] SHEET_ID_PRESUPUESTO vacío — usando datos mock.');
+    return;
+  }
+  // Implementación futura: JSONP a hojas EDT/APU/OrdenesCambio
+  // Mismo patrón que syncWithSheet().
 }
 </script>
 </body>
