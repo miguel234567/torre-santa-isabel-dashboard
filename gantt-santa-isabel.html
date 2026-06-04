@@ -436,11 +436,136 @@ body.light-mode .exec-hero{background:radial-gradient(circle at 8% 0%,rgba(37,99
 
 /* ═══ LIGHT MODE ═══════════════════════════════════════════════ */
 body.light-mode{
+  /* Tokens base claros */
   --bg-app:#f0f4f8;--bg-card:#ffffff;--bg-el:#e8edf3;--bg-input:#f5f7fa;
   --border:#d1dbe8;--border-s:#b0c0d4;--border-f:#3b82f6;
-  --txt:#1e293b;--txt-s:#475569;--txt-m:#94a3b8;--txt-a:#2563eb;
+  --txt:#1e293b;--txt-s:#475569;--txt-m:#64748b;--txt-a:#2563eb;
   --sh-md:0 4px 16px rgba(0,0,0,.08);--sh-lg:0 10px 30px rgba(0,0,0,.12);
+  /* Tokens v2 explícitos para light-mode (sobrescribir alpha-blancos) */
+  --surf3:#dde4ed;
+  --bdr:rgba(0,0,0,0.08);
+  --bdr-m:rgba(0,0,0,0.15);
+  --bdr-s:rgba(0,0,0,0.22);
+  --acc-s:rgba(77,142,255,0.08);
+  --acc-b:rgba(77,142,255,0.30);
+  --grn-s:rgba(34,197,94,0.10);
+  --grn-b:rgba(34,197,94,0.35);
+  --amb-s:rgba(245,158,11,0.10);
+  --amb-b:rgba(245,158,11,0.40);
+  --red-s:rgba(239,68,68,0.08);
+  --red-b:rgba(239,68,68,0.30);
 }
+/* Light-mode: barras de progreso visibles (cambiar rgba blancos por negros) */
+body.light-mode .kpi-track{background:rgba(0,0,0,0.06)}
+body.light-mode .kpi-stat-bar{background:rgba(0,0,0,0.06)}
+body.light-mode .kpi-bar{background:rgba(0,0,0,0.06)}
+body.light-mode .oc-bt{background:rgba(0,0,0,0.06)}
+/* Light-mode: textos del sidebar y módulos */
+body.light-mode .ng-lbl{color:#64748b}
+body.light-mode .sni-bdg{color:#fff}
+body.light-mode .snb-name{color:#1e293b}
+body.light-mode .snb-role{color:#64748b}
+body.light-mode .snb-av{background:rgba(77,142,255,.12);border-color:rgba(77,142,255,.35);color:#2563eb}
+body.light-mode .snb-btn{border-color:rgba(0,0,0,.12);color:#64748b}
+body.light-mode .snb-btn:hover{background:#e8edf3;color:#1e293b}
+/* Light-mode: topbar + status bar */
+body.light-mode .status-bar{background:#e8edf3;color:#64748b}
+body.light-mode .sb-val{color:#1e293b}
+body.light-mode .badge-obra{background:rgba(34,197,94,.10);color:#15803d;border-color:rgba(34,197,94,.35)}
+body.light-mode .btn-sync,body.light-mode .theme-toggle-btn{border-color:rgba(0,0,0,.12);color:#64748b}
+body.light-mode .btn-sync:hover,body.light-mode .theme-toggle-btn:hover{background:#e8edf3;color:#1e293b}
+/* Light-mode: módulo COMPRAS */
+body.light-mode .oc-wrap{background:#ffffff;border-color:#d1dbe8}
+body.light-mode .oc-topbar{background:#f5f7fa;border-bottom-color:#d1dbe8}
+body.light-mode .oc-topbar h2{color:#1e293b}
+body.light-mode .oc-topbar p{color:#64748b}
+body.light-mode .oc-btn{border-color:#d1dbe8;color:#1e293b;background:#ffffff}
+body.light-mode .oc-btn:hover{background:#f5f7fa;border-color:#b0c0d4}
+body.light-mode .oc-btn-primary{background:rgba(77,142,255,.12);color:#2563eb;border-color:rgba(77,142,255,.35)}
+body.light-mode .oc-tabs{border-bottom-color:#d1dbe8}
+body.light-mode .oc-tab{color:#64748b}
+body.light-mode .oc-tab:hover{color:#1e293b}
+body.light-mode .oc-tab.on{color:#2563eb;border-bottom-color:#2563eb}
+body.light-mode .oc-kpi{background:#f5f7fa;border-color:#d1dbe8}
+body.light-mode .oc-kpi:hover{border-color:#b0c0d4}
+body.light-mode .oc-kl,body.light-mode .oc-kd{color:#64748b}
+body.light-mode .oc-kv{color:#1e293b}
+body.light-mode .oc-box{background:#f5f7fa;border-color:#d1dbe8}
+body.light-mode .oc-box h4{color:#64748b}
+body.light-mode .oc-bl{color:#475569}
+body.light-mode .oc-bv{color:#1e293b}
+body.light-mode .oc-divider{border-top-color:#d1dbe8}
+body.light-mode .oc-sect-t{color:#64748b}
+body.light-mode .oc-filterbar input,body.light-mode .oc-filterbar select{background:#ffffff;border-color:#d1dbe8;color:#1e293b}
+body.light-mode .oc-tbl th{background:#f5f7fa;color:#64748b;border-bottom-color:#d1dbe8}
+body.light-mode .oc-tbl td{color:#1e293b;border-bottom-color:#e8edf3}
+body.light-mode .oc-tbl tr:hover td{background:#f5f7fa}
+body.light-mode .oc-d-box{background:#f5f7fa;border-color:#d1dbe8}
+body.light-mode .oc-d-box h4{color:#1e293b}
+body.light-mode .oc-d-label{color:#64748b}
+body.light-mode .oc-d-val{color:#1e293b}
+body.light-mode .oc-flow-step{background:#f5f7fa;border-color:#d1dbe8;color:#64748b}
+body.light-mode .oc-flow-step.done{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.35);color:#15803d}
+body.light-mode .oc-flow-step.active{background:rgba(77,142,255,.10);border-color:rgba(77,142,255,.35);color:#2563eb}
+body.light-mode .oc-flow-step.warn{background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.40);color:#92400e}
+body.light-mode .oc-alert-item.oc-a-red{background:rgba(239,68,68,.06);border-color:rgba(239,68,68,.30);color:#b91c1c}
+body.light-mode .oc-alert-item.oc-a-warn{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.35);color:#92400e}
+body.light-mode .oc-alert-item.oc-a-info{background:rgba(77,142,255,.06);border-color:rgba(77,142,255,.30);color:#1d4ed8}
+body.light-mode .oc-footer{border-top-color:#d1dbe8;color:#64748b}
+/* Badges OC en light-mode (textos más oscuros para legibilidad) */
+body.light-mode .oc-b-ok{color:#15803d;background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.35)}
+body.light-mode .oc-b-warn{color:#92400e;background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.40)}
+body.light-mode .oc-b-info{color:#1d4ed8;background:rgba(77,142,255,.10);border-color:rgba(77,142,255,.35)}
+body.light-mode .oc-b-red{color:#b91c1c;background:rgba(239,68,68,.10);border-color:rgba(239,68,68,.35)}
+body.light-mode .oc-b-gray{color:#475569;background:rgba(100,116,139,.10);border-color:rgba(100,116,139,.30)}
+body.light-mode .oc-b-purple{color:#6d28d9;background:rgba(139,92,246,.10);border-color:rgba(139,92,246,.30)}
+/* Color helpers en light-mode (oscurecer para contraste) */
+body.light-mode .oc-c-grn{color:#15803d}
+body.light-mode .oc-c-amb{color:#92400e}
+body.light-mode .oc-c-red{color:#b91c1c}
+body.light-mode .oc-c-blu{color:#2563eb}
+body.light-mode .oc-c-vlt{color:#6d28d9}
+/* Light-mode: Kanban cards y columnas */
+body.light-mode .kanban-col{background:#ffffff;border-color:#d1dbe8}
+body.light-mode .kanban-col-hdr{background:#ffffff;border-bottom-color:#d1dbe8}
+body.light-mode .kanban-col-count{background:#e8edf3;color:#64748b}
+body.light-mode .kcard{background:#f5f7fa;border-color:#d1dbe8}
+body.light-mode .kcard:hover{background:#ffffff;border-color:#b0c0d4;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+body.light-mode .kcard-name{color:#1e293b}
+body.light-mode .kcard-meta,body.light-mode .kcard-owner,body.light-mode .kcard-date,body.light-mode .kcard-dur{color:#64748b}
+body.light-mode .kcard-bar-label{color:#64748b}
+body.light-mode .kcard-id{background:#e8edf3;color:#2563eb}
+/* Light-mode: KPI stat cards */
+body.light-mode .kpi-stat{background:#ffffff;border-color:#d1dbe8}
+body.light-mode .kpi-stat:hover{box-shadow:0 4px 24px rgba(0,0,0,.08)}
+body.light-mode .kpi-stat-value,body.light-mode .kpi-card-title,body.light-mode .kpi-num{color:#1e293b}
+body.light-mode .kpi-stat-sub,body.light-mode .kpi-stat-label{color:#64748b}
+body.light-mode .kpi-card{background:#ffffff;border-color:#d1dbe8}
+body.light-mode .kpi-action-btn{border-color:#d1dbe8;color:#64748b}
+body.light-mode .kpi-action-btn:hover{border-color:#2563eb;color:#2563eb;background:rgba(77,142,255,.06)}
+/* Light-mode: badges de estado */
+body.light-mode .bs-pend{color:#475569;background:rgba(100,116,139,.10);border-color:rgba(100,116,139,.30)}
+body.light-mode .bs-prog{color:#9a3412;background:rgba(249,115,22,.10);border-color:rgba(249,115,22,.35)}
+body.light-mode .bs-done{color:#15803d;background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.35)}
+body.light-mode .bs-late{color:#b91c1c;background:rgba(239,68,68,.10);border-color:rgba(239,68,68,.35)}
+/* Light-mode: page-header + sub-textos */
+body.light-mode .page-header{border-bottom-color:#d1dbe8}
+body.light-mode .page-title{color:#1e293b}
+body.light-mode .page-subtitle{color:#64748b}
+/* Light-mode: Gantt + Phases */
+body.light-mode .gantt-wrap{background:#ffffff;border-color:#d1dbe8}
+body.light-mode .gantt-header{border-bottom-color:#d1dbe8}
+body.light-mode .gantt-header > *:first-child,body.light-mode .legend-item{color:#64748b}
+body.light-mode .phases-table th{background:#f5f7fa;color:#64748b;border-bottom-color:#d1dbe8}
+body.light-mode .phases-table td{border-bottom-color:#e8edf3;color:#1e293b}
+body.light-mode .phase-code{background:#e8edf3;color:#2563eb}
+body.light-mode .search-input,body.light-mode .kanban-search{background:#ffffff;border-color:#d1dbe8;color:#1e293b}
+body.light-mode .chip,body.light-mode .kgrp-chip{border-color:#d1dbe8;color:#475569}
+body.light-mode .chip:hover,body.light-mode .kgrp-chip:hover{border-color:#b0c0d4;color:#1e293b}
+body.light-mode .chip.active{background:rgba(77,142,255,.12);border-color:rgba(77,142,255,.35);color:#2563eb}
+/* Light-mode: app-header en sidebar pill activa (mejorar contraste) */
+body.light-mode .sni.active{background:rgba(77,142,255,.12);color:#1d4ed8;border:1px solid rgba(77,142,255,.30);border-left-color:rgba(77,142,255,.30)}
+body.light-mode .sni.active .ms{color:#1d4ed8}
 body.light-mode .subact-tr td{background:#f5f8fc;border-bottom:1px solid #dde5ee}
 body.light-mode .subact-tr:hover td{background:#edf1f7!important}
 body.light-mode .subact-edt{background:#e8edf3;border-color:#d1dbe8}
