@@ -1,0 +1,105 @@
+name: Deploy to surge.sh
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:        # Permite trigger manual desde GitHub UI
+
+# Cancela deploys obsoletos si llegan commits seguidos
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validar sintaxis JS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validar JS del dashboard
+        run: |
+          node -e "
+            const fs = require('fs');
+            const h = fs.readFileSync('gantt-santa-isabel.html', 'utf8');
+            const scripts = [...h.matchAll(/<script>([\s\S]*?)<\/script>/g)];
+            let ok = true;
+            scripts.forEach((s, i) => {
+              try {
+                new Function(s[1]);
+                console.log('✅ script', i + 1, 'OK (' + s[1].length + ' chars)');
+              } catch(e) {
+                console.error('❌ script', i + 1, ':', e.message);
+                ok = false;
+              }
+            });
+            if (!ok) process.exit(1);
+          "
+
+      - name: Verificar HTML básico
+        run: |
+          # El archivo debe existir y pesar al menos 100KB (sanity check)
+          test -f gantt-santa-isabel.html
+          SIZE=$(stat -c%s gantt-santa-isabel.html)
+          echo "Tamaño dashboard: $SIZE bytes"
+          if [ "$SIZE" -lt 100000 ]; then
+            echo "❌ Dashboard sospechosamente pequeño ($SIZE bytes)"
+            exit 1
+          fi
+          # Debe contener el tab principal
+          grep -q '<section class="tab-content active" id="tab-kpis">' gantt-santa-isabel.html || (echo "❌ Falta tab-kpis" && exit 1)
+          echo "✅ HTML básico OK"
+
+  deploy:
+    name: Deploy a surge.sh
+    needs: validate
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'      # Solo deploy desde main
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Preparar carpeta deploy-torre
+        run: |
+          mkdir -p deploy-torre
+          # Copiar dashboard como index.html (surge sirve index.html por defecto)
+          cp gantt-santa-isabel.html deploy-torre/index.html
+          # Copiar logos si existen
+          if [ -d "IMAGENES_LOGOS" ]; then
+            cp -r IMAGENES_LOGOS deploy-torre/
+          fi
+          # Archivo CNAME (si en el futuro usas dominio propio)
+          # echo "dashboard.cvaconstructora.com" > deploy-torre/CNAME
+          ls -la deploy-torre/
+
+      - name: Instalar surge CLI
+        run: npm install --global surge
+
+      - name: Deploy a surge.sh
+        env:
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+        run: |
+          if [ -z "$SURGE_LOGIN" ] || [ -z "$SURGE_TOKEN" ]; then
+            echo "❌ Faltan secrets SURGE_LOGIN o SURGE_TOKEN"
+            echo "   Configurar en: github.com/<usuario>/<repo>/settings/secrets/actions"
+            exit 1
+          fi
+          surge deploy-torre torre-santa-isabel.surge.sh
+
+      - name: Resumen
+        run: |
+          echo "🚀 Deployed to https://torre-santa-isabel.surge.sh"
+          echo "   Commit: ${{ github.sha }}"
+          echo "   Mensaje: ${{ github.event.head_commit.message }}"

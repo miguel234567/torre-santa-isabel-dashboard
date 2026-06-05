@@ -1,0 +1,46 @@
+# ── Sistema operativo ────────────────────────────────────────
+desktop.ini
+Thumbs.db
+.DS_Store
+ehthumbs.db
+
+# ── Excel / Office temp files ────────────────────────────────
+~$*
+*.tmp
+*.bak
+*.swp
+
+# ── Editor / IDE ─────────────────────────────────────────────
+.vscode/
+.idea/
+*.code-workspace
+
+# ── Artefactos de agentes externos (no son nuestros) ─────────
+.od-skills/
+*.artifact.json
+
+# ── Python (scripts) ─────────────────────────────────────────
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# ── Logs y caches ────────────────────────────────────────────
+*.log
+.cache/
+
+# ── Secretos (NUNCA commitear) ───────────────────────────────
+.env
+.env.local
+.env.production
+*.secret
+secrets/
+
+# ── Build / deploy temporales ────────────────────────────────
+dist/
+build/
+node_modules/
+
+# ── Backups locales (mantener fuera del repo) ────────────────
+*.BACKUP-*.html
