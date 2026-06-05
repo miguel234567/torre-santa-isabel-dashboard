@@ -96,10 +96,10 @@ jobs:
             echo "   Configurar en: github.com/<usuario>/<repo>/settings/secrets/actions"
             exit 1
           fi
-          surge deploy-torre torre-santa-isabel.surge.sh
+          surge deploy-torre contro360-tsi.surge.sh
 
       - name: Resumen
         run: |
-          echo "🚀 Deployed to https://torre-santa-isabel.surge.sh"
+          echo "🚀 Deployed to https://contro360-tsi.surge.sh"
           echo "   Commit: ${{ github.sha }}"
           echo "   Mensaje: ${{ github.event.head_commit.message }}"
