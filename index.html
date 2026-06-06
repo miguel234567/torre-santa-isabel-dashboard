@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>ObraFlow — Gestión de obras y proyectos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.344.0/lucide.min.js"></script>
+  <style>
+    /* ─── VARIABLES ────────────────────────────────────────── */
+    :root {
+      --bg:           #0A1628;
+      --bg-el:        #0F1E35;
+      --surface:      #16263F;
+      --surface-h:    #1D3050;
+      --primary:      #00D68F;
+      --primary-h:    #00B377;
+      --primary-soft: rgba(0,214,143,.12);
+      --blue:         #4A9EFF;
+      --warn:         #FFB547;
+      --danger:       #FF5C7C;
+      --txt:          #F5F9FF;
+      --txt-s:        #A8B8D1;
+      --txt-m:        #6B7B95;
+      --border:       rgba(255,255,255,.08);
+      --border-s:     rgba(255,255,255,.15);
+      --grad-hero:    linear-gradient(135deg,#0A1628 0%,#0F1E35 60%,#16263F 100%);
+      --grad-p:       linear-gradient(135deg,#00D68F 0%,#00B377 100%);
+      --sh-md:        0 8px 24px rgba(0,0,0,.35);
+      --sh-lg:        0 20px 60px rgba(0,0,0,.45);
+      --sh-glow:      0 0 40px rgba(0,214,143,.25);
+      --r-sm:8px; --r-md:12px; --r-lg:20px; --r-xl:28px;
+    }
+    /* ─── RESET ────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--txt); line-height: 1.6; overflow-x: hidden; }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+    svg { display: block; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    /* ─── LAYOUT ───────────────────────────────────────────── */
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    section { padding: 96px 0; }
+    /* ─── NAVBAR ───────────────────────────────────────────── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 32px; height: 68px;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background .3s, backdrop-filter .3s, border-bottom .3s;
+    }
+    .nav.scrolled {
+      background: rgba(10,22,40,.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; font-size: 1.2rem; font-weight: 800; }
+    .nav-logo-icon { width: 36px; height: 36px; background: var(--grad-p); border-radius: 8px;
+      display: grid; place-items: center; color: #0A1628; font-size: 1.1rem; }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a { font-size: .95rem; color: var(--txt-s); font-weight: 500; transition: color .2s; }
+    .nav-links a:hover { color: var(--txt); }
+    .nav-actions { display: flex; gap: 12px; align-items: center; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px;
+      border-radius: var(--r-md); font-size: .9rem; font-weight: 600; transition: all .2s; }
+    .btn-ghost { color: var(--txt-s); }
+    .btn-ghost:hover { color: var(--txt); }
+    .btn-primary { background: var(--grad-p); color: #0A1628; box-shadow: 0 4px 16px rgba(0,214,143,.3); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--sh-glow); }
+    .btn-outline { border: 1px solid var(--border-s); color: var(--txt); }
+    .btn-outline:hover { background: var(--surface); transform: translateY(-2px); }
+    .nav-ham { display: none; flex-direction: column; gap: 5px; padding: 6px; }
+    .nav-ham span { display: block; width: 22px; height: 2px; background: var(--txt); border-radius: 2px; transition: .3s; }
+    /* ─── HERO ─────────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh; padding-top: 68px;
+      background: var(--grad-hero);
+      display: grid; place-items: center; position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: radial-gradient(var(--border-s) 1px, transparent 1px);
+      background-size: 40px 40px; opacity: .5;
+    }
+    .hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; padding: 60px 0; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px;
+      background: var(--primary-soft); border: 1px solid rgba(0,214,143,.3); border-radius: 100px;
+      font-size: .8rem; font-weight: 600; color: var(--primary); margin-bottom: 20px; width: fit-content; }
+    .hero-title { font-size: clamp(2.4rem,4.5vw,3.8rem); font-weight: 800; line-height: 1.15;
+      letter-spacing: -.02em; margin-bottom: 20px; }
+    .hero-title span { color: var(--primary); }
+    .hero-sub { font-size: 1.1rem; color: var(--txt-s); line-height: 1.7; margin-bottom: 36px; max-width: 480px; }
+    .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+    /* Dashboard card */
+    .dash-card {
+      background: var(--grad-card, linear-gradient(145deg,rgba(22,38,63,.95),rgba(15,30,53,.8)));
+      border: 1px solid var(--border-s); border-radius: var(--r-xl);
+      padding: 28px; box-shadow: var(--sh-lg), var(--sh-glow);
+      backdrop-filter: blur(20px); position: relative; overflow: hidden;
+    }
+    .dash-card::after { content: ''; position: absolute; top: -40px; right: -40px;
+      width: 160px; height: 160px; background: radial-gradient(circle,rgba(0,214,143,.15),transparent 70%); }
+    .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .dash-obra-name { font-size: .85rem; font-weight: 600; color: var(--txt-s); }
+    .dash-obra-code { font-size: .75rem; color: var(--primary); font-family: 'JetBrains Mono', monospace; }
+    .dash-status { padding: 4px 10px; background: rgba(0,214,143,.15); border-radius: 100px;
+      font-size: .75rem; font-weight: 600; color: var(--primary); }
+    /* Slider dots */
+    .dash-slider-dots { display: flex; gap: 8px; margin-bottom: 22px; }
+    .dash-dot { flex: 1; height: 3px; background: var(--border-s); border-radius: 10px;
+      cursor: pointer; transition: all .3s; }
+    .dash-dot.active { background: var(--primary); }
+    /* Metric big */
+    .dash-metric-big { margin-bottom: 20px; }
+    .dash-metric-label { font-size: .8rem; color: var(--txt-m); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .08em; }
+    .dash-metric-value { font-size: 2.4rem; font-weight: 700; font-family: 'JetBrains Mono', monospace;
+      color: var(--txt); line-height: 1; margin-bottom: 6px; transition: all .3s; }
+    .dash-metric-delta { display: inline-flex; align-items: center; gap: 4px; font-size: .8rem; font-weight: 600;
+      color: var(--primary); }
+    /* 6-metric mini grid */
+    .dash-mini-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+    .dash-mini-item { background: var(--surface); border-radius: var(--r-md); padding: 12px; border: 1px solid var(--border); }
+    .dash-mini-label { font-size: .7rem; color: var(--txt-m); margin-bottom: 4px; }
+    .dash-mini-val { font-size: .95rem; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+    /* Tabs hero */
+    .hero-tabs { display: flex; gap: 0; overflow-x: auto; scrollbar-width: none;
+      border-bottom: 1px solid var(--border); margin-bottom: 0; }
+    .hero-tabs::-webkit-scrollbar { display: none; }
+    .htab { flex: none; padding: 8px 14px; font-size: .75rem; font-weight: 500; color: var(--txt-m);
+      border-bottom: 2px solid transparent; cursor: pointer; transition: all .2s; white-space: nowrap; }
+    .htab.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .htab:hover:not(.active) { color: var(--txt-s); }
+    /* ─── SECTION COMMON ───────────────────────────────────── */
+    .sec-eyebrow { display: flex; align-items: center; gap: 8px; font-size: .8rem; font-weight: 600;
+      color: var(--primary); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 12px; }
+    .sec-title { font-size: clamp(2rem,3.5vw,3rem); font-weight: 800; letter-spacing: -.02em;
+      line-height: 1.2; margin-bottom: 16px; }
+    .sec-desc { font-size: 1.05rem; color: var(--txt-s); max-width: 560px; line-height: 1.7; }
+    /* ─── SEC 2: OBRA QUE SE CUENTA ────────────────────────── */
+    .obra-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; margin-top: 64px; }
+    .project-card {
+      background: var(--bg-el); border: 1px solid var(--border-s); border-radius: var(--r-xl);
+      padding: 32px; box-shadow: var(--sh-md);
+    }
+    .pc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+    .pc-code { font-size: .75rem; font-family: 'JetBrains Mono', monospace; color: var(--primary); margin-bottom: 4px; }
+    .pc-name { font-size: 1.2rem; font-weight: 700; }
+    .pc-loc { font-size: .85rem; color: var(--txt-m); margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+    .pc-avatars { display: flex; }
+    .avatar { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--bg-el);
+      display: grid; place-items: center; font-size: .7rem; font-weight: 700; margin-left: -8px; color: #0A1628; }
+    .av1 { background: linear-gradient(135deg,#00D68F,#00B377); }
+    .av2 { background: linear-gradient(135deg,#4A9EFF,#2B80E0); }
+    .av3 { background: linear-gradient(135deg,#FFB547,#E09030); }
+    .av4 { background: linear-gradient(135deg,#FF5C7C,#D03060); }
+    .av5 { background: linear-gradient(135deg,#A855F7,#7C3AED); }
+    .pc-counters { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 24px; }
+    .counter-item { text-align: center; background: var(--surface); border-radius: var(--r-md); padding: 16px 8px; border: 1px solid var(--border); }
+    .counter-num { font-size: 1.8rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--primary); }
+    .counter-lbl { font-size: .75rem; color: var(--txt-m); margin-top: 4px; }
+    .pc-progress-wrap { margin-bottom: 8px; }
+    .pc-progress-label { display: flex; justify-content: space-between; font-size: .8rem; color: var(--txt-s); margin-bottom: 8px; }
+    .pc-progress-bar { height: 8px; background: var(--surface); border-radius: 100px; overflow: hidden; }
+    .pc-progress-fill { height: 100%; background: var(--grad-p); border-radius: 100px; width: 0; transition: width 1.5s cubic-bezier(.65,0,.35,1); }
+    /* Docs panel */
+    .docs-panel { background: var(--bg-el); border: 1px solid var(--border-s); border-radius: var(--r-xl); padding: 32px; }
+    .docs-panel h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; }
+    .doc-item { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .doc-item:last-child { border-bottom: none; }
+    .doc-icon { width: 40px; height: 40px; border-radius: var(--r-sm); display: grid; place-items: center; font-size: .7rem; font-weight: 700; flex-shrink: 0; }
+    .doc-pdf { background: rgba(255,92,124,.15); color: var(--danger); }
+    .doc-xls { background: rgba(0,214,143,.15); color: var(--primary); }
+    .doc-dwg { background: rgba(74,158,255,.15); color: var(--blue); }
+    .doc-zip { background: rgba(255,181,71,.15); color: var(--warn); }
+    .doc-name { font-size: .9rem; font-weight: 500; }
+    .doc-size { font-size: .75rem; color: var(--txt-m); margin-top: 2px; }
+    .doc-date { margin-left: auto; font-size: .75rem; color: var(--txt-m); flex-shrink: 0; }
+    /* ─── SEC 3: PRESUPUESTO VS EJECUTADO ──────────────────── */
+    .budget-section { background: var(--bg-el); }
+    .budget-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+    .budget-compare { background: var(--surface); border: 1px solid var(--border-s); border-radius: var(--r-xl); padding: 32px; }
+    .bc-title { font-size: .85rem; font-weight: 600; color: var(--txt-s); margin-bottom: 20px; text-transform: uppercase; letter-spacing: .08em; }
+    .bc-bar-wrap { margin-bottom: 14px; }
+    .bc-bar-label { display: flex; justify-content: space-between; font-size: .85rem; margin-bottom: 8px; }
+    .bc-bar-label .lbl { color: var(--txt-s); }
+    .bc-bar-label .val { font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+    .bc-bar-track { height: 12px; background: var(--bg-el); border-radius: 100px; overflow: hidden; }
+    .bc-bar-fill { height: 100%; border-radius: 100px; width: 0; transition: width 1.5s cubic-bezier(.65,0,.35,1); }
+    .fill-blue { background: linear-gradient(90deg,#4A9EFF,#2B80E0); }
+    .fill-green { background: var(--grad-p); }
+    .bc-margin { margin-top: 20px; padding: 16px; background: var(--primary-soft); border-radius: var(--r-md); border: 1px solid rgba(0,214,143,.25); display: flex; align-items: center; justify-content: space-between; }
+    .bc-margin-lbl { font-size: .85rem; color: var(--txt-s); }
+    .bc-margin-val { font-size: 1.4rem; font-weight: 700; color: var(--primary); font-family: 'JetBrains Mono', monospace; }
+    .bc-margin-pct { font-size: .8rem; color: var(--primary); margin-top: 2px; }
+    .breakdown-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+    .bk-item { background: var(--bg-el); border-radius: var(--r-md); padding: 14px; border: 1px solid var(--border); }
+    .bk-name { font-size: .75rem; color: var(--txt-m); margin-bottom: 8px; }
+    .bk-bars { display: flex; gap: 6px; height: 6px; margin-bottom: 6px; }
+    .bk-b1 { flex: none; height: 100%; background: var(--blue); border-radius: 2px; }
+    .bk-b2 { flex: none; height: 100%; background: var(--primary); border-radius: 2px; }
+    .bk-vals { display: flex; justify-content: space-between; font-size: .72rem; font-family: 'JetBrains Mono', monospace; }
+    /* ─── SEC 4: MANO DE OBRA ──────────────────────────────── */
+    .labor-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; margin-top: 64px; align-items: start; }
+    .labor-card { background: var(--bg-el); border: 1px solid var(--border-s); border-radius: var(--r-xl); padding: 32px; }
+    .lc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .lc-week { font-size: .85rem; font-weight: 600; color: var(--txt-s); }
+    .lc-totals { display: flex; gap: 20px; }
+    .lc-total-item { text-align: center; }
+    .lc-total-val { font-size: 1.1rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--txt); }
+    .lc-total-lbl { font-size: .7rem; color: var(--txt-m); }
+    /* SVG chart */
+    .labor-svg-wrap { position: relative; }
+    .labor-svg { width: 100%; overflow: visible; }
+    .bar-rect { cursor: pointer; transition: opacity .2s; }
+    .bar-rect:hover { opacity: .85; }
+    .bar-tooltip { position: absolute; background: var(--surface); border: 1px solid var(--border-s);
+      border-radius: var(--r-sm); padding: 8px 12px; font-size: .8rem; pointer-events: none;
+      display: none; white-space: nowrap; box-shadow: var(--sh-md); z-index: 10; }
+    .bar-tooltip.visible { display: block; }
+    /* Workers list */
+    .workers-card { background: var(--bg-el); border: 1px solid var(--border-s); border-radius: var(--r-xl); padding: 24px; }
+    .workers-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 16px; }
+    .worker-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .worker-item:last-child { border-bottom: none; }
+    .worker-av { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-size: .65rem; font-weight: 700; color: #0A1628; flex-shrink: 0; }
+    .worker-info { flex: 1; min-width: 0; }
+    .worker-name { font-size: .85rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .worker-rol { font-size: .72rem; color: var(--txt-m); }
+    .worker-hrs { font-size: .85rem; font-weight: 600; font-family: 'JetBrains Mono', monospace; color: var(--primary); }
+    /* ─── SEC 5: CÓMO FUNCIONA ─────────────────────────────── */
+    .steps-section { background: var(--bg-el); }
+    .steps-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 64px; }
+    .step-card {
+      background: var(--surface); border: 1px solid var(--border-s); border-radius: var(--r-xl);
+      padding: 32px; position: relative; overflow: hidden; opacity: 0; transform: translateY(30px);
+      transition: opacity .6s, transform .6s;
+    }
+    .step-card.visible { opacity: 1; transform: translateY(0); }
+    .step-num { font-size: .7rem; font-weight: 700; color: var(--primary); letter-spacing: .15em;
+      text-transform: uppercase; margin-bottom: 12px; }
+    .step-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    .step-desc { font-size: .85rem; color: var(--txt-s); margin-bottom: 24px; }
+    .step-visual { background: var(--bg-el); border-radius: var(--r-lg); padding: 20px; border: 1px solid var(--border); }
+    /* Step 1 visual - presupuesto bars */
+    .budget-line { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .budget-line:last-child { margin-bottom: 0; }
+    .bl-lbl { font-size: .75rem; color: var(--txt-s); width: 90px; flex-shrink: 0; }
+    .bl-track { flex: 1; height: 8px; background: var(--surface-h); border-radius: 4px; overflow: hidden; }
+    .bl-fill { height: 100%; border-radius: 4px; background: var(--grad-p); width: 0; transition: width 1.2s cubic-bezier(.65,0,.35,1); }
+    .bl-val { font-size: .72rem; font-family: 'JetBrains Mono', monospace; color: var(--txt-s); width: 70px; text-align: right; flex-shrink: 0; }
+    /* Step 2 visual - timeline */
+    .mini-timeline { }
+    .mt-item { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; }
+    .mt-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+    .mt-green { background: var(--primary); }
+    .mt-blue { background: var(--blue); }
+    .mt-warn { background: var(--warn); }
+    .mt-text { font-size: .75rem; color: var(--txt-s); }
+    .mt-val { font-size: .72rem; font-family: 'JetBrains Mono', monospace; color: var(--txt); margin-top: 2px; }
+    /* Step 3 visual - gauge */
+    .gauge-wrap { display: flex; align-items: center; gap: 20px; }
+    .gauge-info { flex: 1; }
+    .gi-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: .8rem; }
+    .gi-row .k { color: var(--txt-s); }
+    .gi-row .v { font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+    .gi-margin { font-size: 1.4rem; font-weight: 700; color: var(--primary); font-family: 'JetBrains Mono', monospace; }
+    /* ─── SEC 6: TIMELINE ──────────────────────────────────── */
+    .timeline-wrap { max-width: 700px; margin: 64px auto 0; }
+    .tl-item { display: flex; gap: 20px; padding: 0 0 32px; position: relative; }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 40px; }
+    .tl-icon { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; }
+    .tl-line { flex: 1; width: 2px; background: var(--border); margin-top: 8px; }
+    .tl-item:last-child .tl-line { display: none; }
+    .ti-parte  { background: var(--primary-soft); color: var(--primary); }
+    .ti-remito { background: rgba(74,158,255,.15); color: var(--blue); }
+    .ti-foto   { background: rgba(255,181,71,.15); color: var(--warn); }
+    .ti-factura{ background: rgba(168,85,247,.15); color: #A855F7; }
+    .ti-tarea  { background: rgba(255,92,124,.15); color: var(--danger); }
+    .tl-content { flex: 1; padding-top: 8px; }
+    .tl-time { font-size: .75rem; color: var(--txt-m); margin-bottom: 4px; }
+    .tl-text { font-size: .9rem; }
+    .tl-autor { font-size: .78rem; color: var(--txt-m); margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+    /* ─── SEC 7: FEATURES ──────────────────────────────────── */
+    .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 64px; }
+    .feat-card { background: var(--bg-el); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 28px;
+      transition: border-color .2s, transform .2s, box-shadow .2s; }
+    .feat-card:hover { border-color: var(--border-s); transform: translateY(-3px); box-shadow: var(--sh-md); }
+    .feat-icon { width: 48px; height: 48px; border-radius: var(--r-sm); background: var(--primary-soft);
+      display: grid; place-items: center; color: var(--primary); margin-bottom: 16px; }
+    .feat-title { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .feat-desc { font-size: .85rem; color: var(--txt-s); line-height: 1.6; }
+    /* ─── SEC 8: TESTIMONIALES ─────────────────────────────── */
+    .testi-section { background: var(--bg-el); }
+    .testi-carousel { margin-top: 64px; position: relative; }
+    .testi-track { overflow: hidden; }
+    .testi-slide { display: none; animation: fadeIn .4s ease; }
+    .testi-slide.active { display: block; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+    .testi-card { background: var(--surface); border: 1px solid var(--border-s); border-radius: var(--r-xl);
+      padding: 40px; max-width: 700px; margin: 0 auto; text-align: center; }
+    .testi-quote-mark { font-size: 4rem; line-height: 1; color: var(--primary); font-family: Georgia, serif; margin-bottom: 16px; opacity: .6; }
+    .testi-quote { font-size: 1.1rem; line-height: 1.7; color: var(--txt-s); margin-bottom: 28px; font-style: italic; }
+    .testi-person { display: flex; align-items: center; gap: 14px; justify-content: center; }
+    .testi-avatar { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; font-size: .85rem; font-weight: 700; color: #0A1628; flex-shrink: 0; }
+    .testi-name { font-weight: 700; font-size: .95rem; }
+    .testi-role { font-size: .8rem; color: var(--txt-m); }
+    .testi-controls { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 32px; }
+    .testi-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border-s); color: var(--txt-s); display: grid; place-items: center; cursor: pointer; transition: all .2s; }
+    .testi-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .testi-dots { display: flex; gap: 8px; }
+    .testi-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border-s); cursor: pointer; transition: all .2s; }
+    .testi-dot.active { background: var(--primary); width: 24px; border-radius: 4px; }
+    /* ─── SEC 9: CTA FINAL ─────────────────────────────────── */
+    .cta-band { background: linear-gradient(135deg,rgba(0,214,143,.12),rgba(74,158,255,.08)); border-top: 1px solid rgba(0,214,143,.2); border-bottom: 1px solid rgba(0,214,143,.2); text-align: center; padding: 96px 0; }
+    .cta-band h2 { font-size: clamp(1.8rem,3.5vw,2.8rem); font-weight: 800; margin-bottom: 16px; }
+    .cta-band p { color: var(--txt-s); margin-bottom: 36px; font-size: 1.05rem; }
+    .cta-note { font-size: .82rem; color: var(--txt-m); margin-top: 16px; }
+    /* ─── FOOTER ───────────────────────────────────────────── */
+    footer { background: var(--bg-el); border-top: 1px solid var(--border); padding: 64px 0 32px; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+    .footer-brand p { font-size: .9rem; color: var(--txt-s); margin: 16px 0; line-height: 1.7; }
+    .footer-col h4 { font-size: .85rem; font-weight: 700; color: var(--txt); margin-bottom: 16px; text-transform: uppercase; letter-spacing: .08em; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col a { font-size: .9rem; color: var(--txt-s); transition: color .2s; }
+    .footer-col a:hover { color: var(--primary); }
+    .footer-bottom { border-top: 1px solid var(--border); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; }
+    .footer-bottom p { font-size: .82rem; color: var(--txt-m); }
+    /* ─── REVEAL ON SCROLL ─────────────────────────────────── */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s, transform .6s; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    /* ─── RESPONSIVE ───────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+      .obra-grid { grid-template-columns: 1fr; }
+      .budget-inner { grid-template-columns: 1fr; }
+      .labor-grid { grid-template-columns: 1fr; }
+      .steps-grid { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .dash-mini-grid { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 768px) {
+      section { padding: 64px 0; }
+      .nav-links, .nav-actions .btn-ghost { display: none; }
+      .nav-ham { display: flex; }
+      .features-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .breakdown-grid { grid-template-columns: 1fr; }
+      .lc-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    }
+    @media (max-width: 480px) {
+      .wrap { padding: 0 16px; }
+      .dash-mini-grid { grid-template-columns: 1fr 1fr; }
+      .pc-counters { grid-template-columns: repeat(3,1fr); }
+      .gauge-wrap { flex-direction: column; }
+    }
+    /* ─── MOBILE MENU ──────────────────────────────────────── */
+    .mobile-menu {
+      position: fixed; inset: 0; z-index: 99; background: rgba(10,22,40,.97);
+      backdrop-filter: blur(20px); display: none; flex-direction: column;
+      padding: 100px 32px 40px; gap: 8px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-size: 1.3rem; font-weight: 600; color: var(--txt-s); padding: 12px 0;
+      border-bottom: 1px solid var(--border); transition: color .2s; }
+    .mobile-menu a:hover { color: var(--primary); }
+    .mobile-menu .btn-primary { margin-top: 16px; justify-content: center; }
+  </style>
+</head>
+<body>
+
+<!-- ╔══════════════════════════════════╗ -->
+<!-- ║           NAVBAR                 ║ -->
+<!-- ╚══════════════════════════════════╝ -->
+<nav class="nav" id="navbar">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">🏗️</div>
+    ObraFlow
+  </a>
+  <ul class="nav-links">
+    <li><a href="#producto">Producto</a></li>
+    <li><a href="#como-funciona">Cómo funciona</a></li>
+    <li><a href="#caracteristicas">Funciones</a></li>
+    <li><a href="#testimonios">Clientes</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="#" class="btn btn-ghost">Iniciar sesión</a>
+    <a href="#cta" class="btn btn-primary">Prueba gratis</a>
+  </div>
+  <button class="nav-ham" id="ham-btn" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#producto" onclick="closeMobileMenu()">Producto</a>
+  <a href="#como-funciona" onclick="closeMobileMenu()">Cómo funciona</a>
+  <a href="#caracteristicas" onclick="closeMobileMenu()">Funciones</a>
+  <a href="#testimonios" onclick="closeMobileMenu()">Clientes</a>
+  <a href="#cta" class="btn btn-primary" onclick="closeMobileMenu()">Prueba gratis</a>
+</div>
+
+<!-- ╔══════════════════════════════════╗ -->
+<!-- ║              HERO                ║ -->
+<!-- ╚══════════════════════════════════╝ -->
+<section id="producto" class="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+      <!-- Left: text -->
+      <div class="hero-text">
+        <div class="hero-badge">
+          <span>🏆</span> Plataforma #1 en gestión de obras — LATAM
+        </div>
+        <h1 class="hero-title">Todas tus <span>obras</span><br>en ObraFlow</h1>
+        <p class="hero-sub">Proveedores, costos, márgenes y mano de obra bajo control en tiempo real. Del presupuesto al cierre sin hojas de Excel.</p>
+        <div class="hero-btns">
+          <a href="#cta" class="btn btn-primary">Comenzar gratis →</a>
+          <a href="#como-funciona" class="btn btn-outline">Ver cómo funciona</a>
+        </div>
+        <p style="margin-top:20px; font-size:.8rem; color:var(--txt-m);">Sin tarjeta de crédito · 14 días de prueba</p>
+      </div>
+      <!-- Right: dashboard card -->
+      <div>
+        <div class="dash-card">
+          <!-- Header -->
+          <div class="dash-header">
+            <div>
+              <div class="dash-obra-code">#C-2026-014</div>
+              <div style="font-weight:600; font-size:.95rem;">Torre Bacatá — Etapa 3</div>
+              <div class="dash-obra-name">📍 Bogotá, Colombia</div>
+            </div>
+            <div class="dash-status">En ejecución</div>
+          </div>
+          <!-- Slider dots -->
+          <div class="dash-slider-dots" id="sliderDots">
+            <div class="dash-dot active" data-idx="0" onclick="setSlider(0)"></div>
+            <div class="dash-dot" data-idx="1" onclick="setSlider(1)"></div>
+            <div class="dash-dot" data-idx="2" onclick="setSlider(2)"></div>
+            <div class="dash-dot" data-idx="3" onclick="setSlider(3)"></div>
+            <div class="dash-dot" data-idx="4" onclick="setSlider(4)"></div>
+            <div class="dash-dot" data-idx="5" onclick="setSlider(5)"></div>
+          </div>
+          <!-- Big metric -->
+          <div class="dash-metric-big">
+            <div class="dash-metric-label" id="metricLabel">Margen bruto</div>
+            <div class="dash-metric-value mono" id="metricValue">17.7%</div>
+            <div class="dash-metric-delta" id="metricDelta">↑ +2.3% vs semana anterior</div>
+          </div>
+          <!-- Mini grid -->
+          <div class="dash-mini-grid">
+            <div class="dash-mini-item">
+              <div class="dash-mini-label">Ingresos</div>
+              <div class="dash-mini-val mono" style="color:var(--blue)">$80.0M</div>
+            </div>
+            <div class="dash-mini-item">
+              <div class="dash-mini-label">Costos</div>
+              <div class="dash-mini-val mono" style="color:var(--warn)">$65.8M</div>
+            </div>
+            <div class="dash-mini-item">
+              <div class="dash-mini-label">Mano de obra</div>
+              <div class="dash-mini-val mono" style="color:var(--primary)">1.842h</div>
+            </div>
+            <div class="dash-mini-item">
+              <div class="dash-mini-label">Facturas</div>
+              <div class="dash-mini-val mono">127</div>
+            </div>
+            <div class="dash-mini-item">
+              <div class="dash-mini-label">Avance obra</div>
+              <div class="dash-mini-val mono" style="color:var(--primary)">68%</div>
+            </div>
+            <div class="dash-mini-item">
+              <div class="dash-mini-label">Km flota</div>
+              <div class="dash-mini-val mono">4.382</div>
+            </div>
+          </div>
+          <!-- Tabs -->
+          <div class="hero-tabs" role="tablist">
+            <div class="htab active" role="tab" aria-selected="true">Partes diarios</div>
+            <div class="htab" role="tab">Remitos</div>
+            <div class="htab" role="tab">Presupuestado</div>
+            <div class="htab" role="tab">Ejecutado</div>
+            <div class="htab" role="tab">Margen</div>
+            <div class="htab" role="tab">Obra</div>
+            <div class="htab" role="tab">Mediciones</div>
+            <div class="htab" role="tab">Horas hombre</div>
+            <div class="htab" role="tab">Subcontratos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════╗ -->
+<!-- ║     SEC 2: OBRA SE CUENTA SOLA   ║ -->
+<!-- ╚══════════════════════════════════╝ -->
+<section id="obra-section">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eyebrow"><span>⚡</span> Automatización total</div>
+      <h2 class="sec-title">Una obra que se<br><span style="color:var(--primary)">cuenta sola</span></h2>
+      <p class="sec-desc">Todos los datos convergen en ObraFlow automáticamente, desde las facturas hasta la maquinaria. Sin reingreso manual.</p>
+    </div>
+    <div class="obra-grid">
+      <!-- Project card -->
+      <div class="project-card reveal">
+        <div class="pc-header">
+          <div>
+            <div class="pc-code">#C-2026-014</div>
+            <div class="pc-name">Torre Bacatá — Etapa 3</div>
+            <div class="pc-loc">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Bogotá, D.C. · Constructora Andina S.A.S.
+            </div>
+          </div>
+          <div class="pc-avatars">
+            <div class="avatar av1">MO</div>
+            <div class="avatar av2">CJ</div>
+            <div class="avatar av3">SP</div>
+            <div class="avatar av4">DM</div>
+            <div class="avatar av5">+2</div>
+          </div>
+        </div>
+        <div class="pc-counters">
+          <div class="counter-item">
+            <div class="counter-num" data-target="42">0</div>
+            <div class="counter-lbl">Remitos</div>
+          </div>
+          <div class="counter-item">
+            <div class="counter-num" data-target="27">0</div>
+            <div class="counter-lbl">Entregas</div>
+          </div>
+          <div class="counter-item">
+            <div class="counter-num" data-target="68">0</div>
+            <div class="counter-lbl">Partes diarios</div>
+          </div>
+        </div>
+        <div class="pc-progress-wrap">
+          <div class="pc-progress-label">
+            <span>Avance de obra</span>
+            <span style="color:var(--primary); font-weight:700;">68%</span>
+          </div>
+          <div class="pc-progress-bar">
+            <div class="pc-progress-fill" data-width="68"></div>
+          </div>
+        </div>
+        <div style="display:flex; gap:12px; margin-top:16px; flex-wrap:wrap;">
+          <span style="font-size:.75rem; background:var(--primary-soft); color:var(--primary); padding:4px 10px; border-radius:100px; font-weight:600;">✓ Actualizado hace 12 min</span>
+          <span style="font-size:.75rem; background:rgba(74,158,255,.12); color:var(--blue); padding:4px 10px; border-radius:100px; font-weight:600;">📋 Parte #068 activo</span>
+        </div>
+      </div>
+      <!-- Docs panel -->
+      <div class="docs-panel reveal">
+        <h3>📎 Documentos vinculados a la obra</h3>
+        <div class="doc-item">
+          <div class="doc-icon doc-pdf">PDF</div>
+          <div>
+            <div class="doc-name">Contrato_Marco_2026.pdf</div>
+            <div class="doc-size">2.4 MB</div>
+          </div>
+          <div class="doc-date">Feb 15</div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon doc-xls">XLS</div>
+          <div>
+            <div class="doc-name">Presupuesto_Detallado_v3.xlsx</div>
+            <div class="doc-size">856 KB</div>
+          </div>
+          <div class="doc-date">Mar 02</div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon doc-dwg">DWG</div>
+          <div>
+            <div class="doc-name">Planos_Estructurales_R3.dwg</div>
+            <div class="doc-size">12.1 MB</div>
+          </div>
+          <div class="doc-date">Abr 10</div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon doc-zip">ZIP</div>
+          <div>
+            <div class="doc-name">Avance_Semana14_fotos.zip</div>
+            <div class="doc-size">48 MB · 48 fotos</div>
+          </div>
+          <div class="doc-date">May 14</div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon doc-pdf">PDF</div>
+          <div>
+            <div class="doc-name">Acta_Comite_Obra_#18.pdf</div>
+            <div class="doc-size">420 KB</div>
+          </div>
+          <div class="doc-date">May 16</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════╗ -->
+<!-- ║   SEC 3: PRESUPUESTO VS EJEC.    ║ -->
+<!-- ╚══════════════════════════════════╝ -->
+<section class="budget-section">
+  <div class="wrap">
+    <div class="budget-inner">
+      <!-- Left: text -->
+      <div class="reveal">
+        <div class="sec-eyebrow"><span>📊</span> Control en tiempo real</div>
+        <h2 class="sec-title">Presupuesto<br>vs <span style="color:var(--primary)">ejecutado</span></h2>
+        <p class="sec-desc">Comparativo en vivo. Desvíos marcados, causas trazables, decisiones más rápidas. Cada remito actualiza el ejecutado al instante.</p>
+        <div style="margin-top:32px; display:flex; flex-direction:column; gap:12px;">
+          <div style="display:flex; align-items:center; gap:10px; font-size:.9rem; color:var(--txt-s);">
+            <span style="color:var(--primary);">✓</span> Actualización automática con cada remito
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; font-size:.9rem; color:var(--txt-s);">
+            <span style="color:var(--primary);">✓</span> Desglose por categoría de costo
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; font-size:.9rem; color:var(--txt-s);">
+            <span style="color:var(--primary);">✓</span> Alertas de sobreejecutado configurables
+          </div>
+        </div>
+      </div>
+      <!-- Right: compare card -->
+      <div class="reveal">
+        <div class="budget-compare">
+          <div class="bc-title">Comparativo presupuestal · Obra #C-2026-014</div>
+          <div class="bc-bar-wrap">
+            <div class="bc-bar-label">
+              <span class="lbl">Presupuestado</span>
+              <span class="val" style="color:var(--blue)">$80.000.000</span>
+            </div>
+            <div class="bc-bar-track">
+              <div class="bc-bar-fill fill-blue" data-width="100"></div>
+            </div>
+          </div>
+          <div class="bc-bar-wrap" style="margin-top:14px;">
+            <div class="bc-bar-label">
+              <span class="lbl">Ejecutado</span>
+              <span class="val" style="color:var(--primary)">$65.800.000</span>
+            </div>
+            <div class="bc-bar-track">
+              <div class="bc-bar-fill fill-green" data-width="82"></div>
+            </div>
+          </div>
+          <div class="bc-margin">
+            <div>
+              <div class="bc-margin-lbl">Margen actual</div>
+              <div class="bc-margin-pct">17.7% sobre presupuestado</div>
+            </div>
+            <div>
+              <div class="bc-margin-val">+$14.200.000</div>
+            </div>
+          </div>
+          <!-- Breakdown -->
+          <div class="breakdown-grid">
+            <div class="bk-item">
+              <div class="bk-name">Materiales</div>
+              <div class="bk-bars">
+                <div class="bk-b1" style="width:60px;"></div>
+                <div class="bk-b2" style="width:50px;"></div>
+              </div>
+              <div class="bk-vals">
+                <span style="color:var(--blue);">$36.0M</span>
+                <span style="color:var(--primary);">$30.4M</span>
+              </div>
+            </div>
+            <div class="bk-item">
+              <div class="bk-name">Mano de obra</div>
+              <div class="bk-bars">
+                <div class="bk-b1" style="width:45px;"></div>
+                <div class="bk-b2" style="width:36px;"></div>
+              </div>
+              <div class="bk-vals">
+                <span style="color:var(--blue);">$24.0M</span>
+                <span style="color:var(--primary);">$19.6M</span>
+              </div>
+            </div>
+            <div class="bk-item">
+              <div class="bk-name">Subcontratos</div>
+              <div class="bk-bars">
+                <div class="bk-b1" style="width:30px;"></div>
+                <div class="bk-b2" style="width:26px;"></div>
+              </div>
+              <div class="bk-vals">
+                <span style="color:var(--blue);">$12.0M</span>
+                <span style="color:var(--primary);">$10.2M</span>
+              </div>
+            </div>
+            <div class="bk-item">
+              <div class="bk-name">Equipamiento</div>
+              <div class="bk-bars">
+                <div class="bk-b1" style="width:20px;"></div>
+                <div class="bk-b2" style="width:14px;"></div>
+              </div>
+              <div class="bk-vals">
+                <span style="color:var(--blue);">$8.0M</span>
+                <span style="color:var(--primary);">$5.6M</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════╗ -->
+<!-- ║   SEC 4: MANO DE OBRA            ║ -->
+<!-- ╚══════════════════════════════════╝ -->
+<section>
+  <div class="wrap">
+    <div class="reveal" style="text-align:center; max-width:600px; margin:0 auto;">
+      <div class="sec-eyebrow" style="justify-content:center;"><span>👷</span> Recursos humanos</div>
+      <h2 class="sec-title">Mano de obra,<br>maquinaria y <span style="color:var(--primary)">medios</span></h2>
+      <p class="sec-desc">Horas trabajadas, maquinaria utilizada y trabajos realizados: todo registrado automáticamente en ObraFlow.</p>
+    </div>
+    <div class="labor-grid">
+      <!-- Chart card -->
+      <div class="labor-card reveal">
+        <div class="lc-header">
+          <div class="lc-week">📅 Semana 14 · 28 Abr – 2 May 2026</div>
+          <div class="lc-totals">
+            <div class="lc-total-item">
+              <div class="lc-total-val mono">178h</div>
+              <div class="lc-total-lbl">Total horas</div>
+            </div>
+            <div class="lc-total-item">
+              <div class="lc-total-val mono">6</div>
+              <div class="lc-total-lbl">Operarios</div>
+            </div>
+            <div class="lc-total-item">
+              <div class="lc-total-val mono" style="color:var(--primary)">$4.27M</div>
+              <div class="lc-total-lbl">Costo MO</div>
+            </div>
+          </div>
+        </div>
+        <div class="labor-svg-wrap">
+          <svg class="labor-svg" viewBox="0 0 380 200" id="laborChart">
+            <!-- Grid lines -->
+            <line x1="40" y1="20" x2="380" y2="20" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+            <line x1="40" y1="60" x2="380" y2="60" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+            <line x1="40" y1="100" x2="380" y2="100" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+            <line x1="40" y1="140" x2="380" y2="140" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+            <line x1="40" y1="180" x2="380" y2="180" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+            <!-- Y labels -->
+            <text x="32" y="24" text-anchor="end" font-size="10" fill="rgba(168,184,209,.6)">50h</text>
+            <text x="32" y="64" text-anchor="end" font-size="10" fill="rgba(168,184,209,.6)">40h</text>
+            <text x="32" y="104" text-anchor="end" font-size="10" fill="rgba(168,184,209,.6)">30h</text>
+            <text x="32" y="144" text-anchor="end" font-size="10" fill="rgba(168,184,209,.6)">20h</text>
+            <text x="32" y="184" text-anchor="end" font-size="10" fill="rgba(168,184,209,.6)">10h</text>
+            <!-- Bars: data = [38,42,36,34,28] max=50 chart-height=160 -->
+            <!-- Lun: 38h → height=121.6 → y=58.4 -->
+            <rect class="bar-rect" x="60" y="180" width="44" height="0" rx="6" fill="url(#barGrad)" data-h="121.6" data-day="Lun" data-hrs="38" data-cost="$912.000"/>
+            <!-- Mar: 42h → height=134.4 → y=45.6 -->
+            <rect class="bar-rect" x="126" y="180" width="44" height="0" rx="6" fill="url(#barGrad)" data-h="134.4" data-day="Mar" data-hrs="42" data-cost="$1.008.000"/>
+            <!-- Mié: 36h → height=115.2 → y=64.8 -->
+            <rect class="bar-rect" x="192" y="180" width="44" height="0" rx="6" fill="url(#barGrad)" data-h="115.2" data-day="Mié" data-hrs="36" data-cost="$864.000"/>
+            <!-- Jue: 34h → height=108.8 → y=71.2 -->
+            <rect class="bar-rect" x="258" y="180" width="44" height="0" rx="6" fill="url(#barGrad)" data-h="108.8" data-day="Jue" data-hrs="34" data-cost="$816.000"/>
+            <!-- Vie: 28h → height=89.6 → y=90.4 -->
+            <rect class="bar-rect" x="324" y="180" width="44" height="0" rx="6" fill="url(#barGrad)" data-h="89.6" data-day="Vie" data-hrs="28" data-cost="$672.000"/>
+            <!-- Day labels -->
+            <text x="82" y="196" text-anchor="middle" font-size="11" fill="rgba(168,184,209,.8)">Lun</text>
+            <text x="148" y="196" text-anchor="middle" font-size="11" fill="rgba(168,184,209,.8)">Mar</text>
+            <text x="214" y="196" text-anchor="middle" font-size="11" fill="rgba(168,184,209,.8)">Mié</text>
+            <text x="280" y="196" text-anchor="middle" font-size="11" fill="rgba(168,184,209,.8)">Jue</text>
+            <text x="346" y="196" text-anchor="middle" font-size="11" fill="rgba(168,184,209,.8)">Vie</text>
+            <!-- Gradient def -->
+            <defs>
+              <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#00D68F"/>
+                <stop offset="100%" stop-color="#00B377" stop-opacity=".7"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="bar-tooltip" id="barTooltip"></div>
+        </div>
+      </div>
+      <!-- Workers list -->
+      <div class="workers-card reveal">
+        <h3>Operarios activos</h3>
+        <div class="worker-item">
+          <div class="worker-av av1">CR</div>
+          <div class="worker-info">
+            <div class="worker-name">Carlos Ramírez</div>
+            <div class="worker-rol">Oficial</div>
+          </div>
+          <div class="worker-hrs">38h</div>
+        </div>
+        <div class="worker-item">
+          <div class="worker-av av2">AG</div>
+          <div class="worker-info">
+            <div class="worker-name">Andrés Gutiérrez</div>
+            <div class="worker-rol">Oficial</div>
+          </div>
+          <div class="worker-hrs">36h</div>
+        </div>
+        <div class="worker-item">
+          <div class="worker-av av3">YC</div>
+          <div class="worker-info">
+            <div class="worker-name">Yenifer Castro</div>
+            <div class="worker-rol">Ayudante</div>
+          </div>
+          <div class="worker-hrs">32h</div>
+        </div>
+        <div class="worker-item">
+          <div class="worker-av av4">DM</div>
+          <div class="worker-info">
+            <div class="worker-name">Diego Marín</div>
+            <div class="worker-rol">Soldador</div>
+          </div>
+          <div class="worker-hrs">28h</div>
+        </div>
+        <div class="worker-item">
+          <div class="worker-av av5">LV</div>
+          <div class="worker-info">
+            <div class="worker-name">Luis Vargas</div>
+            <div class="worker-rol">Ayudante</div>
+          </div>
+          <div class="worker-hrs">24h</div>
+        </div>
+        <div class="worker-item">
+          <div class="worker-av" style="background:linear-gradient(135deg,#06B6D4,#0891B2);">MQ</div>
+          <div class="worker-info">
+            <div class="worker-name">Mateo Quintero</div>
+            <div class="worker-rol">Aprendiz</div>
+          </div>
+          <div class="worker-hrs">20h</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════╗ -->
+<!-- ║   SEC 5: CÓMO FUNCIONA           ║ -->
+<!-- ╚══════════════════════════════════╝ -->
+<section id="como-funciona" class="steps-section">
+  <div class="wrap">
+    <div class="reveal" style="text-align:center; max-width:600px; margin:0 auto;">
+      <div class="sec-eyebrow" style="justify-content:center;"><span>⚙️</span> Proceso</div>
+      <h2 class="sec-title">Del presupuesto al margen,<br><span style="color:var(--primary)">en tres pasos</span></h2>
+      <p class="sec-desc">Cada remito queda vinculado a la obra. El ejecutado se actualiza solo. El margen se ve al instante.</p>
+    </div>
+    <div class="steps-grid">
+      <!-- Paso 1 -->
+      <div class="step-card">
+        <div class="step-num">01 — Presupuesto</div>
+        <div class="step-title">El plan de la obra</div>
+        <div class="step-desc">Carga tu presupuesto una vez. ObraFlow lo usa como base de comparación durante toda la ejecución.</div>
+        <div class="step-visual">
+          <div style="font-size:.75rem; color:var(--txt-m); margin-bottom:12px; font-weight:600;">PRESUPUESTO TOTAL: $80.000.000</div>
+          <div class="budget-line">
+            <div class="bl-lbl">Materiales</div>
+            <div class="bl-track"><div class="bl-fill" data-width="45"></div></div>
+            <div class="bl-val">$36.0M</div>
+          </div>
+          <div class="budget-line">
+            <div class="bl-lbl">Mano de obra</div>
+            <div class="bl-track"><div class="bl-fill" data-width="30" style="background:linear-gradient(90deg,#4A9EFF,#2B80E0)"></div></div>
+            <div class="bl-val">$24.0M</div>
+          </div>
+          <div class="budget-line">
+            <div class="bl-lbl">Subcontratos</div>
+            <div class="bl-track"><div class="bl-fill" data-width="15" style="background:linear-gradient(90deg,#FFB547,#E09030)"></div></div>
+            <div class="bl-val">$12.0M</div>
+          </div>
+          <div class="budget-line">
+            <div class="bl-lbl">Equipamiento</div>
+            <div class="bl-track"><div class="bl-fill" data-width="10" style="background:linear-gradient(90deg,#A855F7,#7C3AED)"></div></div>
+            <div class="bl-val">$8.0M</div>
+          </div>
+        </div>
+      </div>
+      <!-- Paso 2 -->
+      <div class="step-card" style="transition-delay:.15s;">
+        <div class="step-num">02 — Remitos y partes</div>
+        <div class="step-title">Materiales y MO vinculados</div>
+        <div class="step-desc">Cada remito y parte diario se asocia a la obra. El ejecutado se actualiza automáticamente en tiempo real.</div>
+        <div class="step-visual">
+          <div class="mini-timeline">
+            <div class="mt-item">
+              <div class="mt-dot mt-green"></div>
+              <div>
+                <div class="mt-text">R-0142 · 240 sacos cemento Argos</div>
+                <div class="mt-val">$1.920.000 · Hoy 11:15</div>
+              </div>
+            </div>
+            <div class="mt-item">
+              <div class="mt-dot mt-blue"></div>
+              <div>
+                <div class="mt-text">Parte #068 · Vaciado losa niv. 7</div>
+                <div class="mt-val">38h MO · Hoy 14:32</div>
+              </div>
+            </div>
+            <div class="mt-item">
+              <div class="mt-dot mt-warn"></div>
+              <div>
+                <div class="mt-text">FV-2891 · Proveedor Acerías</div>
+                <div class="mt-val">$4.380.000 · Ayer 16:48</div>
+              </div>
+            </div>
+            <div class="mt-item">
+              <div class="mt-dot mt-green"></div>
+              <div>
+                <div class="mt-text">R-0141 · 1.8 ton acero figurado</div>
+                <div class="mt-val">$3.240.000 · May 15</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Paso 3 -->
+      <div class="step-card" style="transition-delay:.3s;">
+        <div class="step-num">03 — Margen al cierre</div>
+        <div class="step-title">Presupuesto vs ejecutado</div>
+        <div class="step-desc">Visibilidad inmediata del margen real. Toma decisiones antes de que el sobreejecutado se convierta en pérdida.</div>
+        <div class="step-visual">
+          <div class="gauge-wrap">
+            <svg width="100" height="100" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="10"/>
+              <circle cx="50" cy="50" r="40" fill="none" stroke="url(#gaugeGrad)" stroke-width="10"
+                stroke-dasharray="251.2" stroke-dashoffset="251.2" stroke-linecap="round"
+                transform="rotate(-90 50 50)" id="gaugeCircle" style="transition:stroke-dashoffset 1.5s cubic-bezier(.65,0,.35,1)"/>
+              <defs>
+                <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#00D68F"/>
+                  <stop offset="100%" stop-color="#4A9EFF"/>
+                </linearGradient>
+              </defs>
+              <text x="50" y="46" text-anchor="middle" font-size="14" font-weight="700" fill="#F5F9FF" font-family="'JetBrains Mono'">17.7%</text>
+              <text x="50" y="60" text-anchor="middle" font-size="8" fill="rgba(168,184,209,.7)">margen</text>
+            </svg>
+            <div class="gauge-info">
+              <div class="gi-row"><span class="k">Presupuestado</span><span class="v">$80.0M</span></div>
+              <div class="gi-row"><span class="k">Ejecutado</span><span class="v" style="color:var(--primary);">$65.8M</span></div>
+              <div class="gi-row"><span class="k">Avance obra</span><span class="v">68%</span></div>
+              <div class="gi-margin">+$14.2M</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════╗ -->
+<!-- ║   SEC 6: TIMELINE                ║ -->
+<!-- ╚══════════════════════════════════╝ -->
+<section>
+  <div class="wrap">
+    <div class="reveal" style="text-align:center; max-width:600px; margin:0 auto 0;">
+      <div class="sec-eyebrow" style="justify-content:center;"><span>📋</span> Historial</div>
+      <h2 class="sec-title">Archivo de <span style="color:var(--primary)">obra</span></h2>
+      <p class="sec-desc">Todos los documentos, partes diarios y partidas de costo se registran en tiempo real. Trazabilidad completa desde el primer día.</p>
+    </div>
+    <div class="timeline-wrap reveal">
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-icon ti-parte"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-time">Hoy · 14:32</div>
+          <div class="tl-text">Parte diario <strong>#068</strong> enviado — Vaciado losa 2.° piso</div>
+          <div class="tl-autor"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg> Ing. Sandra Pérez</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-icon ti-remito"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-time">Hoy · 11:15</div>
+          <div class="tl-text">Remito <strong>R-0142</strong>: 240 sacos cemento Argos recibidos · <span class="mono" style="color:var(--primary);font-size:.85em;">$1.920.000</span></div>
+          <div class="tl-autor"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg> Bodega Central</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-icon ti-foto"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-time">Ayer · 16:48</div>
+          <div class="tl-text">12 fotos subidas — Estructura columnas eje C · avance semana 14</div>
+          <div class="tl-autor"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg> Carlos Ramírez</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-icon ti-factura"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-time">Ayer · 09:20</div>
+          <div class="tl-text">Factura <strong>FV-2891</strong> vinculada automáticamente · <span class="mono" style="color:#A855F7;font-size:.85em;">$4.380.000</span></div>
+          <div class="tl-autor"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg> Sistema automático</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-icon ti-tarea"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-time">16 May · 17:00</div>
+          <div class="tl-text">Tarea completada: Revisión de calidad concreto — ensayos 28 días ✓</div>
+          <div class="tl-autor"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg> Director de obra</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-icon ti-remito"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-time">15 May · 08:15</div>
+          <div class="tl-text">Remito <strong>R-0141</strong>: 1.8 ton acero figurado ∅16 — Proveedor Acerías · <span class="mono" style="color:var(--blue);font-size:.85em;">$3.240.000</span></div>
+          <div class="tl-autor"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg> Bodega Central</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════╗ -->
+<!-- ║   SEC 7: FEATURES                ║ -->
+<!-- ╚══════════════════════════════════╝ -->
+<section id="caracteristicas" style="background:var(--bg-el);">
+  <div class="wrap">
+    <div class="reveal" style="text-align:center; max-width:600px; margin:0 auto;">
+      <div class="sec-eyebrow" style="justify-content:center;"><span>🛠️</span> Funcionalidades</div>
+      <h2 class="sec-title">Todo lo que necesita<br><span style="color:var(--primary)">tu obra</span></h2>
+      <p class="sec-desc">Una plataforma completa diseñada para el sector de la construcción en Latinoamérica.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card reveal">
+        <div class="feat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div class="feat-title">Partes diarios móviles</div>
+        <div class="feat-desc">Captura en campo desde cualquier celular, funciona offline. Sin papel, sin retrasos, sin errores de trascripción.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        <div class="feat-title">Remitos digitales</div>
+        <div class="feat-desc">QR, firma digital y geolocalización integradas. Cada entrega vinculada automáticamente a su obra y costo.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+        <div class="feat-title">Control presupuestal</div>
+        <div class="feat-desc">Comparativo en vivo presupuesto vs ejecutado. Alertas automáticas cuando una partida supera lo planeado.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div class="feat-title">Flota y equipos</div>
+        <div class="feat-desc">Tracking de kilómetros, combustible y mantenimientos. Costo de maquinaria asignado automáticamente por obra.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="feat-title">Subcontratos</div>
+        <div class="feat-desc">Hitos, retenciones y certificaciones gestionadas en un solo lugar. Control total de cada subcontratista.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="feat-title">Reportes ejecutivos</div>
+        <div class="feat-desc">Dashboards listos para junta directiva con un clic. Margen, avance y flujo de caja en tiempo real.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════╗ -->
+<!-- ║   SEC 8: TESTIMONIALES           ║ -->
+<!-- ╚══════════════════════════════════╝ -->
+<section id="testimonios" class="testi-section">
+  <div class="wrap">
+    <div class="reveal" style="text-align:center; max-width:600px; margin:0 auto;">
+      <div class="sec-eyebrow" style="justify-content:center;"><span>⭐</span> Clientes</div>
+      <h2 class="sec-title">Lo que dicen nuestros<br><span style="color:var(--primary)">clientes</span></h2>
+    </div>
+    <div class="testi-carousel reveal">
+      <div class="testi-track">
+        <div class="testi-slide active">
+          <div class="testi-card">
+            <div class="testi-quote-mark">"</div>
+            <p class="testi-quote">Pasamos de Excel a tener la obra en tiempo real. Hoy sé el margen de cada proyecto sin esperar al cierre del mes. ObraFlow cambió la forma en que gestionamos.</p>
+            <div class="testi-person">
+              <div class="testi-avatar av1">MO</div>
+              <div>
+                <div class="testi-name">Mauricio Ospina</div>
+                <div class="testi-role">Gerente de Obra · Constructora Andina S.A.S.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-slide">
+          <div class="testi-card">
+            <div class="testi-quote-mark">"</div>
+            <p class="testi-quote">Los remitos digitales nos ahorraron 3 horas diarias al supervisor de bodega. Adiós a las hojas perdidas y a los errores de digitación manual.</p>
+            <div class="testi-person">
+              <div class="testi-avatar av2">CJ</div>
+              <div>
+                <div class="testi-name">Catalina Jiménez</div>
+                <div class="testi-role">Directora de Operaciones · Edificar Group</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-slide">
+          <div class="testi-card">
+            <div class="testi-quote-mark">"</div>
+            <p class="testi-quote">Lo mejor: el equipo en campo lo adoptó en menos de una semana. La app es realmente intuitiva, incluso para quien nunca había usado tecnología en obra.</p>
+            <div class="testi-person">
+              <div class="testi-avatar av3">FM</div>
+              <div>
+                <div class="testi-name">Felipe Mejía</div>
+                <div class="testi-role">Residente de Obra · Inversiones Calicanto</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-slide">
+          <div class="testi-card">
+            <div class="testi-quote-mark">"</div>
+            <p class="testi-quote">El control de subcontratistas nos permitió detectar sobrecostos a tiempo. Recuperamos un 8% de margen en los primeros 3 meses de uso.</p>
+            <div class="testi-person">
+              <div class="testi-avatar av4">AR</div>
+              <div>
+                <div class="testi-name">Andrea Restrepo</div>
+                <div class="testi-role">CFO · Grupo Concretar</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-controls">
+        <button class="testi-btn" onclick="prevTesti()" aria-label="Anterior">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="testi-dots">
+          <div class="testi-dot active" onclick="goTesti(0)"></div>
+          <div class="testi-dot" onclick="goTesti(1)"></div>
+          <div class="testi-dot" onclick="goTesti(2)"></div>
+          <div class="testi-dot" onclick="goTesti(3)"></div>
+        </div>
+        <button class="testi-btn" onclick="nextTesti()" aria-label="Siguiente">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════╗ -->
+<!-- ║   SEC 9: CTA FINAL               ║ -->
+<!-- ╚══════════════════════════════════╝ -->
+<section id="cta" class="cta-band">
+  <div class="wrap">
+    <div class="reveal">
+      <h2>¿Listo para transformar<br>tu empresa de construcción?</h2>
+      <p>Únete a más de 500 constructoras que ya gestionan sus obras con ObraFlow.</p>
+      <a href="#" class="btn btn-primary" style="font-size:1rem; padding:14px 32px; margin:0 auto; display:inline-flex;">
+        Comenzar prueba gratuita →
+      </a>
+      <p class="cta-note">✓ 14 días gratis · ✓ Sin tarjeta de crédito · ✓ Soporte en español</p>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════╗ -->
+<!-- ║   FOOTER                         ║ -->
+<!-- ╚══════════════════════════════════╝ -->
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo" style="margin-bottom:12px; display:inline-flex;">
+          <div class="nav-logo-icon">🏗️</div>
+          ObraFlow
+        </a>
+        <p>La plataforma de gestión de obras diseñada para constructoras de Latinoamérica. Control total desde el presupuesto hasta el cierre.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Producto</h4>
+        <ul>
+          <li><a href="#">Partes diarios</a></li>
+          <li><a href="#">Remitos digitales</a></li>
+          <li><a href="#">Control presupuestal</a></li>
+          <li><a href="#">Flota y equipos</a></li>
+          <li><a href="#">Subcontratos</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Empresa</h4>
+        <ul>
+          <li><a href="#">Quiénes somos</a></li>
+          <li><a href="#">Casos de éxito</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Trabaja con nosotros</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Soporte</h4>
+        <ul>
+          <li><a href="#">Centro de ayuda</a></li>
+          <li><a href="#">Contacto</a></li>
+          <li><a href="#">Política de privacidad</a></li>
+          <li><a href="#">Términos de uso</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 ObraFlow SAS · Bogotá, Colombia · Todos los derechos reservados.</p>
+      <p>Hecho con ❤️ para la construcción latinoamericana</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ╔══════════════════════════════════╗ -->
+<!-- ║   JAVASCRIPT                     ║ -->
+<!-- ╚══════════════════════════════════╝ -->
+<script>
+  /* ── SLIDER ────────────────────────────────── */
+  const sliderData = [
+    { label: 'Margen bruto',  value: '17.7%',        delta: '↑ +2.3% vs semana anterior', color: '#00D68F' },
+    { label: 'Ingresos',      value: '$80.000.000',  delta: '↑ +$5.2M acumulado',          color: '#4A9EFF' },
+    { label: 'Costos',        value: '$65.800.000',  delta: '↓ −$1.8M bajo presupuesto',   color: '#FFB547' },
+    { label: 'Mano de obra',  value: '1.842 h',      delta: '→ 178h semana actual',         color: '#00D68F' },
+    { label: 'Facturas',      value: '127',           delta: '↑ +12 este mes',              color: '#4A9EFF' },
+    { label: 'Km de flota',   value: '4.382 km',     delta: '↑ +340 km semana actual',     color: '#FFB547' },
+  ];
+  let sliderIdx = 0;
+  let sliderTimer;
+
+  function setSlider(idx) {
+    sliderIdx = idx;
+    const d = sliderData[idx];
+    const label = document.getElementById('metricLabel');
+    const value = document.getElementById('metricValue');
+    const delta = document.getElementById('metricDelta');
+    label.textContent = d.label;
+    value.textContent = d.value;
+    value.style.color = d.color;
+    delta.textContent = d.delta;
+    delta.style.color = d.color;
+    document.querySelectorAll('.dash-dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === idx);
+    });
+  }
+
+  function startSliderTimer() {
+    sliderTimer = setInterval(() => {
+      sliderIdx = (sliderIdx + 1) % sliderData.length;
+      setSlider(sliderIdx);
+    }, 3500);
+  }
+
+  const dashCard = document.querySelector('.dash-card');
+  dashCard.addEventListener('mouseenter', () => clearInterval(sliderTimer));
+  dashCard.addEventListener('mouseleave', () => startSliderTimer());
+  startSliderTimer();
+
+  /* ── TABS ──────────────────────────────────── */
+  document.querySelectorAll('.htab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.htab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  /* ── NAVBAR ────────────────────────────────── */
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  /* ── MOBILE MENU ───────────────────────────── */
+  const hamBtn = document.getElementById('ham-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  hamBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+  function closeMobileMenu() { mobileMenu.classList.remove('open'); }
+
+  /* ── INTERSECTION OBSERVER ─────────────────── */
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      el.classList.add('visible');
+      // Counters
+      el.querySelectorAll('[data-target]').forEach(counter => animateCounter(counter));
+      // Progress fills
+      el.querySelectorAll('.pc-progress-fill, .bc-bar-fill').forEach(fill => {
+        fill.style.width = fill.dataset.width + '%';
+      });
+      // Step cards
+      el.querySelectorAll('.step-card').forEach((card, i) => {
+        setTimeout(() => card.classList.add('visible'), i * 150);
+      });
+      // Budget lines in steps
+      el.querySelectorAll('.bl-fill').forEach(fill => {
+        fill.style.width = fill.dataset.width + '%';
+      });
+      // Gauge
+      const gauge = el.querySelector('#gaugeCircle');
+      if (gauge) {
+        // 17.7% of 251.2 = 44.5 → dashoffset = 251.2 - 44.5 = 206.7
+        setTimeout(() => { gauge.style.strokeDashoffset = '206.7'; }, 200);
+      }
+      io.unobserve(el);
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal, .step-card, .feat-card').forEach(el => io.observe(el));
+
+  // Also observe sections that contain counters/fills
+  document.querySelectorAll('.project-card, .budget-compare, .step-card, .step-card .step-visual').forEach(el => io.observe(el));
+
+  /* ── COUNTER ANIMATION ─────────────────────── */
+  function animateCounter(el) {
+    const target = +el.dataset.target;
+    const duration = 1800;
+    const start = performance.now();
+    function tick(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(target * eased);
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  /* ── LABOR CHART ───────────────────────────── */
+  const bars = document.querySelectorAll('.bar-rect');
+  const tooltip = document.getElementById('barTooltip');
+  let chartAnimated = false;
+
+  const chartObserver = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting && !chartAnimated) {
+      chartAnimated = true;
+      bars.forEach((bar, i) => {
+        const targetH = parseFloat(bar.dataset.h);
+        setTimeout(() => {
+          bar.setAttribute('y', 180 - targetH);
+          bar.setAttribute('height', targetH);
+          bar.style.transition = 'y 1s cubic-bezier(.65,0,.35,1), height 1s cubic-bezier(.65,0,.35,1)';
+        }, i * 80);
+      });
+      chartObserver.disconnect();
+    }
+  }, { threshold: 0.3 });
+  chartObserver.observe(document.querySelector('#laborChart'));
+
+  bars.forEach(bar => {
+    bar.addEventListener('mouseenter', (e) => {
+      tooltip.innerHTML = `<strong>${bar.dataset.day}</strong>: ${bar.dataset.hrs}h · ${bar.dataset.cost}`;
+      tooltip.classList.add('visible');
+    });
+    bar.addEventListener('mousemove', (e) => {
+      const rect = bar.closest('.labor-svg-wrap').getBoundingClientRect();
+      tooltip.style.left = (e.clientX - rect.left + 12) + 'px';
+      tooltip.style.top = (e.clientY - rect.top - 40) + 'px';
+    });
+    bar.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
+  });
+
+  /* ── TESTIMONIALS CAROUSEL ─────────────────── */
+  let testiIdx = 0;
+  let testiTimer;
+  const slides = document.querySelectorAll('.testi-slide');
+  const dots = document.querySelectorAll('.testi-dot');
+
+  function goTesti(idx) {
+    slides[testiIdx].classList.remove('active');
+    dots[testiIdx].classList.remove('active');
+    testiIdx = idx;
+    slides[testiIdx].classList.add('active');
+    dots[testiIdx].classList.add('active');
+  }
+  function nextTesti() { goTesti((testiIdx + 1) % slides.length); }
+  function prevTesti() { goTesti((testiIdx - 1 + slides.length) % slides.length); }
+
+  function startTestiTimer() { testiTimer = setInterval(nextTesti, 6000); }
+  function stopTestiTimer() { clearInterval(testiTimer); }
+
+  const testiCarousel = document.querySelector('.testi-carousel');
+  testiCarousel.addEventListener('mouseenter', stopTestiTimer);
+  testiCarousel.addEventListener('mouseleave', startTestiTimer);
+  startTestiTimer();
+
+  /* ── REDUCED MOTION ────────────────────────── */
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    clearInterval(sliderTimer);
+    clearInterval(testiTimer);
+  }
+
+  /* ── SMOOTH SCROLL ─────────────────────────── */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const href = a.getAttribute('href');
+      if (href === '#') return;
+      const target = document.querySelector(href);
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+</script>
+</body>
+</html>

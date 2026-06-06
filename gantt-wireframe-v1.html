@@ -1,0 +1,769 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Torre Santa Isabel — Dashboard v2 Wireframe</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:      #0d1117;
+  --surf:    #161b22;
+  --surf2:   #1c2330;
+  --surf3:   #222c3c;
+  --bdr:     rgba(255,255,255,0.07);
+  --bdr-m:   rgba(255,255,255,0.13);
+  --bdr-s:   rgba(255,255,255,0.20);
+  --txt:     #e2e8f0;
+  --txt-s:   #94a3b8;
+  --txt-m:   #5a6a80;
+  --acc:     #4d8eff;
+  --acc-s:   rgba(77,142,255,0.10);
+  --acc-b:   rgba(77,142,255,0.22);
+  --grn:     #22c55e; --grn-s: rgba(34,197,94,0.10); --grn-b: rgba(34,197,94,0.22);
+  --amb:     #f59e0b; --amb-s: rgba(245,158,11,0.10); --amb-b: rgba(245,158,11,0.25);
+  --red:     #ef4444; --red-s: rgba(239,68,68,0.10);  --red-b: rgba(239,68,68,0.22);
+  --cyn:     #06b6d4;
+  --vlt:     #8b5cf6;
+  --grp-g: #8b5cf6; --grp-e: #ef4444; --grp-m: #06b6d4; --grp-a: #f59e0b; --grp-x: #22c55e;
+  --r: 8px; --r-md: 12px; --r-lg: 16px;
+  --sb-w: 240px; --top-h: 52px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--txt); font-size: 13.5px; line-height: 1.55; overflow: hidden; height: 100vh; }
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; font-family: inherit; border: none; background: none; }
+.dsp  { font-family: 'Plus Jakarta Sans', sans-serif; }
+.mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+
+/* ── LAYOUT ── */
+.app { display: flex; height: 100vh; overflow: hidden; }
+
+/* ── SIDEBAR ── */
+.sb { width: var(--sb-w); flex-shrink: 0; background: var(--surf); border-right: 1px solid var(--bdr); display: flex; flex-direction: column; height: 100vh; z-index: 20; }
+.sb-head { height: var(--top-h); padding: 0 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--bdr); flex-shrink: 0; }
+.sb-mark { width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg,#4d8eff,#8b5cf6); display: grid; place-items: center; flex-shrink: 0; }
+.sb-mark svg { width: 14px; height: 14px; color: #fff; }
+.sb-pname { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 0.82rem; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sb-psub  { font-size: 0.67rem; color: var(--txt-m); margin-top: 1px; }
+.sb-nav   { flex: 1; padding: 10px 8px; overflow-y: auto; display: flex; flex-direction: column; gap: 1px; }
+.sb-nav::-webkit-scrollbar { width: 3px; }
+.sb-nav::-webkit-scrollbar-thumb { background: var(--bdr-m); border-radius: 2px; }
+.ng-lbl { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--txt-m); padding: 10px 10px 4px; }
+.ni { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--r); font-size: 0.81rem; font-weight: 500; color: var(--txt-s); cursor: pointer; transition: all 0.14s; width: 100%; text-align: left; border: 1px solid transparent; }
+.ni:hover { color: var(--txt); background: var(--surf2); }
+.ni.active { color: #adc6ff; background: var(--acc-s); border-color: var(--acc-b); font-weight: 600; }
+.ni svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.8; }
+.ni.active svg { opacity: 1; color: var(--acc); }
+.ni-bdg { margin-left: auto; background: var(--red); color: #fff; font-size: 0.62rem; font-weight: 700; padding: 1px 5px; border-radius: 100px; }
+.n-sep { height: 1px; background: var(--bdr); margin: 6px 10px; }
+.sb-foot { padding: 12px 14px; border-top: 1px solid var(--bdr); flex-shrink: 0; display: flex; align-items: center; gap: 10px; }
+.u-av { width: 28px; height: 28px; border-radius: 8px; background: var(--acc-s); border: 1px solid var(--acc-b); display: grid; place-items: center; font-size: 0.78rem; font-weight: 700; color: var(--acc); flex-shrink: 0; }
+.u-name { font-size: 0.78rem; font-weight: 600; }
+.u-role { font-size: 0.65rem; color: var(--txt-m); }
+.sa-btn { width: 26px; height: 26px; border-radius: 6px; border: 1px solid var(--bdr); color: var(--txt-m); display: grid; place-items: center; transition: all 0.15s; margin-left: auto; }
+.sa-btn:hover { border-color: var(--bdr-m); color: var(--txt); background: var(--surf2); }
+.sa-btn svg { width: 13px; height: 13px; }
+
+/* ── MAIN ── */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.topbar { height: var(--top-h); padding: 0 20px; display: flex; align-items: center; gap: 10px; background: var(--surf); border-bottom: 1px solid var(--bdr); flex-shrink: 0; }
+.tb-crumb { display: flex; align-items: center; gap: 6px; }
+.tb-slash { color: var(--txt-m); font-size: 1rem; }
+.tb-proj  { font-size: 0.81rem; color: var(--txt-m); }
+.tb-page  { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.88rem; font-weight: 700; }
+.topbar-r { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+.tb-pill { display: flex; align-items: center; gap: 5px; padding: 4px 11px; border-radius: 100px; border: 1px solid; font-size: 0.72rem; font-weight: 600; }
+.tb-ok  { background: var(--grn-s); border-color: var(--grn-b); color: var(--grn); }
+.tb-inf { background: var(--acc-s); border-color: var(--acc-b); color: var(--acc); font-family: 'JetBrains Mono',monospace; font-size: 0.7rem; }
+.tb-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--grn); animation: blink 1.8s infinite; }
+@keyframes blink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+.tb-btn { width: 32px; height: 32px; border-radius: var(--r); border: 1px solid var(--bdr); color: var(--txt-m); display: grid; place-items: center; transition: all 0.15s; position: relative; }
+.tb-btn:hover { border-color: var(--bdr-m); color: var(--txt); background: var(--surf2); }
+.tb-btn svg { width: 14px; height: 14px; }
+.tb-adot { position: absolute; top: 5px; right: 5px; width: 6px; height: 6px; background: var(--red); border-radius: 50%; border: 1.5px solid var(--surf); }
+
+/* STATUS BAR */
+.sbar { background: var(--bg); border-bottom: 1px solid var(--bdr); padding: 5px 20px; display: flex; align-items: center; font-family: 'JetBrains Mono',monospace; font-size: 0.7rem; flex-shrink: 0; }
+.sbi { display: flex; align-items: center; gap: 5px; padding: 0 14px; border-right: 1px solid var(--bdr); white-space: nowrap; }
+.sbi:first-child { padding-left: 0; }
+.sbi:last-child { border-right: none; }
+.sl { color: var(--txt-m); text-transform: uppercase; letter-spacing: 0.06em; }
+.sv { color: var(--txt); font-weight: 700; }
+.sg { color: var(--grn); font-weight: 700; }
+.sa { color: var(--amb); font-weight: 700; }
+
+/* CONTENT */
+.content { flex: 1; overflow-y: auto; padding: 22px 24px; }
+.content::-webkit-scrollbar { width: 5px; }
+.content::-webkit-scrollbar-thumb { background: var(--bdr-m); border-radius: 3px; }
+.section { display: none; }
+.section.active { display: block; }
+
+/* PAGE HEADER */
+.pg-hd { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 22px; padding-bottom: 16px; border-bottom: 1px solid var(--bdr); flex-wrap: wrap; }
+.pg-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.035em; line-height: 1.2; }
+.pg-sub { font-size: 0.78rem; color: var(--txt-m); margin-top: 3px; }
+.pg-acts { display: flex; align-items: center; gap: 8px; }
+
+/* BADGES */
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 100px; font-size: 0.72rem; font-weight: 600; white-space: nowrap; }
+.bg-g  { background: var(--grn-s); border: 1px solid var(--grn-b); color: var(--grn); }
+.bg-a  { background: var(--amb-s); border: 1px solid var(--amb-b); color: var(--amb); }
+.bg-r  { background: var(--red-s); border: 1px solid var(--red-b); color: var(--red); }
+.bg-b  { background: var(--acc-s); border: 1px solid var(--acc-b); color: var(--acc); }
+.bg-gr { background: rgba(100,116,139,0.12); border: 1px solid rgba(100,116,139,0.25); color: var(--txt-m); }
+
+/* ════════════════════════════════════
+   KPI STAT CARDS
+════════════════════════════════════ */
+.stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 16px; }
+.kpi { background: var(--surf); border: 1px solid var(--bdr); border-radius: var(--r-lg); padding: 18px 20px; transition: all 0.18s; }
+.kpi:hover { border-color: var(--bdr-m); box-shadow: 0 4px 24px rgba(0,0,0,0.38); }
+.kpi-ic { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; margin-bottom: 12px; }
+.kpi-ic svg { width: 14px; height: 14px; }
+.kpi-lbl { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--txt-m); font-weight: 700; margin-bottom: 6px; }
+.kpi-num { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 2.1rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1; margin-bottom: 12px; }
+.kpi-num .d { font-size: 1rem; color: var(--txt-m); font-weight: 600; }
+
+/* DUAL PROGRESS BAR — contextual scale */
+.kpi-bar { margin-bottom: 8px; }
+.kpi-track {
+  position: relative; height: 7px;
+  background: rgba(255,255,255,0.06); border-radius: 4px;
+  overflow: visible; margin-bottom: 5px;
+}
+.kpi-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; transition: width 0.9s cubic-bezier(.65,0,.35,1); }
+.kpi-marker { position: absolute; top: -4px; bottom: -4px; width: 2px; background: rgba(255,255,255,0.32); border-radius: 1px; }
+.kpi-meta { display: flex; justify-content: space-between; font-family: 'JetBrains Mono',monospace; font-size: 0.65rem; color: var(--txt-m); }
+.kpi-meta .hi { font-weight: 700; }
+
+.kpi-trend { display: inline-flex; align-items: center; gap: 4px; font-size: 0.72rem; font-weight: 600; }
+.t-ok   { color: var(--grn); }
+.t-warn { color: var(--amb); }
+.t-bad  { color: var(--red); }
+
+/* BENTO + BOTTOM */
+.bento-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.bottom-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.card { background: var(--surf); border: 1px solid var(--bdr); border-radius: var(--r-lg); padding: 18px 20px; transition: border-color 0.18s; }
+.card:hover { border-color: var(--bdr-m); }
+.c-lbl { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--txt-m); font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+.c-lbl svg { width: 12px; height: 12px; }
+
+/* Bar chart */
+.bar-ch { height: 110px; display: flex; align-items: flex-end; gap: 5px; }
+.bc-w { flex: 1; display: flex; flex-direction: column; gap: 2px; height: 100%; justify-content: flex-end; }
+.bc-plan { border-radius: 3px 3px 0 0; opacity: 0.3; border-style: dashed; border-width: 1px; }
+.bc-real { border-radius: 3px 3px 0 0; }
+.bar-ax { display: flex; gap: 5px; margin-top: 5px; }
+.bar-ax span { flex: 1; text-align: center; font-size: 0.61rem; color: var(--txt-m); }
+
+/* Donut ring */
+.ring-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; }
+
+/* EVM rows */
+.evm-r { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--bdr); }
+.evm-r:last-child { border: none; }
+.evm-k { font-size: 0.75rem; color: var(--txt-m); }
+.evm-v { font-family: 'JetBrains Mono',monospace; font-size: 0.85rem; font-weight: 700; }
+
+/* Group bars */
+.grp-r { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--bdr); }
+.grp-r:last-child { border: none; }
+.grp-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+.grp-nm  { flex: 1; font-size: 0.8rem; color: var(--txt-s); }
+.grp-trk { flex: 1; max-width: 80px; height: 5px; background: var(--bdr); border-radius: 100px; overflow: hidden; }
+.grp-fl  { height: 100%; border-radius: 100px; }
+.grp-pct { font-family: 'JetBrains Mono',monospace; font-size: 0.75rem; font-weight: 700; min-width: 32px; text-align: right; }
+
+/* Alert rows */
+.alrt { display: flex; align-items: flex-start; gap: 8px; padding: 9px 10px; border-radius: var(--r); border: 1px solid; margin-bottom: 6px; }
+.alrt:last-child { margin: 0; }
+.al-r { background: var(--red-s); border-color: var(--red-b); }
+.al-a { background: var(--amb-s); border-color: var(--amb-b); }
+.al-b { background: var(--acc-s); border-color: var(--acc-b); }
+.al-ic { font-size: 0.88rem; flex-shrink: 0; margin-top: 1px; }
+.al-tt { font-size: 0.77rem; font-weight: 600; line-height: 1.3; }
+.al-dt { font-size: 0.7rem; color: var(--txt-s); margin-top: 1px; }
+.al-sv { font-size: 0.67rem; font-weight: 700; padding: 2px 6px; border-radius: 100px; margin-left: auto; flex-shrink: 0; }
+.asv-r { background: rgba(239,68,68,.18); color: #f87171; }
+.asv-a { background: rgba(245,158,11,.18); color: #fbbf24; }
+
+/* Activity feed */
+.act-item { display: flex; align-items: flex-start; gap: 8px; padding-bottom: 9px; }
+.act-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.act-tt { font-size: 0.78rem; font-weight: 600; }
+.act-dt { font-size: 0.7rem; color: var(--txt-m); }
+
+/* ════════════════════════════════════
+   GANTT
+════════════════════════════════════ */
+.gantt-wrap { background: var(--surf); border: 1px solid var(--bdr); border-radius: var(--r-lg); overflow: hidden; display: flex; flex-direction: column; }
+.gantt-tb { padding: 11px 16px; border-bottom: 1px solid var(--bdr); display: flex; align-items: center; gap: 10px; flex-shrink: 0; flex-wrap: wrap; }
+.gantt-tb-lbl { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--txt-m); font-weight: 700; }
+.gantt-legend { display: flex; gap: 12px; margin-left: auto; flex-wrap: wrap; }
+.gl-item { display: flex; align-items: center; gap: 5px; font-size: 0.7rem; color: var(--txt-s); }
+.gl-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+.gantt-body { display: flex; overflow: hidden; }
+.gantt-lp { flex-shrink: 0; width: 224px; border-right: 1px solid var(--bdr); }
+.gantt-rp { flex: 1; overflow-x: auto; overflow-y: hidden; }
+.gantt-rp::-webkit-scrollbar { height: 5px; }
+.gantt-rp::-webkit-scrollbar-thumb { background: var(--bdr-m); border-radius: 3px; }
+.glp-hdr { height: 48px; background: var(--surf2); border-bottom: 1px solid var(--bdr-m); display: flex; align-items: center; padding: 0 14px; font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: var(--txt-m); }
+.glp-row { height: 38px; display: flex; align-items: center; padding: 0 10px 0 14px; border-bottom: 1px solid var(--bdr); gap: 8px; transition: background 0.12s; }
+.glp-row:hover { background: rgba(255,255,255,0.025); }
+.glp-row:last-child { border-bottom: none; }
+.g-code { font-family: 'JetBrains Mono',monospace; font-size: 0.65rem; font-weight: 600; padding: 2px 6px; border-radius: 4px; background: var(--surf3); flex-shrink: 0; }
+.g-name { font-size: 0.78rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.g-crit { color: var(--red); font-size: 0.72rem; flex-shrink: 0; }
+
+/* ════════════════════════════════════
+   PHASES TABLE
+════════════════════════════════════ */
+.ph-tbl { width: 100%; border-collapse: collapse; font-size: 0.81rem; }
+.ph-tbl th { background: var(--surf2); color: var(--txt-m); padding: 8px 10px; text-align: left; font-weight: 700; font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--bdr-m); }
+.ph-tbl td { padding: 8px 10px; border-bottom: 1px solid var(--bdr); vertical-align: middle; }
+.ph-tbl tr:hover td { background: rgba(255,255,255,0.02); }
+.ph-code { font-family: 'JetBrains Mono',monospace; font-size: 0.72rem; font-weight: 600; background: var(--surf2); padding: 2px 6px; border-radius: 4px; color: #adc6ff; }
+.mini-w { display: flex; align-items: center; gap: 6px; }
+.mini-t { flex: 1; height: 5px; background: var(--bdr); border-radius: 100px; overflow: hidden; min-width: 55px; }
+.mini-f { height: 100%; border-radius: 100px; }
+
+/* KANBAN */
+.kb-cols { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+.kb-col { background: var(--surf); border: 1px solid var(--bdr); border-radius: var(--r-lg); overflow: hidden; }
+.kb-hd { padding: 11px 14px; border-bottom: 1px solid var(--bdr); display: flex; align-items: center; gap: 8px; }
+.kb-nm { font-size: 0.78rem; font-weight: 700; }
+.kb-n { background: var(--surf2); color: var(--txt-m); padding: 1px 7px; border-radius: 100px; font-size: 0.7rem; font-weight: 600; }
+.kb-cards { padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+.kc { background: var(--surf2); border: 1px solid var(--bdr); border-radius: var(--r-md); padding: 10px 12px; cursor: pointer; transition: all 0.15s; }
+.kc:hover { border-color: var(--bdr-m); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+.kc-cd { font-family: 'JetBrains Mono',monospace; font-size: 0.65rem; font-weight: 600; color: var(--acc); margin-bottom: 5px; }
+.kc-nm { font-size: 0.78rem; font-weight: 600; line-height: 1.35; margin-bottom: 7px; }
+.kc-bar { height: 4px; background: var(--bdr); border-radius: 100px; overflow: hidden; margin-bottom: 7px; }
+.kc-fl { height: 100%; border-radius: 100px; }
+.kc-ft { display: flex; align-items: center; justify-content: space-between; }
+.kc-ow { font-size: 0.66rem; color: var(--txt-m); }
+.kc-pc { font-family: 'JetBrains Mono',monospace; font-size: 0.7rem; font-weight: 700; }
+
+.wf-lbl { position: fixed; bottom: 16px; right: 16px; z-index: 9999; background: #f59e0b; color: #000; padding: 5px 14px; border-radius: 100px; font-size: 0.69rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; box-shadow: 0 4px 16px rgba(245,158,11,.45); }
+
+@media (max-width:1100px) {
+  .stats-row { grid-template-columns: repeat(2,1fr); }
+  .bento-row { grid-template-columns: 1fr 1fr; }
+  .bottom-row { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ══ SIDEBAR ═══════════════════════════════════════════════════ -->
+<aside class="sb">
+  <div class="sb-head">
+    <div class="sb-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5"/>
+        <line x1="12" y1="2" x2="12" y2="22"/>
+        <line x1="2" y1="8.5" x2="22" y2="8.5"/>
+        <line x1="2" y1="15.5" x2="22" y2="15.5"/>
+      </svg>
+    </div>
+    <div>
+      <div class="sb-pname">Torre Santa Isabel</div>
+      <div class="sb-psub">Contro360° · v2.0</div>
+    </div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="ng-lbl">Análisis</div>
+    <button class="ni" onclick="show('kpis',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>KPIs &amp; Salud
+    </button>
+    <button class="ni" onclick="show('gantt',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="8" height="3" rx="1"/><rect x="7" y="11" width="10" height="3" rx="1"/><rect x="5" y="16" width="12" height="3" rx="1"/></svg>Cronograma Gantt
+    </button>
+    <button class="ni" onclick="show('phases',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>Fases del Proyecto
+    </button>
+    <div class="n-sep"></div>
+    <div class="ng-lbl">Gestión</div>
+    <button class="ni" onclick="show('kanban',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="14" rx="1"/><rect x="17" y="3" width="5" height="10" rx="1"/></svg>Tablero Kanban
+    </button>
+    <button class="ni" onclick="show('update',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Actualizar Avance
+    </button>
+    <button class="ni" onclick="show('calendar',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendario
+    </button>
+    <div class="n-sep"></div>
+    <div class="ng-lbl">Registro</div>
+    <button class="ni" onclick="show('bitacora',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Bitácora
+      <span class="ni-bdg">3</span>
+    </button>
+    <button class="ni" onclick="show('equipos',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Equipos
+    </button>
+  </nav>
+
+  <div class="sb-foot">
+    <div class="u-av">MA</div>
+    <div>
+      <div class="u-name">M. Administrador</div>
+      <div class="u-role">Director de Obra</div>
+    </div>
+    <button class="sa-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M2 12h2M20 12h2M4.93 19.07l1.41-1.41M19.07 19.07l-1.41-1.41"/></svg>
+    </button>
+  </div>
+</aside>
+
+<!-- ══ MAIN ═════════════════════════════════════════════════════ -->
+<div class="main">
+
+  <div class="topbar">
+    <div class="tb-crumb">
+      <span class="tb-proj">Torre Santa Isabel</span>
+      <span class="tb-slash">/</span>
+      <span class="tb-page" id="tbPageName">KPIs &amp; Salud</span>
+    </div>
+    <div class="topbar-r">
+      <div class="tb-pill tb-ok"><div class="tb-dot"></div>En línea</div>
+      <div class="tb-pill tb-inf">02/Jun/2026</div>
+      <button class="tb-btn" title="Sincronizar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      </button>
+      <button class="tb-btn" title="Alertas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="tb-adot"></span>
+      </button>
+      <button class="tb-btn" title="Tema">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="sbar">
+    <div class="sbi"><span class="sl">Hoy</span><span class="sv">02/Jun/2026</span></div>
+    <div class="sbi"><span class="sl">Día</span><span class="sv">33</span><span class="sl">/656</span></div>
+    <div class="sbi"><span class="sl">Avance Real</span><span class="sg">3.2%</span></div>
+    <div class="sbi"><span class="sl">Esperado</span><span class="sv">4.8%</span></div>
+    <div class="sbi"><span class="sl">Δ SPI</span><span class="sa">−1.6%</span></div>
+    <div class="sbi"><span class="sl">Estado</span><span class="sa">⚠ En Revisión</span></div>
+  </div>
+
+  <div class="content">
+
+    <!-- ── KPIs ─────────────────────────────────────────────── -->
+    <div class="section active" id="sec-kpis">
+      <div class="pg-hd">
+        <div>
+          <h1 class="pg-title dsp">Salud del Proyecto</h1>
+          <p class="pg-sub">Resumen ejecutivo · Torre Santa Isabel · Corte 02/Jun/2026</p>
+        </div>
+        <div class="pg-acts">
+          <span class="badge bg-a">⚠ Leve Retraso</span>
+          <code style="background:var(--surf2);border:1px solid var(--bdr);border-radius:6px;padding:4px 10px;font-size:.74rem;font-family:'JetBrains Mono',monospace">SPI: 0.67</code>
+        </div>
+      </div>
+
+      <div class="stats-row">
+
+        <!-- Avance Real — escala contextual 0-10% -->
+        <div class="kpi">
+          <div class="kpi-ic" style="background:var(--acc-s)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="kpi-lbl">Avance Real</div>
+          <div class="kpi-num" style="color:var(--amb)">3.2<span class="d">%</span></div>
+          <div class="kpi-bar">
+            <div class="kpi-track">
+              <!-- escala 0–10%: fill=32% (3.2÷10), marker=48% (4.8÷10) -->
+              <div class="kpi-fill" style="width:32%;background:var(--amb)"></div>
+              <div class="kpi-marker" style="left:48%"></div>
+            </div>
+            <div class="kpi-meta">
+              <span class="hi" style="color:var(--amb)">3.2% real</span>
+              <span>4.8% esperado ↑</span>
+            </div>
+          </div>
+          <div class="kpi-trend t-warn">↓ 1.6% vs planificado</div>
+        </div>
+
+        <!-- Fases Completadas -->
+        <div class="kpi">
+          <div class="kpi-ic" style="background:var(--grn-s)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div class="kpi-lbl">Fases Completadas</div>
+          <div class="kpi-num" style="color:var(--grn)">2<span class="d">/31</span></div>
+          <div class="kpi-bar">
+            <div class="kpi-track">
+              <div class="kpi-fill" style="width:6.5%;background:var(--grn)"></div>
+            </div>
+            <div class="kpi-meta">
+              <span class="hi" style="color:var(--grn)">F0 · F1</span>
+              <span>6.5% del total</span>
+            </div>
+          </div>
+          <div class="kpi-trend t-ok">✓ 2 terminadas en plazo</div>
+        </div>
+
+        <!-- Días Transcurridos -->
+        <div class="kpi">
+          <div class="kpi-ic" style="background:var(--amb-s)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--amb)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="kpi-lbl">Días Transcurridos</div>
+          <div class="kpi-num" style="color:var(--acc)">33<span class="d">/656</span></div>
+          <div class="kpi-bar">
+            <div class="kpi-track">
+              <div class="kpi-fill" style="width:5%;background:var(--acc)"></div>
+            </div>
+            <div class="kpi-meta">
+              <span class="hi" style="color:var(--acc)">Día 33</span>
+              <span>Fin: 16/Feb/2028</span>
+            </div>
+          </div>
+          <div class="kpi-trend t-ok">5.0% del plazo total</div>
+        </div>
+
+        <!-- Fases Críticas -->
+        <div class="kpi">
+          <div class="kpi-ic" style="background:var(--red-s)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div class="kpi-lbl">Fases Críticas</div>
+          <div class="kpi-num" style="color:var(--red)">14<span class="d">/31</span></div>
+          <div class="kpi-bar">
+            <div class="kpi-track">
+              <div class="kpi-fill" style="width:45%;background:var(--red)"></div>
+            </div>
+            <div class="kpi-meta">
+              <span class="hi" style="color:var(--red)">45% críticas</span>
+              <span>3 con alertas</span>
+            </div>
+          </div>
+          <div class="kpi-trend t-bad">↑ Requiere atención</div>
+        </div>
+      </div>
+
+      <!-- Bento row -->
+      <div class="bento-row">
+        <div class="card">
+          <div class="c-lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Avance por Grupo</div>
+          <div class="bar-ch">
+            <div class="bc-w"><div class="bc-plan" style="height:15%;background:var(--grp-g);border-color:var(--grp-g)"></div><div class="bc-real" style="height:15%;background:var(--grp-g)"></div></div>
+            <div class="bc-w"><div class="bc-plan" style="height:7%;background:var(--grp-e);border-color:var(--grp-e)"></div><div class="bc-real" style="height:4%;background:var(--grp-e)"></div></div>
+            <div class="bc-w"><div class="bc-plan" style="height:3%;min-height:4px;background:var(--grp-m);border-color:var(--grp-m)"></div><div class="bc-real" style="height:2%;min-height:3px;background:var(--grp-m)"></div></div>
+            <div class="bc-w"><div class="bc-plan" style="height:0%;min-height:3px;background:var(--grp-a);border-color:var(--grp-a)"></div><div class="bc-real" style="height:0%;min-height:2px;background:var(--grp-a);opacity:.25"></div></div>
+            <div class="bc-w"><div class="bc-plan" style="height:0%;min-height:3px;background:var(--grp-x);border-color:var(--grp-x)"></div><div class="bc-real" style="height:0%;min-height:2px;background:var(--grp-x);opacity:.25"></div></div>
+          </div>
+          <div class="bar-ax"><span>Gestión</span><span>Estructura</span><span>MEP</span><span>Acabados</span><span>Exteriores</span></div>
+          <div style="margin-top:10px;display:flex;gap:14px">
+            <div style="display:flex;align-items:center;gap:5px;font-size:.7rem;color:var(--txt-m)"><div style="width:10px;height:8px;border-radius:2px;background:var(--surf3);border:1px dashed rgba(255,255,255,.25)"></div>Planificado</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:.7rem;color:var(--txt-m)"><div style="width:10px;height:8px;border-radius:2px;background:var(--acc)"></div>Real</div>
+          </div>
+        </div>
+
+        <div class="card ring-wrap">
+          <div class="c-lbl" style="margin-bottom:12px">Avance Global</div>
+          <svg width="108" height="108" viewBox="0 0 108 108">
+            <circle cx="54" cy="54" r="43" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="10"/>
+            <circle cx="54" cy="54" r="43" fill="none" stroke="rgba(245,158,11,0.25)" stroke-width="10"
+              stroke-dasharray="270.18" stroke-dashoffset="257.2" stroke-linecap="round" transform="rotate(-90 54 54)"/>
+            <circle cx="54" cy="54" r="43" fill="none" stroke="#f59e0b" stroke-width="10"
+              stroke-dasharray="270.18" stroke-dashoffset="261.5" stroke-linecap="round" transform="rotate(-90 54 54)"/>
+            <text x="54" y="50" text-anchor="middle" fill="#e2e8f0" font-family="'Plus Jakarta Sans',sans-serif" font-weight="800" font-size="17">3.2%</text>
+            <text x="54" y="63" text-anchor="middle" fill="#5a6a80" font-family="Inter,sans-serif" font-size="8.5">REAL vs 4.8%</text>
+          </svg>
+          <div style="margin-top:12px;text-align:center">
+            <div style="font-size:.7rem;color:var(--txt-m)">SPI del proyecto</div>
+            <div class="mono" style="font-size:1.05rem;font-weight:700;color:var(--amb)">0.67</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="c-lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Valor Ganado (EVM)</div>
+          <div class="evm-r"><span class="evm-k">SPI (Cronograma)</span><span class="evm-v" style="color:var(--amb)">0.67</span></div>
+          <div class="evm-r"><span class="evm-k">CPI (Costo)</span><span class="evm-v" style="color:var(--grn)">1.02</span></div>
+          <div class="evm-r"><span class="evm-k">EAC (Estimado)</span><span class="evm-v">$42.8M</span></div>
+          <div class="evm-r"><span class="evm-k">VAC (Variación)</span><span class="evm-v" style="color:var(--grn)">+$0.9M</span></div>
+          <div style="margin-top:12px;background:var(--acc-s);border:1px solid var(--acc-b);border-radius:var(--r);padding:9px 11px">
+            <div style="font-size:.65rem;color:var(--txt-m);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">Proyección de Entrega</div>
+            <div class="dsp" style="font-weight:700;font-size:.88rem">28/Mar/2028</div>
+            <div style="font-size:.72rem;color:var(--amb);margin-top:2px">+40 días vs. línea base</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom row -->
+      <div class="bottom-row">
+        <div class="card">
+          <div class="c-lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Avance por Grupo</div>
+          <div class="grp-r"><div class="grp-dot" style="background:var(--grp-g)"></div><span class="grp-nm">Gestión</span><div class="grp-trk"><div class="grp-fl" style="width:15%;background:var(--grp-g)"></div></div><span class="grp-pct" style="color:var(--grp-g)">15%</span></div>
+          <div class="grp-r"><div class="grp-dot" style="background:var(--grp-e)"></div><span class="grp-nm">Estructura</span><div class="grp-trk"><div class="grp-fl" style="width:4%;background:var(--grp-e)"></div></div><span class="grp-pct" style="color:var(--grp-e)">4%</span></div>
+          <div class="grp-r"><div class="grp-dot" style="background:var(--grp-m)"></div><span class="grp-nm">MEP</span><div class="grp-trk"><div class="grp-fl" style="width:2%;background:var(--grp-m)"></div></div><span class="grp-pct" style="color:var(--grp-m)">2%</span></div>
+          <div class="grp-r"><div class="grp-dot" style="background:var(--grp-a)"></div><span class="grp-nm">Acabados</span><div class="grp-trk"></div><span class="grp-pct" style="color:var(--txt-m)">0%</span></div>
+          <div class="grp-r"><div class="grp-dot" style="background:var(--grp-x)"></div><span class="grp-nm">Exteriores</span><div class="grp-trk"></div><span class="grp-pct" style="color:var(--txt-m)">0%</span></div>
+        </div>
+        <div class="card">
+          <div class="c-lbl">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            Alertas Activas <span class="badge bg-r" style="margin-left:auto;font-size:.62rem">3</span>
+          </div>
+          <div class="alrt al-r"><span class="al-ic">🔴</span><div><div class="al-tt">F5 · Estructura Sótanos atrasada</div><div class="al-dt">Avance 0% · Esperado 8% · +12 días</div></div><span class="al-sv asv-r">Crítica</span></div>
+          <div class="alrt al-a"><span class="al-ic">🟡</span><div><div class="al-tt">SPI &lt; 0.8 — retraso acumulado</div><div class="al-dt">Forecast: +40 días sobre línea base</div></div><span class="al-sv asv-a">Alerta</span></div>
+          <div class="alrt al-b"><span class="al-ic">🔵</span><div><div class="al-tt">Sync Sheets en 45s</div><div class="al-dt">Última: hace 15s · Sheet conectado</div></div></div>
+        </div>
+        <div class="card">
+          <div class="c-lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Actividad Reciente</div>
+          <div class="act-item"><div class="act-dot" style="background:var(--grn)"></div><div><div class="act-tt">F1 → 100% completada</div><div class="act-dt">Hoy 09:14 · J. Salazar</div></div></div>
+          <div class="act-item"><div class="act-dot" style="background:var(--acc)"></div><div><div class="act-tt">Sync Sheets completado</div><div class="act-dt">Hoy 08:58 · Sistema</div></div></div>
+          <div class="act-item"><div class="act-dot" style="background:var(--amb)"></div><div><div class="act-tt">F3 avance 45% → 52%</div><div class="act-dt">Ayer 16:30 · R. Gómez</div></div></div>
+          <div class="act-item"><div class="act-dot" style="background:var(--vlt)"></div><div><div class="act-tt">F0 · Permisos aprobados</div><div class="act-dt">01/Jun · Alcaldía</div></div></div>
+        </div>
+      </div>
+    </div><!-- /kpis -->
+
+    <!-- ── GANTT ──────────────────────────────────────────────── -->
+    <div class="section" id="sec-gantt">
+      <div class="pg-hd">
+        <div>
+          <h1 class="pg-title dsp">Cronograma Gantt</h1>
+          <p class="pg-sub">15 fases · May 2026 → Feb 2028 · 21 meses · ⚠ marcadas en ruta crítica</p>
+        </div>
+        <div class="pg-acts">
+          <span class="badge bg-b">Ruta crítica</span>
+          <span class="badge bg-a">3 alertas</span>
+        </div>
+      </div>
+      <div class="gantt-wrap">
+        <div class="gantt-tb">
+          <span class="gantt-tb-lbl">Cronograma de Obra</span>
+          <div class="gantt-legend">
+            <div class="gl-item"><div class="gl-dot" style="background:var(--grp-g)"></div>Gestión</div>
+            <div class="gl-item"><div class="gl-dot" style="background:var(--grp-e)"></div>Estructura</div>
+            <div class="gl-item"><div class="gl-dot" style="background:var(--grp-m)"></div>MEP</div>
+            <div class="gl-item"><div class="gl-dot" style="background:var(--grp-a)"></div>Acabados</div>
+            <div class="gl-item"><div class="gl-dot" style="background:var(--grp-x)"></div>Exteriores</div>
+            <div class="gl-item" style="gap:6px"><div style="width:14px;height:1px;border-bottom:2px dashed rgba(239,68,68,0.8)"></div>Hoy</div>
+          </div>
+        </div>
+        <div class="gantt-body" id="ganttBody"></div>
+      </div>
+    </div>
+
+    <!-- ── FASES ──────────────────────────────────────────────── -->
+    <div class="section" id="sec-phases">
+      <div class="pg-hd">
+        <div><h1 class="pg-title dsp">Fases del Proyecto</h1><p class="pg-sub">31 fases · EDT completo · sub-actividades expandibles</p></div>
+        <div class="pg-acts">
+          <input style="background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--r);padding:7px 14px;color:var(--txt);font-family:inherit;font-size:.81rem;outline:none;width:220px" placeholder="Buscar fase, encargado…" type="text"/>
+          <span class="badge bg-b">31 fases</span>
+        </div>
+      </div>
+      <div style="overflow-x:auto;border:1px solid var(--bdr);border-radius:var(--r-lg);background:var(--surf)">
+        <table class="ph-tbl">
+          <thead><tr><th>#</th><th>Código</th><th style="min-width:210px">Nombre</th><th>Grupo</th><th>Inicio</th><th>Fin</th><th>Encargado</th><th style="min-width:120px">Avance</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td class="mono" style="color:var(--txt-m)">0</td><td><span class="ph-code">F0</span></td><td style="font-weight:600">Estudios y Permisos</td><td><span style="color:var(--grp-g);font-size:.7rem;font-weight:700">GESTIÓN</span></td><td class="mono" style="font-size:.74rem;color:var(--txt-m)">01/05/26</td><td class="mono" style="font-size:.74rem;color:var(--txt-m)">31/07/26</td><td style="font-size:.77rem">J. Salazar</td><td><div class="mini-w"><div class="mini-t"><div class="mini-f" style="width:100%;background:var(--grn)"></div></div><span class="mono" style="font-size:.74rem;font-weight:700;color:var(--grn)">100%</span></div></td><td><span class="badge bg-g">Completado</span></td></tr>
+            <tr><td class="mono" style="color:var(--txt-m)">1</td><td><span class="ph-code">F1</span></td><td style="font-weight:600">Excavación y Pilotaje</td><td><span style="color:var(--grp-e);font-size:.7rem;font-weight:700">ESTRUCTURA</span></td><td class="mono" style="font-size:.74rem;color:var(--txt-m)">15/05/26</td><td class="mono" style="font-size:.74rem;color:var(--txt-m)">30/06/26</td><td style="font-size:.77rem">R. Gómez</td><td><div class="mini-w"><div class="mini-t"><div class="mini-f" style="width:100%;background:var(--grn)"></div></div><span class="mono" style="font-size:.74rem;font-weight:700;color:var(--grn)">100%</span></div></td><td><span class="badge bg-g">Completado</span></td></tr>
+            <tr style="background:rgba(249,115,22,.04)"><td class="mono" style="color:var(--txt-m)">2</td><td><span class="ph-code">F2</span></td><td style="font-weight:600">Cimentación</td><td><span style="color:var(--grp-e);font-size:.7rem;font-weight:700">ESTRUCTURA</span></td><td class="mono" style="font-size:.74rem;color:var(--txt-m)">01/06/26</td><td class="mono" style="font-size:.74rem;color:var(--txt-m)">15/08/26</td><td style="font-size:.77rem">R. Gómez</td><td><div class="mini-w"><div class="mini-t"><div class="mini-f" style="width:52%;background:#f97316"></div></div><span class="mono" style="font-size:.74rem;font-weight:700;color:#f97316">52%</span></div></td><td><span class="badge bg-a">En Progreso</span></td></tr>
+            <tr style="background:rgba(239,68,68,.04)"><td class="mono" style="color:var(--txt-m)">3</td><td><span class="ph-code" style="color:#f87171">F3</span></td><td style="font-weight:600">Estructura Sótanos ⚠</td><td><span style="color:var(--grp-e);font-size:.7rem;font-weight:700">ESTRUCTURA</span></td><td class="mono" style="font-size:.74rem;color:var(--txt-m)">01/06/26</td><td class="mono" style="font-size:.74rem;color:var(--txt-m)">30/09/26</td><td style="font-size:.77rem">C. Torres</td><td><div class="mini-w"><div class="mini-t"><div class="mini-f" style="width:0%;background:var(--red)"></div></div><span class="mono" style="font-size:.74rem;font-weight:700;color:var(--red)">0%</span></div></td><td><span class="badge bg-r">Atrasada</span></td></tr>
+            <tr><td class="mono" style="color:var(--txt-m)">4</td><td><span class="ph-code">F4</span></td><td style="font-weight:600">Inst. Eléctricas</td><td><span style="color:var(--grp-m);font-size:.7rem;font-weight:700">MEP</span></td><td class="mono" style="font-size:.74rem;color:var(--txt-m)">15/07/26</td><td class="mono" style="font-size:.74rem;color:var(--txt-m)">28/02/27</td><td style="font-size:.77rem">M. Arias</td><td><div class="mini-w"><div class="mini-t"></div><span class="mono" style="font-size:.74rem;font-weight:700;color:var(--txt-m)">0%</span></div></td><td><span class="badge bg-gr">Pendiente</span></td></tr>
+            <tr><td colspan="9" style="text-align:center;padding:14px;color:var(--txt-m);font-size:.78rem">+ 26 fases más…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── KANBAN ─────────────────────────────────────────────── -->
+    <div class="section" id="sec-kanban">
+      <div class="pg-hd"><div><h1 class="pg-title dsp">Tablero Kanban</h1><p class="pg-sub">31 fases por estado</p></div></div>
+      <div class="kb-cols">
+        <div class="kb-col">
+          <div class="kb-hd"><span class="kb-nm">Pendiente</span><span class="kb-n">25</span></div>
+          <div class="kb-cards">
+            <div class="kc"><div class="kc-cd">F4 · MEP</div><div class="kc-nm">Inst. Eléctricas</div><div class="kc-bar"></div><div class="kc-ft"><span class="kc-ow">M. Arias</span><span class="kc-pc" style="color:var(--txt-m)">0%</span></div></div>
+            <div class="kc"><div class="kc-cd">F5 · ESTRUCTURA</div><div class="kc-nm">Losas N1–N3</div><div class="kc-bar"></div><div class="kc-ft"><span class="kc-ow">R. Gómez</span><span class="kc-pc" style="color:var(--txt-m)">0%</span></div></div>
+            <div style="text-align:center;font-size:.72rem;color:var(--txt-m);padding:8px">+23 más</div>
+          </div>
+        </div>
+        <div class="kb-col">
+          <div class="kb-hd"><span class="kb-nm" style="color:#f97316">En Progreso</span><span class="kb-n">4</span></div>
+          <div class="kb-cards">
+            <div class="kc" style="border-color:rgba(249,115,22,.25);background:rgba(249,115,22,.04)"><div class="kc-cd" style="color:#f97316">F2 · ESTRUCTURA</div><div class="kc-nm">Cimentación</div><div class="kc-bar"><div class="kc-fl" style="width:52%;background:#f97316"></div></div><div class="kc-ft"><span class="kc-ow">R. Gómez</span><span class="kc-pc" style="color:#f97316">52%</span></div></div>
+          </div>
+        </div>
+        <div class="kb-col">
+          <div class="kb-hd"><span class="kb-nm" style="color:var(--red)">Atrasada</span><span class="kb-n">2</span></div>
+          <div class="kb-cards">
+            <div class="kc" style="border-color:var(--red-b);background:var(--red-s)"><div class="kc-cd" style="color:#f87171">F3 ⚠</div><div class="kc-nm">Estructura Sótanos</div><div class="kc-bar"><div class="kc-fl" style="width:0%;background:var(--red)"></div></div><div class="kc-ft"><span class="kc-ow">C. Torres</span><span class="kc-pc" style="color:var(--red)">0%</span></div></div>
+          </div>
+        </div>
+        <div class="kb-col">
+          <div class="kb-hd"><span class="kb-nm" style="color:var(--grn)">Completado</span><span class="kb-n">2</span></div>
+          <div class="kb-cards">
+            <div class="kc" style="border-color:var(--grn-b);background:var(--grn-s)"><div class="kc-cd" style="color:var(--grn)">F0 · GESTIÓN</div><div class="kc-nm">Estudios y Permisos</div><div class="kc-bar"><div class="kc-fl" style="width:100%;background:var(--grn)"></div></div><div class="kc-ft"><span class="kc-ow">J. Salazar</span><span class="kc-pc" style="color:var(--grn)">100%</span></div></div>
+            <div class="kc" style="border-color:var(--grn-b);background:var(--grn-s)"><div class="kc-cd" style="color:var(--grn)">F1 · ESTRUCTURA</div><div class="kc-nm">Excavación y Pilotaje</div><div class="kc-bar"><div class="kc-fl" style="width:100%;background:var(--grn)"></div></div><div class="kc-ft"><span class="kc-ow">R. Gómez</span><span class="kc-pc" style="color:var(--grn)">100%</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Placeholders -->
+    <div class="section" id="sec-update"><div class="pg-hd"><div><h1 class="pg-title dsp">Actualizar Avance</h1><p class="pg-sub">Sliders de progreso por fase · guardado local + sync Sheet</p></div></div><div style="background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r-lg);height:260px;display:grid;place-items:center;color:var(--txt-m);font-size:.9rem">Panel de sliders refinados</div></div>
+    <div class="section" id="sec-calendar"><div class="pg-hd"><div><h1 class="pg-title dsp">Calendario de Obra</h1></div></div><div style="background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r-lg);height:260px;display:grid;place-items:center;color:var(--txt-m)">Calendario Semana · Mes · Año</div></div>
+    <div class="section" id="sec-bitacora"><div class="pg-hd"><div><h1 class="pg-title dsp">Bitácora</h1></div></div><div style="background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r-lg);height:260px;display:grid;place-items:center;color:var(--txt-m)">Timeline de cambios · filtros</div></div>
+    <div class="section" id="sec-equipos"><div class="pg-hd"><div><h1 class="pg-title dsp">Equipos</h1></div></div><div style="background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r-lg);height:260px;display:grid;place-items:center;color:var(--txt-m)">Carga de trabajo por responsable</div></div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /app -->
+
+<div class="wf-lbl">WIREFRAME v2</div>
+
+<script>
+// ── NAVIGATION ──────────────────────────────────────────
+const NAMES = { kpis:'KPIs & Salud', gantt:'Cronograma Gantt', phases:'Fases del Proyecto', kanban:'Tablero Kanban', update:'Actualizar Avance', calendar:'Calendario', bitacora:'Bitácora', equipos:'Equipos' };
+function show(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  document.getElementById('tbPageName').textContent = NAMES[id] || id;
+  if (id === 'gantt' && !document.getElementById('ganttBody').dataset.rendered) buildGantt();
+}
+// activate default
+document.querySelector('.ni').classList.add('active');
+
+// ── GANTT SVG BUILDER ────────────────────────────────────
+const START = new Date(2026, 4, 1).getTime();
+const END   = new Date(2028, 1, 16).getTime();
+const TODAY = new Date(2026, 5, 2).getTime();
+const TOTAL_DAYS = (END - START) / 86400000; // ~656
+const PPD  = 2.4; // pixels per day
+const TL_W = Math.ceil(TOTAL_DAYS * PPD);
+const ROW_H = 38;
+const HDR_H = 48;
+
+const GC = { g:'#8b5cf6', e:'#ef4444', m:'#06b6d4', a:'#f59e0b', x:'#22c55e' };
+
+const PHASES = [
+  { code:'F0',  name:'Estudios y Permisos',    g:'g', s:0,   e:91,  p:100, c:false },
+  { code:'F1',  name:'Excavación y Pilotaje',  g:'e', s:14,  e:60,  p:100, c:true  },
+  { code:'F2',  name:'Cimentación',            g:'e', s:31,  e:106, p:52,  c:true  },
+  { code:'F3',  name:'Estructura Sótanos ⚠',  g:'e', s:31,  e:152, p:0,   c:true  },
+  { code:'F4',  name:'Inst. Eléctricas',       g:'m', s:75,  e:302, p:0,   c:false },
+  { code:'F5',  name:'Inst. Hidrosanitarias',  g:'m', s:90,  e:302, p:0,   c:false },
+  { code:'F6',  name:'Losas N1–N3',            g:'e', s:152, e:244, p:0,   c:true  },
+  { code:'F7',  name:'Losas N4–N6',            g:'e', s:244, e:335, p:0,   c:true  },
+  { code:'F8',  name:'Losas N7–N9',            g:'e', s:335, e:426, p:0,   c:true  },
+  { code:'F9',  name:'Losas N10–N13',          g:'e', s:426, e:517, p:0,   c:true  },
+  { code:'F10', name:'HVAC y Clima',            g:'m', s:182, e:426, p:0,   c:false },
+  { code:'F11', name:'Mampostería Interior',    g:'a', s:274, e:487, p:0,   c:false },
+  { code:'F12', name:'Acabados y Pisos',        g:'a', s:365, e:548, p:0,   c:false },
+  { code:'F13', name:'Fachada',                 g:'x', s:396, e:548, p:0,   c:true  },
+  { code:'F14', name:'Entrega y Cierres',       g:'g', s:610, e:656, p:0,   c:false },
+];
+
+function dx(d)   { return d * PPD; }
+function dw(s,e) { return (e-s) * PPD; }
+
+function buildGantt() {
+  const body = document.getElementById('ganttBody');
+  body.dataset.rendered = '1';
+
+  // LEFT PANEL
+  const lp = document.createElement('div');
+  lp.className = 'gantt-lp';
+  let lpH = `<div class="glp-hdr">Fase</div>`;
+  PHASES.forEach(ph => {
+    lpH += `<div class="glp-row">
+      <span class="g-code" style="color:${GC[ph.g]}">${ph.code}</span>
+      <span class="g-name" title="${ph.name}">${ph.name}</span>
+      ${ph.c ? '<span class="g-crit">⚠</span>' : ''}
+    </div>`;
+  });
+  lp.innerHTML = lpH;
+
+  // RIGHT PANEL
+  const rp = document.createElement('div');
+  rp.className = 'gantt-rp';
+
+  const svgH = HDR_H + PHASES.length * ROW_H;
+  const todayX = dx((TODAY - START) / 86400000);
+
+  // months
+  const months = [];
+  let cur = new Date(2026, 4, 1);
+  while (cur.getTime() <= END + 86400000*30) {
+    months.push({ x: dx((cur.getTime()-START)/86400000), label: cur.toLocaleString('es-CO',{month:'short',year:'2-digit'}).toUpperCase() });
+    cur = new Date(cur.getFullYear(), cur.getMonth()+1, 1);
+  }
+
+  let svg = '';
+
+  // alternating month bg
+  months.forEach((m,i) => {
+    if (i % 2 === 0) {
+      const nx = months[i+1] ? months[i+1].x : TL_W;
+      svg += `<rect x="${m.x}" y="${HDR_H}" width="${nx-m.x}" height="${svgH-HDR_H}" fill="rgba(255,255,255,0.012)"/>`;
+    }
+  });
+
+  // header bg
+  svg += `<rect x="0" y="0" width="${TL_W}" height="${HDR_H}" fill="#1c2330"/>`;
+
+  // month verticals + labels
+  months.forEach(m => {
+    svg += `<line x1="${m.x}" y1="0" x2="${m.x}" y2="${svgH}" stroke="rgba(255,255,255,0.055)" stroke-width="1"/>`;
+    svg += `<text x="${m.x+5}" y="${HDR_H-14}" font-family="'JetBrains Mono',monospace" font-size="9" fill="#5a6a80">${m.label}</text>`;
+  });
+
+  // row separators
+  PHASES.forEach((_,i) => {
+    svg += `<line x1="0" y1="${HDR_H+(i+1)*ROW_H}" x2="${TL_W}" y2="${HDR_H+(i+1)*ROW_H}" stroke="rgba(255,255,255,0.045)" stroke-width="1"/>`;
+  });
+
+  // PHASE BARS
+  PHASES.forEach((ph, i) => {
+    const y    = HDR_H + i * ROW_H;
+    const bY   = y + ROW_H/2 - 8;
+    const bH   = 16;
+    const bx   = dx(ph.s);
+    const bw   = dw(ph.s, ph.e);
+    const col  = GC[ph.g];
+    const dashed = ph.c ? 'stroke-dasharray="5 2"' : '';
+
+    // ghost bar (full duration)
+    svg += `<rect x="${bx}" y="${bY}" width="${bw}" height="${bH}" rx="3" fill="${col}20" stroke="${col}60" stroke-width="1" ${dashed}/>`;
+
+    // progress fill
+    if (ph.p > 0) {
+      const fw = bw * ph.p / 100;
+      const fc = ph.p === 100 ? '#22c55e' : col;
+      svg += `<rect x="${bx}" y="${bY}" width="${fw}" height="${bH}" rx="3" fill="${fc}" opacity="0.9"/>`;
+      if (fw > 32) {
+        svg += `<text x="${bx+5}" y="${bY+bH-4}" font-family="'JetBrains Mono',monospace" font-size="8" fill="rgba(255,255,255,0.92)" font-weight="600">${ph.p}%</text>`;
+      }
+    }
+  });
+
+  // TODAY LINE
+  svg += `
+    <line x1="${todayX}" y1="0" x2="${todayX}" y2="${svgH}" stroke="rgba(239,68,68,0.75)" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <rect x="${todayX-17}" y="3" width="34" height="16" rx="3" fill="rgba(239,68,68,0.9)"/>
+    <text x="${todayX}" y="14.5" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" fill="white" font-weight="700">HOY</text>`;
+
+  rp.innerHTML = `<svg width="${TL_W}" height="${svgH}" style="display:block;min-width:${TL_W}px">${svg}</svg>`;
+  body.appendChild(lp);
+  body.appendChild(rp);
+}
+</script>
+</body>
+</html>

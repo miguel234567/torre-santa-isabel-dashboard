@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<title>Preview Gráficos KPI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#13171f;color:#e2e8f0;font-family:'Inter',sans-serif;padding:32px;display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1200px;margin:0 auto}
+h1{grid-column:1/-1;font-size:1.6rem;font-weight:800;color:#e2e8f0;margin-bottom:4px;text-align:center}
+.sub{grid-column:1/-1;text-align:center;color:#64748b;font-size:.9rem;margin-bottom:16px}
+.card{background:#1a1f2a;border:2px solid #2a3140;border-radius:14px;padding:20px;transition:.2s;cursor:pointer;position:relative}
+.card:hover{border-color:#3b82f6;transform:translateY(-3px);box-shadow:0 12px 32px rgba(59,130,246,.2)}
+.card:hover .pick-btn{opacity:1}
+.card-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#64748b;margin-bottom:4px}
+.card-name{font-size:1rem;font-weight:700;color:#e2e8f0;margin-bottom:14px}
+.badge{display:inline-block;background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.3);border-radius:100px;padding:2px 10px;font-size:.7rem;font-weight:700;margin-right:8px}
+.pick-btn{position:absolute;top:14px;right:14px;background:var(--accent,#3b82f6);color:white;border:none;border-radius:8px;padding:6px 14px;font-size:.78rem;font-weight:700;cursor:pointer;opacity:0;transition:.15s}
+.wide{grid-column:1/-1}
+</style>
+</head>
+<body>
+<h1>Elige el Gráfico para tu Dashboard</h1>
+<p class="sub">Pasa el mouse sobre cada opción — haz clic en "Elegir" para seleccionarla</p>
+
+<!-- OPCIÓN 1 -->
+<div class="card">
+  <button class="pick-btn">✅ Elegir esta</button>
+  <span class="badge">Opción 1</span>
+  <div class="card-label">📊 Barras Horizontales</div>
+  <div class="card-name">Avance por Grupo de Obra</div>
+  <svg viewBox="0 0 440 175" style="width:100%">
+    <rect width="440" height="175" fill="#0d1117" rx="8"/>
+    <line x1="125" y1="15" x2="430" y2="15" stroke="#1e2d35" stroke-width=".5"/>
+    <line x1="125" y1="45" x2="430" y2="45" stroke="#1e2d35" stroke-width=".5"/>
+    <line x1="125" y1="75" x2="430" y2="75" stroke="#1e2d35" stroke-width=".5"/>
+    <line x1="125" y1="105" x2="430" y2="105" stroke="#1e2d35" stroke-width=".5"/>
+    <line x1="125" y1="135" x2="430" y2="135" stroke="#1e2d35" stroke-width=".5"/>
+    <text x="122" y="163" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="end">0%</text>
+    <text x="198" y="163" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="middle">25%</text>
+    <text x="275" y="163" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="middle">50%</text>
+    <text x="353" y="163" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="middle">75%</text>
+    <text x="430" y="163" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="middle">100%</text>
+    <!-- Gestión 17% -->
+    <text x="120" y="30" fill="#8b5cf6" font-size="9" font-family="Inter" text-anchor="end" font-weight="600">Gestión</text>
+    <rect x="125" y="17" width="305" height="19" rx="4" fill="#8b5cf622"/>
+    <rect x="125" y="17" width="52" height="19" rx="4" fill="#8b5cf6" opacity=".85"/>
+    <text x="183" y="30" fill="#8b5cf6" font-size="9" font-family="JetBrains Mono" font-weight="700">17%</text>
+    <!-- Estructura 0% -->
+    <text x="120" y="60" fill="#ef4444" font-size="9" font-family="Inter" text-anchor="end" font-weight="600">Estructura</text>
+    <rect x="125" y="47" width="305" height="19" rx="4" fill="#ef444422"/>
+    <rect x="125" y="47" width="5" height="19" rx="2" fill="#ef4444" opacity=".85"/>
+    <text x="136" y="60" fill="#ef4444" font-size="9" font-family="JetBrains Mono" font-weight="700">0%</text>
+    <!-- MEP 0% -->
+    <text x="120" y="90" fill="#06b6d4" font-size="9" font-family="Inter" text-anchor="end" font-weight="600">MEP</text>
+    <rect x="125" y="77" width="305" height="19" rx="4" fill="#06b6d422"/>
+    <rect x="125" y="77" width="5" height="19" rx="2" fill="#06b6d4" opacity=".85"/>
+    <text x="136" y="90" fill="#06b6d4" font-size="9" font-family="JetBrains Mono" font-weight="700">0%</text>
+    <!-- Acabados -->
+    <text x="120" y="120" fill="#f59e0b" font-size="9" font-family="Inter" text-anchor="end" font-weight="600">Acabados</text>
+    <rect x="125" y="107" width="305" height="19" rx="4" fill="#f59e0b22"/>
+    <rect x="125" y="107" width="5" height="19" rx="2" fill="#f59e0b" opacity=".85"/>
+    <text x="136" y="120" fill="#f59e0b" font-size="9" font-family="JetBrains Mono" font-weight="700">0%</text>
+    <!-- Exteriores -->
+    <text x="120" y="147" fill="#10b981" font-size="9" font-family="Inter" text-anchor="end" font-weight="600">Exteriores</text>
+    <rect x="125" y="134" width="305" height="19" rx="4" fill="#10b98122"/>
+    <rect x="125" y="134" width="5" height="19" rx="2" fill="#10b981" opacity=".85"/>
+    <text x="136" y="147" fill="#10b981" font-size="9" font-family="JetBrains Mono" font-weight="700">0%</text>
+    <!-- Expected line -->
+    <line x1="246" y1="12" x2="246" y2="155" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="4,3" opacity=".6"/>
+    <text x="248" y="20" fill="#3b82f6" font-size="7" font-family="JetBrains Mono">Esp 4%</text>
+  </svg>
+</div>
+
+<!-- OPCIÓN 2 -->
+<div class="card">
+  <button class="pick-btn">✅ Elegir esta</button>
+  <span class="badge">Opción 2</span>
+  <div class="card-label">🎯 Gauge Velocímetro</div>
+  <div class="card-name">Avance Real vs Esperado</div>
+  <svg viewBox="0 0 440 175" style="width:100%">
+    <rect width="440" height="175" fill="#0d1117" rx="8"/>
+    <g transform="translate(155,155)">
+      <path d="M -115,0 A 115,115 0 0,1 115,0" fill="none" stroke="#1e2d35" stroke-width="22" stroke-linecap="round"/>
+      <path d="M -115,0 A 115,115 0 0,1 -96,-62" fill="none" stroke="#3b82f6" stroke-width="22" stroke-linecap="round" opacity=".4"/>
+      <path d="M -115,0 A 115,115 0 0,1 -113,-19" fill="none" stroke="#22c55e" stroke-width="22" stroke-linecap="round"/>
+      <circle cx="0" cy="0" r="58" fill="#13171f"/>
+      <text x="0" y="-14" text-anchor="middle" fill="#e2e8f0" font-size="30" font-family="JetBrains Mono" font-weight="700">1%</text>
+      <text x="0" y="4" text-anchor="middle" fill="#64748b" font-size="9" font-family="Inter">AVANCE REAL</text>
+      <text x="0" y="20" text-anchor="middle" fill="#3b82f6" font-size="10" font-family="JetBrains Mono">esp: 4%</text>
+      <text x="-124" y="18" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="middle">0%</text>
+      <text x="124" y="18" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="middle">100%</text>
+    </g>
+    <rect x="290" y="30" width="130" height="50" rx="8" fill="#1a1f2a" stroke="#2a3140"/>
+    <text x="355" y="50" text-anchor="middle" fill="#64748b" font-size="8" font-family="Inter">SPI</text>
+    <text x="355" y="70" text-anchor="middle" fill="#ef4444" font-size="20" font-family="JetBrains Mono" font-weight="700">0.25</text>
+    <rect x="290" y="92" width="130" height="50" rx="8" fill="#1a1f2a" stroke="#2a3140"/>
+    <text x="355" y="112" text-anchor="middle" fill="#64748b" font-size="8" font-family="Inter">DÍAS REST.</text>
+    <text x="355" y="132" text-anchor="middle" fill="#8b5cf6" font-size="20" font-family="JetBrains Mono" font-weight="700">628d</text>
+    <rect x="290" y="152" width="130" height="18" rx="5" fill="rgba(239,68,68,.15)" stroke="rgba(239,68,68,.3)"/>
+    <text x="355" y="164" text-anchor="middle" fill="#ef4444" font-size="9" font-family="Inter" font-weight="700">⚠ Alerta retraso</text>
+  </svg>
+</div>
+
+<!-- OPCIÓN 3 -->
+<div class="card">
+  <button class="pick-btn">✅ Elegir esta</button>
+  <span class="badge">Opción 3</span>
+  <div class="card-label">📉 Burndown Chart</div>
+  <div class="card-name">Fases Restantes vs Ideal</div>
+  <svg viewBox="0 0 440 175" style="width:100%">
+    <rect width="440" height="175" fill="#0d1117" rx="8"/>
+    <line x1="50" y1="18" x2="430" y2="18" stroke="#1e2d35" stroke-width=".5"/>
+    <line x1="50" y1="53" x2="430" y2="53" stroke="#1e2d35" stroke-width=".5"/>
+    <line x1="50" y1="88" x2="430" y2="88" stroke="#1e2d35" stroke-width=".5"/>
+    <line x1="50" y1="123" x2="430" y2="123" stroke="#1e2d35" stroke-width=".5"/>
+    <line x1="50" y1="153" x2="430" y2="153" stroke="#2a3140" stroke-width="1"/>
+    <line x1="50" y1="18" x2="50" y2="153" stroke="#2a3140" stroke-width="1"/>
+    <text x="46" y="21" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="end">29</text>
+    <text x="46" y="56" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="end">21</text>
+    <text x="46" y="91" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="end">14</text>
+    <text x="46" y="126" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="end">7</text>
+    <text x="46" y="156" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="end">0</text>
+    <text x="50" y="168" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="middle">May</text>
+    <text x="160" y="168" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="middle">Sep</text>
+    <text x="280" y="168" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="middle">Ene'27</text>
+    <text x="430" y="168" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="middle">Feb'28</text>
+    <line x1="50" y1="18" x2="430" y2="153" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="6,4" opacity=".5"/>
+    <path d="M50,18 L58,17.5 L66,17" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="66" cy="17" r="4" fill="#0d1117" stroke="#22c55e" stroke-width="2"/>
+    <circle cx="66" cy="17" r="2" fill="#22c55e"/>
+    <text x="72" y="20" fill="#22c55e" font-size="9" font-family="JetBrains Mono" font-weight="700">28 restantes</text>
+    <line x1="66" y1="12" x2="66" y2="156" stroke="#f97316" stroke-width="1.5" stroke-dasharray="4,3" opacity=".8"/>
+    <rect x="48" y="6" width="36" height="12" rx="3" fill="#f97316"/>
+    <text x="66" y="15" text-anchor="middle" fill="white" font-size="7" font-family="JetBrains Mono" font-weight="700">HOY</text>
+    <line x1="300" y1="28" x2="320" y2="28" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="5,3" opacity=".5"/>
+    <text x="324" y="31" fill="#64748b" font-size="8" font-family="Inter">Ideal</text>
+    <line x1="360" y1="28" x2="380" y2="28" stroke="#22c55e" stroke-width="2"/>
+    <text x="384" y="31" fill="#64748b" font-size="8" font-family="Inter">Real</text>
+  </svg>
+</div>
+
+<!-- OPCIÓN 4 -->
+<div class="card">
+  <button class="pick-btn">✅ Elegir esta</button>
+  <span class="badge">Opción 4</span>
+  <div class="card-label">🔥 Heatmap Semanal</div>
+  <div class="card-name">Actividad de Obra por Semana</div>
+  <svg viewBox="0 0 440 175" style="width:100%">
+    <rect width="440" height="175" fill="#0d1117" rx="8"/>
+    <text x="16" y="50" fill="#4a5a72" font-size="7" font-family="Inter">L</text>
+    <text x="16" y="64" fill="#4a5a72" font-size="7" font-family="Inter">M</text>
+    <text x="16" y="78" fill="#4a5a72" font-size="7" font-family="Inter">X</text>
+    <text x="16" y="92" fill="#4a5a72" font-size="7" font-family="Inter">J</text>
+    <text x="16" y="106" fill="#4a5a72" font-size="7" font-family="Inter">V</text>
+    <text x="28" y="32" fill="#94a3b8" font-size="8" font-family="Inter" font-weight="600">MAY</text>
+    <text x="90" y="32" fill="#94a3b8" font-size="8" font-family="Inter" font-weight="600">JUN</text>
+    <text x="155" y="32" fill="#94a3b8" font-size="8" font-family="Inter" font-weight="600">JUL</text>
+    <text x="220" y="32" fill="#94a3b8" font-size="8" font-family="Inter" font-weight="600">AGO</text>
+    <text x="290" y="32" fill="#94a3b8" font-size="8" font-family="Inter" font-weight="600">SEP</text>
+    <text x="355" y="32" fill="#94a3b8" font-size="8" font-family="Inter" font-weight="600">OCT</text>
+    <!-- Cells active (weeks 1-2) -->
+    <rect x="28" y="37" width="11" height="11" rx="2" fill="#22c55e" opacity=".85"/>
+    <rect x="28" y="50" width="11" height="11" rx="2" fill="#22c55e" opacity=".6"/>
+    <rect x="28" y="63" width="11" height="11" rx="2" fill="#22c55e" opacity=".9"/>
+    <rect x="28" y="76" width="11" height="11" rx="2" fill="#22c55e" opacity=".4"/>
+    <rect x="28" y="89" width="11" height="11" rx="2" fill="#1e2d35"/>
+    <rect x="42" y="37" width="11" height="11" rx="2" fill="#22c55e" opacity=".4"/>
+    <rect x="42" y="50" width="11" height="11" rx="2" fill="#22c55e" opacity=".7"/>
+    <rect x="42" y="63" width="11" height="11" rx="2" fill="#1e2d35"/>
+    <rect x="42" y="76" width="11" height="11" rx="2" fill="#22c55e" opacity=".3"/>
+    <rect x="42" y="89" width="11" height="11" rx="2" fill="#1e2d35"/>
+    <!-- Weeks 3+ empty -->
+    <g fill="#1e2d35">
+      <rect x="56" y="37" width="11" height="11" rx="2"/><rect x="56" y="50" width="11" height="11" rx="2"/><rect x="56" y="63" width="11" height="11" rx="2"/><rect x="56" y="76" width="11" height="11" rx="2"/><rect x="56" y="89" width="11" height="11" rx="2"/>
+      <rect x="70" y="37" width="11" height="11" rx="2"/><rect x="70" y="50" width="11" height="11" rx="2"/><rect x="70" y="63" width="11" height="11" rx="2"/><rect x="70" y="76" width="11" height="11" rx="2"/><rect x="70" y="89" width="11" height="11" rx="2"/>
+      <rect x="84" y="37" width="11" height="11" rx="2"/><rect x="84" y="50" width="11" height="11" rx="2"/><rect x="84" y="63" width="11" height="11" rx="2"/><rect x="84" y="76" width="11" height="11" rx="2"/><rect x="84" y="89" width="11" height="11" rx="2"/>
+      <rect x="98" y="37" width="11" height="11" rx="2"/><rect x="98" y="50" width="11" height="11" rx="2"/><rect x="98" y="63" width="11" height="11" rx="2"/><rect x="98" y="76" width="11" height="11" rx="2"/><rect x="98" y="89" width="11" height="11" rx="2"/>
+      <rect x="112" y="37" width="11" height="11" rx="2"/><rect x="112" y="50" width="11" height="11" rx="2"/><rect x="112" y="63" width="11" height="11" rx="2"/><rect x="112" y="76" width="11" height="11" rx="2"/><rect x="112" y="89" width="11" height="11" rx="2"/>
+      <rect x="126" y="37" width="11" height="11" rx="2"/><rect x="126" y="50" width="11" height="11" rx="2"/><rect x="126" y="63" width="11" height="11" rx="2"/><rect x="126" y="76" width="11" height="11" rx="2"/><rect x="126" y="89" width="11" height="11" rx="2"/>
+      <rect x="140" y="37" width="11" height="11" rx="2"/><rect x="140" y="50" width="11" height="11" rx="2"/><rect x="140" y="63" width="11" height="11" rx="2"/><rect x="140" y="76" width="11" height="11" rx="2"/><rect x="140" y="89" width="11" height="11" rx="2"/>
+      <rect x="154" y="37" width="11" height="11" rx="2"/><rect x="154" y="50" width="11" height="11" rx="2"/><rect x="154" y="63" width="11" height="11" rx="2"/><rect x="154" y="76" width="11" height="11" rx="2"/><rect x="154" y="89" width="11" height="11" rx="2"/>
+      <rect x="168" y="37" width="11" height="11" rx="2"/><rect x="168" y="50" width="11" height="11" rx="2"/><rect x="168" y="63" width="11" height="11" rx="2"/><rect x="168" y="76" width="11" height="11" rx="2"/><rect x="168" y="89" width="11" height="11" rx="2"/>
+      <rect x="182" y="37" width="11" height="11" rx="2"/><rect x="182" y="50" width="11" height="11" rx="2"/><rect x="182" y="63" width="11" height="11" rx="2"/><rect x="182" y="76" width="11" height="11" rx="2"/><rect x="182" y="89" width="11" height="11" rx="2"/>
+      <rect x="196" y="37" width="11" height="11" rx="2"/><rect x="196" y="50" width="11" height="11" rx="2"/><rect x="196" y="63" width="11" height="11" rx="2"/><rect x="196" y="76" width="11" height="11" rx="2"/><rect x="196" y="89" width="11" height="11" rx="2"/>
+      <rect x="210" y="37" width="11" height="11" rx="2"/><rect x="210" y="50" width="11" height="11" rx="2"/><rect x="210" y="63" width="11" height="11" rx="2"/><rect x="210" y="76" width="11" height="11" rx="2"/><rect x="210" y="89" width="11" height="11" rx="2"/>
+    </g>
+    <!-- Future cells dimmer -->
+    <g fill="#151a24">
+      <rect x="224" y="37" width="11" height="11" rx="2"/><rect x="224" y="50" width="11" height="11" rx="2"/><rect x="224" y="63" width="11" height="11" rx="2"/><rect x="224" y="76" width="11" height="11" rx="2"/><rect x="224" y="89" width="11" height="11" rx="2"/>
+      <rect x="238" y="37" width="11" height="11" rx="2"/><rect x="238" y="50" width="11" height="11" rx="2"/><rect x="238" y="63" width="11" height="11" rx="2"/><rect x="238" y="76" width="11" height="11" rx="2"/><rect x="238" y="89" width="11" height="11" rx="2"/>
+      <rect x="252" y="37" width="11" height="11" rx="2"/><rect x="252" y="50" width="11" height="11" rx="2"/><rect x="252" y="63" width="11" height="11" rx="2"/><rect x="252" y="76" width="11" height="11" rx="2"/><rect x="252" y="89" width="11" height="11" rx="2"/>
+      <rect x="266" y="37" width="11" height="11" rx="2"/><rect x="266" y="50" width="11" height="11" rx="2"/><rect x="266" y="63" width="11" height="11" rx="2"/><rect x="266" y="76" width="11" height="11" rx="2"/><rect x="266" y="89" width="11" height="11" rx="2"/>
+      <rect x="280" y="37" width="11" height="11" rx="2"/><rect x="280" y="50" width="11" height="11" rx="2"/><rect x="280" y="63" width="11" height="11" rx="2"/><rect x="280" y="76" width="11" height="11" rx="2"/><rect x="280" y="89" width="11" height="11" rx="2"/>
+      <rect x="294" y="37" width="11" height="11" rx="2"/><rect x="294" y="50" width="11" height="11" rx="2"/><rect x="294" y="63" width="11" height="11" rx="2"/><rect x="294" y="76" width="11" height="11" rx="2"/><rect x="294" y="89" width="11" height="11" rx="2"/>
+      <rect x="308" y="37" width="11" height="11" rx="2"/><rect x="308" y="50" width="11" height="11" rx="2"/><rect x="308" y="63" width="11" height="11" rx="2"/><rect x="308" y="76" width="11" height="11" rx="2"/><rect x="308" y="89" width="11" height="11" rx="2"/>
+      <rect x="322" y="37" width="11" height="11" rx="2"/><rect x="322" y="50" width="11" height="11" rx="2"/><rect x="322" y="63" width="11" height="11" rx="2"/><rect x="322" y="76" width="11" height="11" rx="2"/><rect x="322" y="89" width="11" height="11" rx="2"/>
+      <rect x="336" y="37" width="11" height="11" rx="2"/><rect x="336" y="50" width="11" height="11" rx="2"/><rect x="336" y="63" width="11" height="11" rx="2"/><rect x="336" y="76" width="11" height="11" rx="2"/><rect x="336" y="89" width="11" height="11" rx="2"/>
+      <rect x="350" y="37" width="11" height="11" rx="2"/><rect x="350" y="50" width="11" height="11" rx="2"/><rect x="350" y="63" width="11" height="11" rx="2"/><rect x="350" y="76" width="11" height="11" rx="2"/><rect x="350" y="89" width="11" height="11" rx="2"/>
+      <rect x="364" y="37" width="11" height="11" rx="2"/><rect x="364" y="50" width="11" height="11" rx="2"/><rect x="364" y="63" width="11" height="11" rx="2"/><rect x="364" y="76" width="11" height="11" rx="2"/><rect x="364" y="89" width="11" height="11" rx="2"/>
+      <rect x="378" y="37" width="11" height="11" rx="2"/><rect x="378" y="50" width="11" height="11" rx="2"/><rect x="378" y="63" width="11" height="11" rx="2"/><rect x="378" y="76" width="11" height="11" rx="2"/><rect x="378" y="89" width="11" height="11" rx="2"/>
+      <rect x="392" y="37" width="11" height="11" rx="2"/><rect x="392" y="50" width="11" height="11" rx="2"/><rect x="392" y="63" width="11" height="11" rx="2"/><rect x="392" y="76" width="11" height="11" rx="2"/><rect x="392" y="89" width="11" height="11" rx="2"/>
+      <rect x="406" y="37" width="11" height="11" rx="2"/><rect x="406" y="50" width="11" height="11" rx="2"/><rect x="406" y="63" width="11" height="11" rx="2"/><rect x="406" y="76" width="11" height="11" rx="2"/><rect x="406" y="89" width="11" height="11" rx="2"/>
+      <rect x="420" y="37" width="11" height="11" rx="2"/><rect x="420" y="50" width="11" height="11" rx="2"/><rect x="420" y="63" width="11" height="11" rx="2"/><rect x="420" y="76" width="11" height="11" rx="2"/><rect x="420" y="89" width="11" height="11" rx="2"/>
+    </g>
+    <!-- HOY -->
+    <line x1="48" y1="110" x2="48" y2="118" stroke="#f97316" stroke-width="1.5"/>
+    <rect x="30" y="118" width="36" height="12" rx="3" fill="#f97316"/>
+    <text x="48" y="127" text-anchor="middle" fill="white" font-size="7" font-family="JetBrains Mono" font-weight="700">HOY</text>
+    <!-- Legend -->
+    <text x="28" y="148" fill="#64748b" font-size="8" font-family="Inter">Sin registro</text>
+    <rect x="98" y="139" width="10" height="10" rx="2" fill="#1e2d35"/>
+    <rect x="114" y="139" width="10" height="10" rx="2" fill="#22c55e" opacity=".35"/>
+    <rect x="130" y="139" width="10" height="10" rx="2" fill="#22c55e" opacity=".65"/>
+    <rect x="146" y="139" width="10" height="10" rx="2" fill="#22c55e" opacity=".95"/>
+    <text x="162" y="148" fill="#64748b" font-size="8" font-family="Inter">Avance alto</text>
+    <!-- Score -->
+    <rect x="280" y="130" width="150" height="38" rx="8" fill="#1a1f2a" stroke="#2a3140"/>
+    <text x="355" y="145" text-anchor="middle" fill="#64748b" font-size="8" font-family="Inter">Semanas con avance</text>
+    <text x="355" y="162" text-anchor="middle" fill="#22c55e" font-size="18" font-family="JetBrains Mono" font-weight="700">2 <tspan fill="#4a5a72" font-size="12">de 94</tspan></text>
+  </svg>
+</div>
+
+<!-- OPCIÓN 5: WIDE -->
+<div class="card wide">
+  <button class="pick-btn">✅ Elegir esta</button>
+  <span class="badge">Opción 5</span>
+  <div class="card-label">📈 Área Apilada</div>
+  <div class="card-name">Avance Acumulado por Disciplina — Planificado vs Real</div>
+  <svg viewBox="0 0 900 155" style="width:100%">
+    <rect width="900" height="155" fill="#0d1117" rx="8"/>
+    <defs>
+      <linearGradient id="gG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8b5cf6" stop-opacity=".3"/><stop offset="100%" stop-color="#8b5cf6" stop-opacity=".02"/></linearGradient>
+      <linearGradient id="gE" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ef4444" stop-opacity=".25"/><stop offset="100%" stop-color="#ef4444" stop-opacity=".02"/></linearGradient>
+      <linearGradient id="gM" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#06b6d4" stop-opacity=".2"/><stop offset="100%" stop-color="#06b6d4" stop-opacity=".02"/></linearGradient>
+    </defs>
+    <line x1="50" y1="18" x2="885" y2="18" stroke="#1e2d35" stroke-width=".5"/>
+    <line x1="50" y1="48" x2="885" y2="48" stroke="#1e2d35" stroke-width=".5"/>
+    <line x1="50" y1="78" x2="885" y2="78" stroke="#1e2d35" stroke-width=".5"/>
+    <line x1="50" y1="108" x2="885" y2="108" stroke="#1e2d35" stroke-width=".5"/>
+    <line x1="50" y1="133" x2="885" y2="133" stroke="#2a3140" stroke-width="1"/>
+    <line x1="50" y1="18" x2="50" y2="133" stroke="#2a3140" stroke-width="1"/>
+    <text x="46" y="21" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="end">100%</text>
+    <text x="46" y="51" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="end">75%</text>
+    <text x="46" y="81" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="end">50%</text>
+    <text x="46" y="111" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="end">25%</text>
+    <text x="50" y="145" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="middle">May'26</text>
+    <text x="215" y="145" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="middle">Sep'26</text>
+    <text x="380" y="145" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="middle">Ene'27</text>
+    <text x="545" y="145" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="middle">Jun'27</text>
+    <text x="715" y="145" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="middle">Oct'27</text>
+    <text x="885" y="145" fill="#4a5a72" font-size="8" font-family="JetBrains Mono" text-anchor="middle">Feb'28</text>
+    <!-- Gestión planned area -->
+    <path d="M50,133 L90,128 L160,115 L260,100 L380,86 L510,76 L640,70 L760,67 L885,65 L885,133 Z" fill="url(#gG)"/>
+    <path d="M50,133 L90,128 L160,115 L260,100 L380,86 L510,76 L640,70 L760,67 L885,65" fill="none" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="5,3" opacity=".65"/>
+    <!-- Estructura planned area -->
+    <path d="M50,133 L90,132 L160,128 L260,118 L380,103 L510,86 L640,72 L760,62 L885,55 L885,133 Z" fill="url(#gE)"/>
+    <path d="M50,133 L90,132 L160,128 L260,118 L380,103 L510,86 L640,72 L760,62 L885,55" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="5,3" opacity=".55"/>
+    <!-- MEP planned -->
+    <path d="M50,133 L90,133 L160,132 L260,128 L380,120 L510,108 L640,92 L760,78 L885,65 L885,133 Z" fill="url(#gM)" opacity=".7"/>
+    <path d="M50,133 L90,133 L160,132 L260,128 L380,120 L510,108 L640,92 L760,78 L885,65" fill="none" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="5,3" opacity=".5"/>
+    <!-- Total planned -->
+    <path d="M50,133 L90,122 L160,105 L260,83 L380,62 L510,44 L640,30 L760,22 L885,18" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="7,4" opacity=".75"/>
+    <!-- Actual (barely started) -->
+    <path d="M50,133 L65,132.5 L78,132" fill="none" stroke="#22c55e" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="78" cy="132" r="5" fill="#0d1117" stroke="#22c55e" stroke-width="2.5"/>
+    <circle cx="78" cy="132" r="2.5" fill="#22c55e"/>
+    <!-- HOY -->
+    <line x1="78" y1="15" x2="78" y2="135" stroke="#f97316" stroke-width="1.5" stroke-dasharray="4,3" opacity=".8"/>
+    <rect x="60" y="7" width="36" height="12" rx="3" fill="#f97316"/>
+    <text x="78" y="16" text-anchor="middle" fill="white" font-size="7" font-family="JetBrains Mono" font-weight="700">HOY</text>
+    <!-- Legend -->
+    <line x1="580" y1="26" x2="598" y2="26" stroke="#3b82f6" stroke-width="2" stroke-dasharray="6,3" opacity=".75"/>
+    <text x="602" y="29" fill="#94a3b8" font-size="8" font-family="Inter">Total plan</text>
+    <line x1="660" y1="26" x2="678" y2="26" stroke="#22c55e" stroke-width="2.5"/>
+    <text x="682" y="29" fill="#94a3b8" font-size="8" font-family="Inter">Real</text>
+    <rect x="720" y="20" width="10" height="10" rx="2" fill="#8b5cf6" opacity=".6"/>
+    <text x="734" y="29" fill="#94a3b8" font-size="8" font-family="Inter">Gestión</text>
+    <rect x="790" y="20" width="10" height="10" rx="2" fill="#ef4444" opacity=".5"/>
+    <text x="804" y="29" fill="#94a3b8" font-size="8" font-family="Inter">Estr.</text>
+    <rect x="840" y="20" width="10" height="10" rx="2" fill="#06b6d4" opacity=".45"/>
+    <text x="854" y="29" fill="#94a3b8" font-size="8" font-family="Inter">MEP</text>
+  </svg>
+</div>
+</body>
+</html>

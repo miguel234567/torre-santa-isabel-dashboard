@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Tablero de Pedidos — Torre Santa Isabel</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ═══ VARIABLES — misma paleta que gantt-santa-isabel.html ═══ */
+:root{
+  --bg-app:#13171f;--bg-card:#1a1f2a;--bg-el:#222838;--bg-input:#13171f;
+  --border:#2a3140;--border-s:#3a4458;
+  --txt:#e2e8f0;--txt-s:#94a3b8;--txt-m:#64748b;
+  --accent:#3b82f6;
+  --r:8px;--r-lg:14px;
+  /* estados */
+  --c-borrador:#64748b;--c-revision:#d97706;--c-aprobada:#10b981;
+  --c-rechazada:#ef4444;--c-oc:#3b82f6;--c-entregada:#22c55e;
+  /* categorías (mismas que --grp-* del gantt) */
+  --cat-e:#ef4444;--cat-m:#06b6d4;--cat-a:#f59e0b;--cat-x:#10b981;--cat-g:#8b5cf6;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg-app);scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-app);color:var(--txt);font-size:14px;min-height:100vh;line-height:1.5}
+button{cursor:pointer;font-family:inherit;border:none;background:none;color:inherit}
+input,select{font-family:inherit;color:var(--txt)}
+.mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
+
+/* ═══ HEADER ═══════════════════════════════════════════ */
+.app-header{background:linear-gradient(135deg,#161b22,#1c2128);border-bottom:1px solid var(--border);padding:8px 20px;position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:10px;flex-wrap:nowrap;min-height:52px}
+.logo-pill{display:inline-flex;align-items:center;justify-content:center;background:#1e2530;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:5px 10px;width:80px;height:34px;overflow:hidden;flex-shrink:0;text-decoration:none;transition:.2s}
+.logo-pill:hover{border-color:rgba(255,255,255,.28);background:#252d3a}
+.logo-pill img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.logo-pill-fallback{font-size:.65rem;font-weight:700;color:var(--txt-s);letter-spacing:.05em;text-align:center;line-height:1.2}
+.header-sep{width:1px;height:24px;background:var(--border);margin:0 2px;flex-shrink:0}
+.header-info{display:flex;flex-direction:column;gap:1px}
+.proj-title{font-size:.9rem;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
+.proj-sub{font-size:.7rem;color:var(--txt-m);white-space:nowrap}
+.badge-live{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;background:rgba(16,185,129,.13);border:1px solid rgba(16,185,129,.3);border-radius:100px;font-size:.7rem;font-weight:600;color:#10b981;white-space:nowrap;flex-shrink:0}
+.dot-pulse{width:6px;height:6px;background:#10b981;border-radius:50%;animation:pulse 1.8s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(1.35)}}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.sync-time{font-size:.68rem;color:var(--txt-m)}
+.sync-status{font-size:.7rem;padding:3px 9px;border-radius:100px;font-weight:600;white-space:nowrap}
+.ss-ok{background:rgba(34,197,94,.1);color:#22c55e;border:1px solid rgba(34,197,94,.25)}
+.ss-syncing{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.25);animation:blink 1s ease-in-out infinite}
+.ss-error{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.25)}
+.ss-demo{background:rgba(245,158,11,.1);color:#fbbf24;border:1px solid rgba(245,158,11,.25)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}
+.btn-icon{width:32px;height:32px;border-radius:50%;border:1px solid var(--border-s);background:var(--bg-el);color:var(--txt-s);display:grid;place-items:center;font-size:1rem;transition:.2s;flex-shrink:0}
+.btn-icon:hover{border-color:var(--accent);color:var(--accent)}
+.btn-icon.spinning{animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.back-link{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:var(--r);border:1px solid var(--border);background:var(--bg-el);color:var(--txt-s);font-size:.75rem;text-decoration:none;transition:.2s;flex-shrink:0;white-space:nowrap}
+.back-link:hover{border-color:var(--border-s);color:var(--txt)}
+
+/* ═══ CONFIG BANNER ════════════════════════════════════ */
+.config-banner{background:rgba(245,158,11,.08);border-bottom:1px solid rgba(245,158,11,.25);padding:9px 20px;display:flex;align-items:center;gap:10px;font-size:.78rem;color:#fbbf24}
+.config-banner strong{color:#fcd34d}
+.config-banner code{background:rgba(245,158,11,.15);padding:1px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.72rem}
+.config-banner .close-banner{margin-left:auto;cursor:pointer;opacity:.6;font-size:1rem}
+.config-banner .close-banner:hover{opacity:1}
+
+/* ═══ TABS ══════════════════════════════════════════════ */
+.tabs-nav{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 24px;display:flex;overflow-x:auto;scrollbar-width:none;position:sticky;top:52px;z-index:40}
+.tabs-nav::-webkit-scrollbar{display:none}
+.tab-btn{flex:none;padding:11px 20px;font-size:.88rem;font-weight:600;color:var(--txt-m);border:none;background:none;border-bottom:2px solid transparent;transition:.2s;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);background:rgba(59,130,246,.06)}
+.tab-btn:hover:not(.active){color:var(--txt-s);background:rgba(255,255,255,.025)}
+.tab-badge{font-size:.65rem;font-weight:700;padding:1px 6px;border-radius:100px;background:var(--bg-el);color:var(--txt-m)}
+.tab-btn.active .tab-badge{background:rgba(59,130,246,.2);color:#93c5fd}
+
+/* ═══ TAB CONTENT ═══════════════════════════════════════ */
+.tab-content{display:none;padding:24px;animation:fadeIn .18s ease}
+.tab-content.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══ KPI CARDS ═════════════════════════════════════════ */
+.kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:1250px){.kpi-row{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:680px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
+.kpi-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;position:relative;overflow:hidden;transition:.15s}
+.kpi-card:hover{border-color:var(--border-s);transform:translateY(-1px)}
+.kpi-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r-lg) var(--r-lg) 0 0}
+.kpi-card.k-total::after{background:linear-gradient(90deg,#3b82f6,#06b6d4)}
+.kpi-card.k-aprobadas::after{background:#10b981}
+.kpi-card.k-revision::after{background:#d97706}
+.kpi-card.k-borrador::after{background:#475569}
+.kpi-card.k-rechazadas::after{background:#ef4444}
+.kpi-card.k-gestionadas::after{background:linear-gradient(90deg,#3b82f6,#22c55e)}
+.kpi-label{font-size:.68rem;color:var(--txt-m);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.kpi-value{font-size:1.9rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.kpi-sub{font-size:.7rem;color:var(--txt-m);margin-top:5px}
+.k-total .kpi-value{color:#60a5fa}
+.k-aprobadas .kpi-value{color:#10b981}
+.k-revision .kpi-value{color:#d97706}
+.k-borrador .kpi-value{color:#64748b}
+.k-rechazadas .kpi-value{color:#ef4444}
+.k-gestionadas .kpi-value{color:#3b82f6}
+
+/* ═══ CHARTS ROW ════════════════════════════════════════ */
+.charts-row{display:grid;grid-template-columns:200px 1fr 1fr;gap:16px;margin-bottom:20px}
+@media(max-width:1100px){.charts-row{grid-template-columns:1fr 1fr}}
+@media(max-width:680px){.charts-row{grid-template-columns:1fr}}
+.chart-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px}
+.chart-title{font-size:.7rem;font-weight:600;color:var(--txt-m);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px}
+
+/* Donut */
+.donut-wrap{display:flex;flex-direction:column;align-items:center;gap:14px}
+.donut-legend{width:100%;display:flex;flex-direction:column;gap:5px}
+.donut-leg-row{display:flex;align-items:center;gap:7px;font-size:.75rem;color:var(--txt-s)}
+.donut-leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.donut-leg-label{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.donut-leg-val{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--txt);font-weight:600;min-width:20px;text-align:right}
+
+/* Horizontal bars */
+.bars-wrap{display:flex;flex-direction:column;gap:7px}
+.bar-row{display:flex;align-items:center;gap:8px}
+.bar-label{width:32px;font-size:.7rem;color:var(--txt-m);font-family:'JetBrains Mono',monospace;text-align:right;flex-shrink:0}
+.bar-track{flex:1;height:14px;background:var(--bg-el);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .6s cubic-bezier(.65,0,.35,1)}
+.bar-val{width:22px;font-size:.7rem;font-family:'JetBrains Mono',monospace;color:var(--txt-m);flex-shrink:0}
+
+/* Próximas necesidades */
+.proximas-list{display:flex;flex-direction:column;gap:0}
+.proxima-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)}
+.proxima-row:last-child{border-bottom:none}
+.proxima-cod{font-size:.68rem;font-family:'JetBrains Mono',monospace;color:var(--txt-m);flex-shrink:0;width:52px}
+.proxima-name{flex:1;font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--txt-s)}
+.dias-pill{font-size:.68rem;font-weight:700;border-radius:4px;padding:2px 7px;white-space:nowrap;flex-shrink:0}
+.dias-hoy{background:rgba(239,68,68,.15);color:#f87171}
+.dias-urgente{background:rgba(245,158,11,.13);color:#fbbf24}
+.dias-pronto{background:rgba(59,130,246,.12);color:#93c5fd}
+.dias-ok{background:rgba(34,197,94,.1);color:#6ee7b7}
+.proximas-empty{font-size:.8rem;color:var(--txt-m);text-align:center;padding:18px 0}
+
+/* ═══ LISTA TOOLBAR ══════════════════════════════════════ */
+.lista-toolbar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.search-wrap{position:relative;flex:1;min-width:200px;max-width:320px}
+.search-input{width:100%;background:var(--bg-el);border:1px solid var(--border);border-radius:var(--r);padding:7px 12px 7px 34px;color:var(--txt);font-size:.82rem;outline:none;transition:.15s}
+.search-input:focus{border-color:var(--accent);background:var(--bg-card)}
+.search-input::placeholder{color:var(--txt-m)}
+.search-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--txt-m);pointer-events:none;font-size:.85rem}
+.filter-sel{background:var(--bg-el);border:1px solid var(--border);border-radius:var(--r);padding:7px 10px;color:var(--txt);font-size:.82rem;outline:none;cursor:pointer;transition:.15s}
+.filter-sel:focus{border-color:var(--accent)}
+.filter-sel option{background:var(--bg-el)}
+.toolbar-spacer{flex:1}
+.results-txt{font-size:.75rem;color:var(--txt-m);white-space:nowrap}
+.btn-action{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:var(--r);font-size:.78rem;transition:.15s;white-space:nowrap}
+.btn-reload{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);color:#60a5fa}
+.btn-reload:hover{background:rgba(59,130,246,.18)}
+.btn-csv{background:var(--bg-el);border:1px solid var(--border);color:var(--txt-s)}
+.btn-csv:hover{border-color:var(--border-s);color:var(--txt)}
+
+/* ═══ TABLE ══════════════════════════════════════════════ */
+.table-wrap{border-radius:var(--r-lg);border:1px solid var(--border);background:var(--bg-card);overflow:hidden;overflow-x:auto}
+table.req{width:100%;border-collapse:collapse;font-size:.82rem}
+table.req thead tr{background:var(--bg-el)}
+table.req th{padding:9px 12px;font-size:.68rem;font-weight:600;color:var(--txt-m);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;border-bottom:1px solid var(--border);text-align:left}
+table.req th.th-num{width:38px;text-align:center}
+table.req th.th-r{text-align:right}
+table.req tbody tr.data-row{border-bottom:1px solid var(--border);cursor:pointer;transition:.12s}
+table.req tbody tr.data-row:last-child{border-bottom:none}
+table.req tbody tr.data-row:hover{background:rgba(255,255,255,.025)}
+table.req tbody tr.data-row.expanded{background:rgba(59,130,246,.045)}
+table.req td{padding:9px 12px;vertical-align:middle}
+table.req td.td-num{text-align:center;font-size:.7rem;color:var(--txt-m);font-family:'JetBrains Mono',monospace}
+table.req td.td-r{text-align:right}
+.cod-badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:5px;font-size:.68rem;font-weight:700;font-family:'JetBrains Mono',monospace;letter-spacing:.02em}
+.item-main{font-weight:500;color:var(--txt)}
+.item-desc{font-size:.72rem;color:var(--txt-m);margin-top:1px}
+.cat-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;flex-shrink:0;vertical-align:middle}
+.cat-text{font-size:.76rem;color:var(--txt-s)}
+.fase-tag{display:inline-flex;padding:2px 8px;border-radius:4px;font-size:.68rem;font-weight:700;font-family:'JetBrains Mono',monospace;background:var(--bg-el);color:var(--txt-s)}
+.enc-text{font-size:.78rem;color:var(--txt-s)}
+.fecha-text{font-size:.76rem;font-family:'JetBrains Mono',monospace;color:var(--txt-s);white-space:nowrap}
+.fecha-urgente{color:#f87171}
+.fecha-proxima{color:#fbbf24}
+.estado-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:100px;font-size:.68rem;font-weight:600;white-space:nowrap}
+.estado-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.costo-text{font-size:.76rem;font-family:'JetBrains Mono',monospace;color:var(--txt-s)}
+.expand-ico{font-size:.7rem;color:var(--txt-m);transition:transform .15s}
+tr.data-row.expanded .expand-ico{transform:rotate(90deg)}
+
+/* Expand row */
+tr.expand-row td{padding:0}
+.expand-inner{padding:12px 16px 16px 52px;background:rgba(59,130,246,.03);display:grid;grid-template-columns:repeat(4,1fr);gap:14px;border-top:1px solid var(--border)}
+@media(max-width:800px){.expand-inner{grid-template-columns:repeat(2,1fr)}}
+.expand-field{display:flex;flex-direction:column;gap:3px}
+.expand-lbl{font-size:.66rem;color:var(--txt-m);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.expand-val{font-size:.8rem;color:var(--txt)}
+.expand-val.mono{font-size:.75rem}
+
+/* Table empty */
+.table-empty{padding:40px;text-align:center;color:var(--txt-m);font-size:.85rem}
+
+/* ═══ FLUJO APROBACIÓN ══════════════════════════════════ */
+.flujo-wrap{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.flujo-title{font-size:.68rem;font-weight:600;color:var(--txt-m);text-transform:uppercase;letter-spacing:.06em;margin-right:8px;flex-shrink:0}
+.flujo-step{display:inline-flex;align-items:center;padding:4px 12px;border-radius:6px;font-size:.75rem;font-weight:600;white-space:nowrap;flex-shrink:0}
+.flujo-arrow{color:var(--txt-m);font-size:.75rem;flex-shrink:0}
+.flujo-branch{font-size:.68rem;color:var(--txt-m);flex-shrink:0}
+
+/* ═══ FOOTER ════════════════════════════════════════════ */
+footer{padding:14px 24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;color:var(--txt-m);font-size:.7rem;flex-wrap:wrap;gap:8px}
+.footer-logos{display:flex;align-items:center;gap:8px}
+.footer-logo-pill{display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:7px;padding:3px 7px;width:60px;height:26px;overflow:hidden}
+.footer-logo-pill img{max-width:100%;max-height:100%;object-fit:contain;filter:brightness(0) invert(1);opacity:.35;transition:.2s}
+.footer-logo-pill:hover img{opacity:.7}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ HEADER ══════════════════════════ -->
+<header class="app-header">
+  <a href="gantt-santa-isabel.html" class="logo-pill" title="Ir al Dashboard principal">
+    <img src="IMAGENES_LOGOS/Logo_Santa_Isabel.png" alt="TSI"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+    <span class="logo-pill-fallback" style="display:none">TSI</span>
+  </a>
+  <div class="header-sep"></div>
+  <div class="header-info">
+    <span class="proj-title">Tablero de Pedidos</span>
+    <span class="proj-sub">Torre Santa Isabel · Contro360°</span>
+  </div>
+  <span class="badge-live"><span class="dot-pulse"></span>En vivo</span>
+  <div class="header-right">
+    <span id="sync-time" class="sync-time"></span>
+    <span id="sync-status" class="sync-status ss-demo">Demo</span>
+    <button class="btn-icon" id="btn-sync" title="Sincronizar con Google Drive" onclick="syncFromSheet()">↻</button>
+    <a href="gantt-santa-isabel.html" class="back-link" title="Volver al gantt">← Gantt</a>
+  </div>
+</header>
+
+<!-- ══════════════════ CONFIG BANNER (visible when SHEET_ID = placeholder) ══ -->
+<div class="config-banner" id="config-banner">
+  <span>⚙️ <strong>Conectar Google Sheets:</strong> abre este archivo en un editor, busca <code>SHEET_ID</code> y reemplaza el valor con el ID de tu hoja de pedidos.</span>
+  <span class="close-banner" onclick="document.getElementById('config-banner').style.display='none'">✕</span>
+</div>
+
+<!-- ══════════════════ TABS ════════════════════════════ -->
+<nav class="tabs-nav">
+  <button class="tab-btn active" data-tab="dashboard" onclick="switchTab('dashboard')">
+    📊 Dashboard
+    <span class="tab-badge" id="badge-total">0</span>
+  </button>
+  <button class="tab-btn" data-tab="lista" onclick="switchTab('lista')">
+    📋 Lista de Pedidos
+    <span class="tab-badge" id="badge-lista">0</span>
+  </button>
+</nav>
+
+<!-- ══════════════════ TAB: DASHBOARD ═════════════════ -->
+<section id="tab-dashboard" class="tab-content active">
+
+  <!-- Flujo de aprobación -->
+  <div class="flujo-wrap">
+    <span class="flujo-title">Flujo:</span>
+    <span class="flujo-step" style="background:rgba(100,116,139,.15);color:#94a3b8">Borrador</span>
+    <span class="flujo-arrow">→</span>
+    <span class="flujo-step" style="background:rgba(217,119,6,.13);color:#d97706">En revisión</span>
+    <span class="flujo-arrow">→</span>
+    <span class="flujo-step" style="background:rgba(16,185,129,.12);color:#10b981">Aprobada</span>
+    <span class="flujo-arrow">→</span>
+    <span class="flujo-step" style="background:rgba(59,130,246,.12);color:#60a5fa">OC generada</span>
+    <span class="flujo-arrow">→</span>
+    <span class="flujo-step" style="background:rgba(34,197,94,.1);color:#22c55e">Entregada</span>
+    <span class="flujo-branch">↳ Rechazada (desde revisión)</span>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-row" id="kpi-row">
+    <div class="kpi-card k-total"><div class="kpi-label">Total</div><div class="kpi-value">—</div><div class="kpi-sub">Cargando...</div></div>
+  </div>
+
+  <!-- Gráficas -->
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">Por Estado</div>
+      <div id="chart-estado"><div class="proximas-empty">Cargando...</div></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Por Fase (top 8)</div>
+      <div id="chart-fase"><div class="proximas-empty">Cargando...</div></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Próximas necesidades — 14 días</div>
+      <div id="proximas-wrap" class="proximas-list"></div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════ TAB: LISTA ══════════════════════ -->
+<section id="tab-lista" class="tab-content">
+
+  <div class="lista-toolbar">
+    <div class="search-wrap">
+      <span class="search-ico">🔍</span>
+      <input type="text" class="search-input" id="search-input"
+             placeholder="Buscar código, ítem, encargado, proveedor…"
+             oninput="applyFilters()"/>
+    </div>
+    <select class="filter-sel" id="filter-estado" onchange="applyFilters()">
+      <option value="">Todos los estados</option>
+      <option value="BORRADOR">Borrador</option>
+      <option value="EN_REVISION">En revisión</option>
+      <option value="APROBADA">Aprobada</option>
+      <option value="RECHAZADA">Rechazada</option>
+      <option value="OC_GENERADA">OC generada</option>
+      <option value="ENTREGADA">Entregada</option>
+    </select>
+    <select class="filter-sel" id="filter-fase" onchange="applyFilters()">
+      <option value="">Todas las fases</option>
+    </select>
+    <select class="filter-sel" id="filter-cat" onchange="applyFilters()">
+      <option value="">Todas las categorías</option>
+      <option value="Estructura">Estructura</option>
+      <option value="MEP">MEP</option>
+      <option value="Acabados">Acabados</option>
+      <option value="Exteriores">Exteriores</option>
+      <option value="Gestión">Gestión</option>
+    </select>
+    <span class="toolbar-spacer"></span>
+    <span class="results-txt" id="results-txt">— registros</span>
+    <button class="btn-action btn-reload" onclick="syncFromSheet()">↻ Recargar</button>
+    <button class="btn-action btn-csv" onclick="exportCSV()">⬇ CSV</button>
+  </div>
+
+  <div class="table-wrap">
+    <table class="req">
+      <thead>
+        <tr>
+          <th class="th-num">#</th>
+          <th>Código</th>
+          <th>Ítem / Descripción</th>
+          <th>Categoría</th>
+          <th>Fase</th>
+          <th>Encargado</th>
+          <th>Fecha Nec.</th>
+          <th>Estado</th>
+          <th class="th-r">Costo Est.</th>
+          <th style="width:24px"></th>
+        </tr>
+      </thead>
+      <tbody id="req-tbody">
+        <tr><td colspan="10" class="table-empty">Cargando datos...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>
+
+<!-- ══════════════════ FOOTER ══════════════════════════ -->
+<footer>
+  <div class="footer-logos">
+    <div class="footer-logo-pill">
+      <img src="IMAGENES_LOGOS/Logo_Santa_Isabel.png" alt="TSI" onerror="this.style.display='none'"/>
+    </div>
+    <div class="footer-logo-pill">
+      <img src="IMAGENES_LOGOS/Logo_CVA.png" alt="CVA" onerror="this.style.display='none'"/>
+    </div>
+    <div class="footer-logo-pill">
+      <img src="IMAGENES_LOGOS/Logo_1A.png" alt="1A" onerror="this.style.display='none'"/>
+    </div>
+  </div>
+  <span>Contro360° · Tablero de Pedidos · <span id="footer-year"></span></span>
+  <span id="footer-info">0 requisiciones</span>
+</footer>
+
+<script>
+// ════════════════════════════════════════════════════════
+//  CONFIG
+//  → Reemplaza YOUR_SHEET_ID con el ID de tu Google Sheet
+//    (está en la URL: docs.google.com/spreadsheets/d/[ID]/...)
+//
+//  Estructura esperada de la hoja (fila 1 = títulos, datos desde fila 2):
+//  A: Código  B: Ítem  C: Descripción  D: Categoría  E: Fase
+//  F: Encargado  G: Fecha Necesidad (dd/mm/yyyy)  H: Fecha Entrega
+//  I: Estado  J: Proveedor  K: Costo estimado  L: OC vinculada  M: Notas
+// ════════════════════════════════════════════════════════
+const SHEET_ID      = 'YOUR_SHEET_ID';   // ← CAMBIA ESTO
+const SHEET_RANGE   = 'A2:M';            // columnas A–M desde fila 2
+const STORAGE_KEY   = 'contro360_pedidos_v1';
+const AUTO_SYNC_MS  = 60000;             // 60 s
+
+// ════════════════════════════════════════════════════════
+//  DATOS DEMO — funcionan sin Sheet configurado
+// ════════════════════════════════════════════════════════
+const DEMO = [
+  {cod:'RQ-001',item:'Acero corrugado 3/8"',        desc:'10 toneladas',              cat:'Estructura',fase:'F2',enc:'Jorge Sánchez',  fNec:'2026-06-05',fEnt:'2026-06-07',est:'APROBADA',   prov:'Acerías Paz del Río',costo:8500000, oc:'OC-021',notas:''},
+  {cod:'RQ-002',item:'Concreto 3000 PSI',            desc:'20 m³',                    cat:'Estructura',fase:'F2',enc:'Jorge Sánchez',  fNec:'2026-06-08',fEnt:'',          est:'EN_REVISION',prov:'Cemex Colombia',     costo:4200000, oc:'',       notas:'Pendiente cotización adicional'},
+  {cod:'RQ-003',item:'Formaleta metálica columnas',  desc:'48 und',                   cat:'Estructura',fase:'F3',enc:'Miguel Torres',  fNec:'2026-06-12',fEnt:'',          est:'BORRADOR',   prov:'',                   costo:6800000, oc:'',       notas:''},
+  {cod:'RQ-004',item:'Cable THHN AWG #4',            desc:'500 m',                    cat:'MEP',       fase:'F4',enc:'Carlos Medina',  fNec:'2026-07-15',fEnt:'',          est:'RECHAZADA',  prov:'Codinter',           costo:1200000, oc:'',       notas:'Revisar calibre con diseñador eléctrico'},
+  {cod:'RQ-005',item:'Tubería PVC presión 4"',       desc:'120 m + uniones',          cat:'MEP',       fase:'F2',enc:'Carlos Medina',  fNec:'2026-06-04',fEnt:'2026-06-03',est:'OC_GENERADA', prov:'Pavco',             costo:890000,  oc:'OC-019', notas:''},
+  {cod:'RQ-006',item:'Bloque arcilla No.5',          desc:'15.000 und',               cat:'Estructura',fase:'F5',enc:'Miguel Torres',  fNec:'2026-06-20',fEnt:'',          est:'APROBADA',   prov:'Ladrillera Muñoz',  costo:7200000, oc:'OC-023', notas:''},
+  {cod:'RQ-007',item:'Tubería EMT conduit 3/4"',     desc:'200 m + conexiones',       cat:'MEP',       fase:'F3',enc:'Carlos Medina',  fNec:'2026-06-15',fEnt:'',          est:'EN_REVISION', prov:'',                 costo:980000,  oc:'',       notas:''},
+  {cod:'RQ-008',item:'Pintura vinílica exterior',    desc:'80 gal blanco hueso',      cat:'Acabados',  fase:'F8',enc:'Laura Gómez',    fNec:'2026-08-01',fEnt:'',          est:'BORRADOR',   prov:'',                   costo:2400000, oc:'',       notas:''},
+  {cod:'RQ-009',item:'Ventanas aluminio + vidrio 4mm',desc:'24 und 120×90 cm',       cat:'Acabados',  fase:'F7',enc:'Laura Gómez',    fNec:'2026-07-20',fEnt:'',          est:'APROBADA',   prov:'Aluvisa Colombia',   costo:18600000,oc:'OC-022', notas:''},
+  {cod:'RQ-010',item:'Cerámica piso 40×40',          desc:'380 m²',                   cat:'Acabados',  fase:'F8',enc:'Laura Gómez',    fNec:'2026-08-10',fEnt:'',          est:'BORRADOR',   prov:'',                   costo:5700000, oc:'',       notas:'Pendiente selección de color por cliente'},
+  {cod:'RQ-011',item:'Tablero eléctrico 30 ctos',    desc:'6 und monofásico',         cat:'MEP',       fase:'F4',enc:'Carlos Medina',  fNec:'2026-07-05',fEnt:'',          est:'EN_REVISION', prov:'Schneider Electric', costo:3100000, oc:'',       notas:''},
+  {cod:'RQ-012',item:'Varilla Ø1/2" A-60',          desc:'5 toneladas',               cat:'Estructura',fase:'F3',enc:'Jorge Sánchez',  fNec:'2026-06-18',fEnt:'',          est:'APROBADA',   prov:'Acerías Paz del Río',costo:11200000,oc:'OC-024', notas:''},
+  {cod:'RQ-013',item:'Malla electrosoldada 6mm',     desc:'200 m²',                   cat:'Estructura',fase:'F2',enc:'Jorge Sánchez',  fNec:'2026-06-03',fEnt:'2026-06-02',est:'ENTREGADA',  prov:'Mallas y Alambres',  costo:1800000, oc:'OC-018', notas:''},
+  {cod:'RQ-014',item:'Sanitarios + lavamanos',       desc:'18 juegos completos',      cat:'MEP',       fase:'F8',enc:'Carlos Medina',  fNec:'2026-08-15',fEnt:'',          est:'BORRADOR',   prov:'',                   costo:9900000, oc:'',       notas:''},
+  {cod:'RQ-015',item:'Impermeabilizante terraza',    desc:'200 L sistema Sika',       cat:'Exteriores',fase:'F6',enc:'Miguel Torres',  fNec:'2026-07-01',fEnt:'',          est:'EN_REVISION', prov:'Sika Colombia',      costo:1650000, oc:'',       notas:''},
+];
+
+// ════════════════════════════════════════════════════════
+//  CONFIGURACIÓN VISUAL DE ESTADOS
+// ════════════════════════════════════════════════════════
+const ST = {
+  BORRADOR:    {label:'Borrador',     color:'#64748b', bg:'rgba(100,116,139,.15)', dot:'#475569'},
+  EN_REVISION: {label:'En revisión', color:'#d97706', bg:'rgba(217,119,6,.14)',   dot:'#d97706'},
+  APROBADA:    {label:'Aprobada',     color:'#10b981', bg:'rgba(16,185,129,.12)', dot:'#10b981'},
+  RECHAZADA:   {label:'Rechazada',    color:'#ef4444', bg:'rgba(239,68,68,.12)',  dot:'#ef4444'},
+  OC_GENERADA: {label:'OC generada', color:'#3b82f6', bg:'rgba(59,130,246,.12)', dot:'#3b82f6'},
+  ENTREGADA:   {label:'Entregada',    color:'#22c55e', bg:'rgba(34,197,94,.1)',   dot:'#22c55e'},
+};
+
+const CAT_COLOR = {
+  'Estructura':'#ef4444','MEP':'#06b6d4','Acabados':'#f59e0b',
+  'Exteriores':'#10b981','Gestión':'#8b5cf6',
+};
+
+// ════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════
+let data       = [];
+let filtered   = [];
+let activeTab  = 'dashboard';
+let expanded   = null;
+let lastSync   = null;
+let isDemo     = true;
+
+// ════════════════════════════════════════════════════════
+//  SYNC — Google Sheets JSONP (mismo patrón que gantt)
+// ════════════════════════════════════════════════════════
+function syncFromSheet() {
+  const isConfigured = SHEET_ID && SHEET_ID !== 'YOUR_SHEET_ID';
+
+  if (!isConfigured) {
+    if (data.length === 0) { data = [...DEMO]; isDemo = true; }
+    setSyncStatus('demo', 'Demo');
+    renderAll();
+    return;
+  }
+
+  setSyncStatus('syncing', 'Sincronizando…');
+  document.getElementById('btn-sync').classList.add('spinning');
+
+  const cb = 'gvizPedidos_' + Date.now();
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:${cb}&range=${SHEET_RANGE}`;
+  const script = document.createElement('script');
+  script.src = url;
+
+  window[cb] = function(res) {
+    cleanup();
+    try {
+      const rows = res?.table?.rows || [];
+      const parsed = rows.map(parseRow).filter(Boolean);
+      if (parsed.length > 0) {
+        data = parsed;
+        isDemo = false;
+        saveCache();
+        lastSync = new Date();
+        setSyncStatus('ok', 'Sincronizado');
+        updateSyncTime();
+        renderAll();
+        hideBanner();
+      } else {
+        setSyncStatus('error', 'Hoja vacía');
+      }
+    } catch(e) {
+      setSyncStatus('error', 'Error al leer');
+    }
+  };
+
+  script.onerror = function() {
+    cleanup();
+    setSyncStatus('error', 'Sin conexión');
+    if (data.length === 0) { data = [...DEMO]; isDemo = true; renderAll(); }
+  };
+
+  function cleanup() {
+    delete window[cb];
+    script.remove();
+    document.getElementById('btn-sync').classList.remove('spinning');
+  }
+
+  document.head.appendChild(script);
+}
+
+function parseRow(row) {
+  const g = (i) => {
+    const c = row.c?.[i];
+    if (!c) return '';
+    return (c.f !== null && c.f !== undefined) ? String(c.f) : String(c.v ?? '');
+  };
+  const cod = g(0).trim();
+  if (!cod || /^c[oó]digo$/i.test(cod)) return null;
+  return {
+    cod:  cod,
+    item: g(1).trim(),
+    desc: g(2).trim(),
+    cat:  g(3).trim() || 'General',
+    fase: g(4).trim().toUpperCase(),
+    enc:  g(5).trim(),
+    fNec: parseSheetDate(g(6)),
+    fEnt: parseSheetDate(g(7)),
+    est:  normalizeEstado(g(8)),
+    prov: g(9).trim(),
+    costo:parseCosto(g(10)),
+    oc:   g(11).trim(),
+    notas:g(12).trim(),
+  };
+}
+
+function parseSheetDate(v) {
+  if (!v) return '';
+  const s = String(v).trim();
+  // Google Sheets Date object como string: "Date(2026,5,5)"
+  const dm = s.match(/^Date\((\d+),(\d+),(\d+)\)$/);
+  if (dm) {
+    const mo = String(+dm[2]+1).padStart(2,'0');
+    const dy = String(+dm[3]).padStart(2,'0');
+    return `${dm[1]}-${mo}-${dy}`;
+  }
+  // dd/mm/yyyy
+  const dmy = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (dmy) return `${dmy[3]}-${dmy[2].padStart(2,'0')}-${dmy[1].padStart(2,'0')}`;
+  // yyyy-mm-dd
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  return '';
+}
+
+function normalizeEstado(s) {
+  const u = s.trim().toUpperCase().replace(/[\s\-]/g,'_');
+  if (/BORR/.test(u)) return 'BORRADOR';
+  if (/REVI/.test(u)) return 'EN_REVISION';
+  if (/APRO/.test(u)) return 'APROBADA';
+  if (/RECH/.test(u)) return 'RECHAZADA';
+  if (/OC|ORDEN/.test(u)) return 'OC_GENERADA';
+  if (/ENTRE/.test(u)) return 'ENTREGADA';
+  return 'BORRADOR';
+}
+
+function parseCosto(v) {
+  const n = parseFloat(String(v).replace(/[^0-9.]/g,''));
+  return isNaN(n) ? 0 : n;
+}
+
+// ════════════════════════════════════════════════════════
+//  CACHÉ LOCAL
+// ════════════════════════════════════════════════════════
+function saveCache() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({d:data,ts:Date.now()})); } catch(e) {}
+}
+
+function loadCache() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    const {d, ts} = JSON.parse(raw);
+    if (d?.length) {
+      data = d; lastSync = new Date(ts); isDemo = false;
+      return true;
+    }
+  } catch(e) {}
+  return false;
+}
+
+// ════════════════════════════════════════════════════════
+//  RENDER COORDINADOR
+// ════════════════════════════════════════════════════════
+function renderAll() {
+  updateBadges();
+  if (activeTab === 'dashboard') renderDashboard();
+  else renderLista();
+  updateFooter();
+}
+
+function updateBadges() {
+  document.getElementById('badge-total').textContent = data.length;
+  document.getElementById('badge-lista').textContent = data.length;
+}
+
+// ════════════════════════════════════════════════════════
+//  DASHBOARD
+// ════════════════════════════════════════════════════════
+function renderDashboard() {
+  const total = data.length;
+  const byEst = {};
+  for (const k of Object.keys(ST)) byEst[k] = 0;
+  data.forEach(r => { byEst[r.est] = (byEst[r.est]||0) + 1; });
+
+  const byFase = {};
+  data.forEach(r => { if (r.fase) byFase[r.fase] = (byFase[r.fase]||0)+1; });
+
+  const totalCosto = data.reduce((s,r) => s + r.costo, 0);
+
+  // KPIs
+  const managed = byEst.OC_GENERADA + byEst.ENTREGADA;
+  document.getElementById('kpi-row').innerHTML = `
+    <div class="kpi-card k-total">
+      <div class="kpi-label">Total</div>
+      <div class="kpi-value">${total}</div>
+      <div class="kpi-sub">${fmtCOP(totalCosto)} estimado</div>
+    </div>
+    <div class="kpi-card k-aprobadas">
+      <div class="kpi-label">Aprobadas</div>
+      <div class="kpi-value">${byEst.APROBADA}</div>
+      <div class="kpi-sub">${pct(byEst.APROBADA,total)}% del total</div>
+    </div>
+    <div class="kpi-card k-revision">
+      <div class="kpi-label">En Revisión</div>
+      <div class="kpi-value">${byEst.EN_REVISION}</div>
+      <div class="kpi-sub">Requieren atención</div>
+    </div>
+    <div class="kpi-card k-borrador">
+      <div class="kpi-label">Borrador</div>
+      <div class="kpi-value">${byEst.BORRADOR}</div>
+      <div class="kpi-sub">Sin enviar a revisión</div>
+    </div>
+    <div class="kpi-card k-rechazadas">
+      <div class="kpi-label">Rechazadas</div>
+      <div class="kpi-value">${byEst.RECHAZADA}</div>
+      <div class="kpi-sub">Requieren corrección</div>
+    </div>
+    <div class="kpi-card k-gestionadas">
+      <div class="kpi-label">OC / Entregadas</div>
+      <div class="kpi-value">${managed}</div>
+      <div class="kpi-sub">Orden generada o entregado</div>
+    </div>
+  `;
+
+  renderDonut(byEst, total);
+  renderBars(byFase);
+  renderProximas();
+}
+
+function renderDonut(byEst, total) {
+  const items = Object.entries(ST)
+    .map(([k,v]) => ({key:k, label:v.label, color:v.color, count: byEst[k]||0}))
+    .filter(d => d.count > 0);
+
+  if (!items.length) {
+    document.getElementById('chart-estado').innerHTML = '<div class="proximas-empty">Sin datos</div>';
+    return;
+  }
+
+  const cx=60,cy=60,r=46,sw=12,circ=2*Math.PI*r;
+  let cum=0;
+  const segs = items.map(d => {
+    const dash = (d.count/total) * circ;
+    const seg  = {color:d.color, dash, offset:-cum};
+    cum += dash;
+    return seg;
+  });
+
+  const circles = segs.map(s =>
+    `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none"
+      stroke="${s.color}" stroke-width="${sw}"
+      stroke-dasharray="${s.dash.toFixed(2)} ${(circ-s.dash).toFixed(2)}"
+      stroke-dashoffset="${s.offset.toFixed(2)}"
+      transform="rotate(-90 ${cx} ${cy})"/>`
+  ).join('');
+
+  const legend = items.map(d =>
+    `<div class="donut-leg-row">
+      <span class="donut-leg-dot" style="background:${d.color}"></span>
+      <span class="donut-leg-label">${d.label}</span>
+      <span class="donut-leg-val">${d.count}</span>
+    </div>`
+  ).join('');
+
+  document.getElementById('chart-estado').innerHTML = `
+    <div class="donut-wrap">
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--bg-el)" stroke-width="${sw}"/>
+        ${circles}
+        <text x="${cx}" y="${cy-4}" text-anchor="middle" fill="var(--txt)"
+              font-size="17" font-weight="700" font-family="JetBrains Mono,monospace">${total}</text>
+        <text x="${cx}" y="${cy+11}" text-anchor="middle" fill="var(--txt-m)"
+              font-size="9">total</text>
+      </svg>
+      <div class="donut-legend">${legend}</div>
+    </div>
+  `;
+}
+
+function renderBars(byFase) {
+  const entries = Object.entries(byFase).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  if (!entries.length) {
+    document.getElementById('chart-fase').innerHTML = '<div class="proximas-empty">Sin datos</div>';
+    return;
+  }
+  const max = Math.max(...entries.map(e=>e[1]));
+  const palette = ['#3b82f6','#06b6d4','#8b5cf6','#f59e0b','#10b981','#ef4444','#ec4899','#84cc16'];
+
+  const bars = entries.map(([fase,cnt],i) =>
+    `<div class="bar-row">
+      <span class="bar-label">${fase}</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${(cnt/max*100).toFixed(1)}%;background:${palette[i%palette.length]}"></div>
+      </div>
+      <span class="bar-val">${cnt}</span>
+    </div>`
+  ).join('');
+
+  document.getElementById('chart-fase').innerHTML = `<div class="bars-wrap">${bars}</div>`;
+}
+
+function renderProximas() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const limit = new Date(today.getTime() + 14*86400000);
+
+  const proximas = data
+    .filter(r => {
+      if (!r.fNec) return false;
+      if (r.est === 'ENTREGADA' || r.est === 'OC_GENERADA') return false;
+      const d = new Date(r.fNec);
+      return d >= today && d <= limit;
+    })
+    .sort((a,b) => a.fNec.localeCompare(b.fNec));
+
+  const el = document.getElementById('proximas-wrap');
+  if (!proximas.length) {
+    el.innerHTML = '<div class="proximas-empty">Sin necesidades en los próximos 14 días</div>';
+    return;
+  }
+
+  el.innerHTML = proximas.map(r => {
+    const dias = Math.round((new Date(r.fNec)-today)/86400000);
+    let cls = 'dias-ok', lbl = `en ${dias}d`;
+    if (dias === 0)     { cls='dias-hoy';    lbl='Hoy'; }
+    else if (dias <= 3) { cls='dias-urgente'; lbl=`${dias}d`; }
+    else if (dias <= 7) { cls='dias-pronto';  lbl=`${dias}d`; }
+
+    return `
+      <div class="proxima-row">
+        <span class="proxima-cod">${r.cod}</span>
+        <span class="proxima-name" title="${r.item}">${r.item}</span>
+        <span class="dias-pill ${cls}">${lbl}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════════
+//  LISTA
+// ════════════════════════════════════════════════════════
+function renderLista() {
+  populateFaseFilter();
+  applyFilters();
+}
+
+function populateFaseFilter() {
+  const fases = [...new Set(data.map(r=>r.fase).filter(Boolean))].sort();
+  const sel   = document.getElementById('filter-fase');
+  const cur   = sel.value;
+  sel.innerHTML = `<option value="">Todas las fases</option>` +
+    fases.map(f=>`<option value="${f}" ${f===cur?'selected':''}>${f}</option>`).join('');
+}
+
+function applyFilters() {
+  const q   = (document.getElementById('search-input')?.value||'').trim().toLowerCase();
+  const est = document.getElementById('filter-estado')?.value||'';
+  const fas = document.getElementById('filter-fase')?.value||'';
+  const cat = document.getElementById('filter-cat')?.value||'';
+
+  filtered = data.filter(r => {
+    if (est && r.est !== est) return false;
+    if (fas && r.fase !== fas) return false;
+    if (cat && r.cat !== cat) return false;
+    if (q) {
+      const hay = [r.cod,r.item,r.desc,r.enc,r.prov,r.oc,r.fase].join(' ').toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  const el = document.getElementById('results-txt');
+  if (el) el.textContent = `${filtered.length} registro${filtered.length!==1?'s':''}`;
+
+  renderTabla();
+}
+
+function renderTabla() {
+  const tbody = document.getElementById('req-tbody');
+  if (!tbody) return;
+
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="10" class="table-empty">No hay registros con los filtros aplicados</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map((r,i) => {
+    const sc       = ST[r.est] || ST.BORRADOR;
+    const catColor = CAT_COLOR[r.cat] || '#64748b';
+    const isExp    = expanded === r.cod;
+    const urgClass = getDateUrgClass(r.fNec, r.est);
+
+    return `
+      <tr class="data-row${isExp?' expanded':''}" onclick="toggleExpand('${r.cod.replace(/'/g,"\\'")}')">
+        <td class="td-num">${i+1}</td>
+        <td><span class="cod-badge" style="background:${sc.bg};color:${sc.color}">${esc(r.cod)}</span></td>
+        <td>
+          <div class="item-main">${esc(r.item)}</div>
+          ${r.desc?`<div class="item-desc">${esc(r.desc)}</div>`:''}
+        </td>
+        <td>
+          <span class="cat-text">
+            <span class="cat-dot" style="background:${catColor}"></span>${esc(r.cat||'—')}
+          </span>
+        </td>
+        <td><span class="fase-tag">${esc(r.fase||'—')}</span></td>
+        <td class="enc-text">${esc(r.enc||'—')}</td>
+        <td><span class="fecha-text ${urgClass}">${r.fNec?fmtDate(r.fNec):'—'}</span></td>
+        <td>
+          <span class="estado-pill" style="background:${sc.bg};color:${sc.color}">
+            <span class="estado-dot" style="background:${sc.dot}"></span>
+            ${sc.label}
+          </span>
+        </td>
+        <td class="td-r"><span class="costo-text">${r.costo>0?fmtCOP(r.costo):'—'}</span></td>
+        <td style="text-align:center"><span class="expand-ico">›</span></td>
+      </tr>
+      ${isExp ? expandRow(r) : ''}
+    `;
+  }).join('');
+}
+
+function expandRow(r) {
+  return `
+    <tr class="expand-row">
+      <td colspan="10">
+        <div class="expand-inner">
+          <div class="expand-field">
+            <span class="expand-lbl">Proveedor</span>
+            <span class="expand-val">${esc(r.prov)||'—'}</span>
+          </div>
+          <div class="expand-field">
+            <span class="expand-lbl">Fecha Entrega</span>
+            <span class="expand-val">${r.fEnt?fmtDate(r.fEnt):'—'}</span>
+          </div>
+          <div class="expand-field">
+            <span class="expand-lbl">OC Vinculada</span>
+            <span class="expand-val mono">${esc(r.oc)||'—'}</span>
+          </div>
+          <div class="expand-field">
+            <span class="expand-lbl">Notas</span>
+            <span class="expand-val">${esc(r.notas)||'—'}</span>
+          </div>
+        </div>
+      </td>
+    </tr>
+  `;
+}
+
+function toggleExpand(cod) {
+  expanded = expanded === cod ? null : cod;
+  renderTabla();
+}
+
+function getDateUrgClass(fNec, est) {
+  if (!fNec || est==='ENTREGADA' || est==='OC_GENERADA') return '';
+  const today = new Date(); today.setHours(0,0,0,0);
+  const dias  = Math.round((new Date(fNec)-today)/86400000);
+  if (dias < 0)  return 'fecha-urgente';
+  if (dias <= 3) return 'fecha-urgente';
+  if (dias <= 7) return 'fecha-proxima';
+  return '';
+}
+
+// ════════════════════════════════════════════════════════
+//  EXPORT CSV
+// ════════════════════════════════════════════════════════
+function exportCSV() {
+  const headers = ['Código','Ítem','Descripción','Categoría','Fase','Encargado',
+                   'Fecha Necesidad','Fecha Entrega','Estado','Proveedor','Costo Est.',
+                   'OC Vinculada','Notas'];
+  const rows = filtered.map(r => [
+    r.cod, r.item, r.desc, r.cat, r.fase, r.enc,
+    r.fNec, r.fEnt, ST[r.est]?.label||r.est,
+    r.prov, r.costo, r.oc, r.notas
+  ].map(v => `"${String(v??'').replace(/"/g,'""')}"`).join(','));
+
+  const csv  = [headers.join(','), ...rows].join('\r\n');
+  const blob = new Blob(['﻿'+csv], {type:'text/csv;charset=utf-8'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = `pedidos_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ════════════════════════════════════════════════════════
+//  TAB SWITCHING
+// ════════════════════════════════════════════════════════
+function switchTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.tab===tab));
+  document.querySelectorAll('.tab-content').forEach(s =>
+    s.classList.toggle('active', s.id==='tab-'+tab));
+  if (tab==='dashboard') renderDashboard();
+  else renderLista();
+}
+
+// ════════════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════════════
+function fmtDate(iso) {
+  if (!iso) return '—';
+  const [y,m,d] = iso.split('-');
+  const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  return `${+d} ${MESES[+m-1]}/${y.slice(2)}`;
+}
+
+function fmtCOP(n) {
+  if (!n) return '$0';
+  if (n>=1000000000) return `$${(n/1000000000).toFixed(1)}B`;
+  if (n>=1000000)    return `$${(n/1000000).toFixed(n%1000000===0?0:1)}M`;
+  if (n>=1000)       return `$${(n/1000).toFixed(0)}K`;
+  return `$${n}`;
+}
+
+function pct(a,b) { return b ? Math.round(a/b*100) : 0; }
+
+function esc(s) {
+  return String(s||'')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+function setSyncStatus(type, label) {
+  const el = document.getElementById('sync-status');
+  el.className = 'sync-status';
+  el.classList.add(type==='ok'?'ss-ok':type==='syncing'?'ss-syncing':type==='error'?'ss-error':'ss-demo');
+  el.textContent = label;
+}
+
+function updateSyncTime() {
+  const el = document.getElementById('sync-time');
+  if (!lastSync) { el.textContent=''; return; }
+  const diff = Math.round((Date.now()-lastSync.getTime())/60000);
+  el.textContent = diff<1 ? 'Ahora' : `Hace ${diff} min`;
+}
+
+function updateFooter() {
+  const el = document.getElementById('footer-info');
+  if (el) el.textContent = `${data.length} requisiciones · ${fmtCOP(data.reduce((s,r)=>s+r.costo,0))} estimado`;
+}
+
+function hideBanner() {
+  const b = document.getElementById('config-banner');
+  if (b) b.style.display='none';
+}
+
+// ════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════
+function init() {
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+  const fromCache = loadCache();
+  if (fromCache) {
+    setSyncStatus('ok','Caché');
+    updateSyncTime();
+    hideBanner();
+  } else {
+    data = [...DEMO];
+    isDemo = true;
+    setSyncStatus('demo','Demo');
+  }
+
+  const isConfigured = SHEET_ID && SHEET_ID !== 'YOUR_SHEET_ID';
+  if (isConfigured) hideBanner();
+
+  renderAll();
+
+  // Intentar sync real si hay Sheet configurado
+  if (isConfigured) syncFromSheet();
+
+  // Auto-sync cada 60s
+  setInterval(() => {
+    if (SHEET_ID && SHEET_ID !== 'YOUR_SHEET_ID') syncFromSheet();
+    updateSyncTime();
+  }, AUTO_SYNC_MS);
+}
+
+init();
+</script>
+</body>
+</html>
