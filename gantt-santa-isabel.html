@@ -10,40 +10,41 @@
 /* ═══ VARIABLES ═════════════════════════════════════════════════ */
 :root{
   /* — Tokens base (originales) — */
-  --bg-app:#0d1117;--bg-card:#161b22;--bg-el:#1c2330;--bg-input:#13171f;
-  --border:rgba(255,255,255,0.07);--border-s:rgba(255,255,255,0.13);--border-f:#3b82f6;
+  --bg-app:#050508;--bg-card:#0b0f19;--bg-el:#121824;--bg-input:#070a10;
+  --border:rgba(255,255,255,0.05);--border-s:rgba(255,255,255,0.1);--border-f:#3b82f6;
   --txt:#e2e8f0;--txt-s:#94a3b8;--txt-m:#5a6a80;--txt-a:#60a5fa;
-  --grp-g:#8b5cf6;--grp-e:#ef4444;--grp-m:#06b6d4;--grp-a:#f59e0b;--grp-x:#22c55e;
-  --st-pend:#475569;--st-prog:#f97316;--st-done:#22c55e;--st-late:#dc2626;
+  --grp-g:#a188f6;--grp-e:#e56b6b;--grp-m:#38c5db;--grp-a:#e5b33c;--grp-x:#42c797;
+  --st-pend:#4c566a;--st-prog:#e27c3e;--st-done:#38b2ac;--st-late:#c53030;
   --accent:#4d8eff;--accent-h:#2563eb;
-  --sh-md:0 4px 16px rgba(0,0,0,.4);--sh-lg:0 10px 30px rgba(0,0,0,.55);
+  --sh-md:0 4px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03);
+  --sh-lg:0 12px 40px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.03);
   --r-sm:6px;--r:8px;--r-md:12px;--r-lg:16px;--r-xl:22px;
 
   /* — Tokens v2 (alias semánticos del nuevo diseño) — */
   --surf:var(--bg-card);          /* superficie principal de cards */
   --surf2:var(--bg-el);            /* superficie elevada */
-  --surf3:#222c3c;                 /* superficie 3er nivel (chips, code) */
+  --surf3:#161f30;                 /* superficie 3er nivel (chips, code) */
   --bdr:var(--border);             /* borde sutil */
   --bdr-m:var(--border-s);         /* borde medio */
-  --bdr-s:rgba(255,255,255,0.20);  /* borde fuerte */
+  --bdr-s:rgba(255,255,255,0.18);  /* borde fuerte */
   --acc:var(--accent);
-  --acc-s:rgba(77,142,255,0.10);
-  --acc-b:rgba(77,142,255,0.22);
-  --grn:#22c55e;--grn-s:rgba(34,197,94,0.10);--grn-b:rgba(34,197,94,0.22);
-  --amb:#f59e0b;--amb-s:rgba(245,158,11,0.10);--amb-b:rgba(245,158,11,0.25);
-  --red:#ef4444;--red-s:rgba(239,68,68,0.10);--red-b:rgba(239,68,68,0.22);
+  --acc-s:rgba(77,142,255,0.08);
+  --acc-b:rgba(77,142,255,0.18);
+  --grn:#22c55e;--grn-s:rgba(34,197,94,0.08);--grn-b:rgba(34,197,94,0.18);
+  --amb:#f59e0b;--amb-s:rgba(245,158,11,0.08);--amb-b:rgba(245,158,11,0.20);
+  --red:#ef4444;--red-s:rgba(239,68,68,0.08);--red-b:rgba(239,68,68,0.18);
   --cyn:#06b6d4;--vlt:#8b5cf6;
 
   /* — Layout v2 — */
   --sb-w:240px;--top-h:52px;
 }
 /* Family helpers v2 */
-.dsp{font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em}
+.dsp{font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.03em}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;background:var(--bg-app)}
 body{font-family:'Inter',system-ui,sans-serif;background-color:var(--bg-app);color:var(--txt);font-size:14px;min-height:100vh;line-height:1.5}
 body.light-mode{background-color:var(--bg-app)}
-.ms{font-family:'Material Symbols Outlined';font-size:1.1em;line-height:1;vertical-align:middle;font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;flex-shrink:0}
+.ms{font-family:'Material Symbols Outlined';font-size:1.05em;line-height:1;vertical-align:middle;font-variation-settings:'FILL' 0,'wght' 250,'GRAD' 0,'opsz' 20 !important;flex-shrink:0}
 button{cursor:pointer;font-family:inherit}
 input{font-family:inherit}
 .mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
@@ -102,10 +103,13 @@ body.light-mode .footer-logo-pill img{filter:none;opacity:.65}
 /* ═══ TABS ══════════════════════════════════════════════════════ */
 .tabs-nav{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 24px;position:relative;display:flex;overflow-x:auto;scrollbar-width:none}
 .tabs-nav::-webkit-scrollbar{display:none}
-.tab-btn{flex:none;padding:12px 20px;font-size:.88rem;font-weight:600;color:var(--txt-m);border:none;background:none;border-bottom:2px solid transparent;transition:.2s;white-space:nowrap;display:flex;align-items:center;gap:6px;position:relative}
-.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);background:rgba(59,130,246,.07)}
-.tab-btn.active::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);border-radius:2px 2px 0 0;filter:blur(1px)}
-.tab-btn:hover:not(.active){color:var(--txt-s);background:rgba(255,255,255,.03)}
+.tab-btn{flex:none;padding:11px 18px;font-size:.85rem;font-weight:600;color:var(--txt-m);border:none;background:none;border-bottom:3px solid transparent;transition:.2s;white-space:nowrap;display:flex;align-items:center;gap:5px;position:relative;cursor:pointer}
+.tab-btn.active{color:#fff;border-bottom-color:transparent;background:var(--accent);border-radius:6px;box-shadow:0 2px 8px rgba(59,130,246,.35)}
+.tab-btn.active::after{display:none}
+.tab-btn:hover:not(.active){color:var(--txt-s);background:rgba(255,255,255,.05);border-radius:6px 6px 0 0}
+.tab-sep{width:1px;height:20px;background:var(--border);opacity:.5;flex-shrink:0;align-self:center;margin:0 4px}
+/* Indicador de scroll lateral en tabs-nav */
+.tabs-nav::after{content:'';position:absolute;right:0;top:0;bottom:0;width:32px;background:linear-gradient(90deg,transparent,var(--bg-card));pointer-events:none;opacity:.9}
 .tab-content{display:none;padding:24px;background-color:var(--bg-app)}
 .tab-content.active{display:block;background-color:var(--bg-app)}
 
@@ -118,8 +122,8 @@ body.light-mode .footer-logo-pill img{filter:none;opacity:.65}
 @media(max-width:1100px){.kpi-stats-row{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:580px){.kpi-stats-row{grid-template-columns:1fr}}
 
-.kpi-stat{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r-lg);padding:18px 20px;position:relative;overflow:hidden;animation:kpiFadeIn .35s ease both;transition:.18s}
-.kpi-stat:hover{border-color:var(--bdr-m);box-shadow:0 4px 24px rgba(0,0,0,.38)}
+.kpi-stat{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r-lg);padding:18px 20px;position:relative;overflow:hidden;animation:kpiFadeIn .35s ease both;transition:.18s;box-shadow:inset 0 1px 1px rgba(255,255,255,0.06)}
+.kpi-stat:hover{border-color:var(--bdr-m);box-shadow:0 8px 32px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.08);transform:translateY(-1px)}
 .kpi-stat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kc,var(--accent));border-radius:var(--r-lg) var(--r-lg) 0 0}
 .kpi-stat-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .kpi-stat-icon{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;background:var(--kc-bg,rgba(77,142,255,.12));flex-shrink:0}
@@ -135,8 +139,8 @@ body.light-mode .footer-logo-pill img{filter:none;opacity:.65}
 .kpi-main-row{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:16px}
 @media(max-width:1024px){.kpi-main-row{grid-template-columns:1fr}}
 
-.kpi-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r-lg);padding:18px 20px;position:relative;overflow:hidden;animation:kpiFadeIn .35s ease both;transition:.18s}
-.kpi-card:hover{border-color:var(--bdr-m)}
+.kpi-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r-lg);padding:18px 20px;position:relative;overflow:hidden;animation:kpiFadeIn .35s ease both;transition:.18s;box-shadow:inset 0 1px 1px rgba(255,255,255,0.06)}
+.kpi-card:hover{border-color:var(--bdr-m);box-shadow:0 8px 32px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.08);transform:translateY(-1px)}
 .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kc,var(--accent));border-radius:var(--r-lg) var(--r-lg) 0 0}
 .kpi-card-title{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--txt-m);font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:6px}
 
@@ -526,6 +530,19 @@ input[type=range]::-webkit-slider-thumb:hover{background:#60a5fa}
 .expand-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(59,130,246,.08)}
 .expand-btn.open{background:rgba(59,130,246,.14);border-color:rgba(59,130,246,.4);color:var(--accent);transform:rotate(90deg)}
 .phase-row td{transition:background .12s}
+/* Fila ATRASADA — fondo rojo sutil con borde izquierdo rojo */
+.phase-row.row-atrasado td{background:rgba(239,68,68,.07)!important}
+.phase-row.row-atrasado td:first-child{border-left:3px solid #ef4444}
+.phase-row.row-atrasado:hover td{background:rgba(239,68,68,.12)!important}
+/* Fila EN_PROGRESO (según fecha, debería estar activa) — verde */
+.phase-row.row-en-progreso td{background:rgba(34,197,94,.06)!important}
+.phase-row.row-en-progreso td:first-child{border-left:3px solid #22c55e}
+.phase-row.row-en-progreso:hover td{background:rgba(34,197,94,.11)!important}
+/* Light-mode ajustes */
+body.light-mode .phase-row.row-atrasado td{background:rgba(220,38,38,.06)!important}
+body.light-mode .phase-row.row-atrasado td:first-child{border-left:3px solid #dc2626}
+body.light-mode .phase-row.row-en-progreso td{background:rgba(5,150,105,.06)!important}
+body.light-mode .phase-row.row-en-progreso td:first-child{border-left:3px solid #059669}
 .sub-count-badge{font-size:.75rem;color:var(--txt-m);font-weight:400;margin-left:6px;background:var(--bg-input);border:1px solid var(--border);padding:1px 6px;border-radius:100px;transition:.15s;cursor:default}
 .phase-row:hover .sub-count-badge{border-color:var(--border-s);color:var(--txt-s)}
 .subact-tr td{background:#0d1117;padding:5px 10px;border-bottom:1px solid #21262d;font-size:.78rem;transition:background .1s}
@@ -577,6 +594,8 @@ body.light-mode{
   --border:#d1dbe8;--border-s:#b0c0d4;--border-f:#3b82f6;
   --txt:#1e293b;--txt-s:#475569;--txt-m:#64748b;--txt-a:#2563eb;
   --sh-md:0 4px 16px rgba(0,0,0,.08);--sh-lg:0 10px 30px rgba(0,0,0,.12);
+  /* Colores de grupo — versiones oscuras/alto-contraste para fondo claro */
+  --grp-g:#7c3aed;--grp-e:#dc2626;--grp-m:#0891b2;--grp-a:#d97706;--grp-x:#059669;
   /* Tokens v2 explícitos para light-mode (sobrescribir alpha-blancos) */
   --surf3:#dde4ed;
   --bdr:rgba(0,0,0,0.08);
@@ -665,8 +684,10 @@ body.light-mode .oc-c-vlt{color:#6d28d9}
 body.light-mode .kanban-col{background:#ffffff;border-color:#d1dbe8}
 body.light-mode .kanban-col-hdr{background:#ffffff;border-bottom-color:#d1dbe8}
 body.light-mode .kanban-col-count{background:#e8edf3;color:#64748b}
-body.light-mode .kcard{background:#f5f7fa;border-color:#d1dbe8}
-body.light-mode .kcard:hover{background:#ffffff;border-color:#b0c0d4;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+body.light-mode .kcard{background:#ffffff;border-color:#dde3ec;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+body.light-mode .kcard:hover{background:#f8faff;border-color:#a8bdd4;box-shadow:0 4px 14px rgba(0,0,0,.10)}
+body.light-mode .tab-btn:hover:not(.active){background:rgba(0,0,0,.04)}
+body.light-mode .tab-btn.active{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.30)}
 body.light-mode .kcard-name{color:#1e293b}
 body.light-mode .kcard-meta,body.light-mode .kcard-owner,body.light-mode .kcard-date,body.light-mode .kcard-dur{color:#64748b}
 body.light-mode .kcard-bar-label{color:#64748b}
@@ -725,7 +746,11 @@ body.light-mode .side-nav-sep{background:#c0cad8}
 .kanban-wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:start}
 @media(max-width:1100px){.kanban-wrap{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.kanban-wrap{grid-template-columns:1fr}}
-.kanban-col{background:var(--surf);border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--bdr)}
+.kanban-col{background:var(--surf);border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--bdr);transition:flex .3s ease,opacity .2s}
+/* Columnas vacías: más angostas y más discretas */
+.kanban-col-empty{flex:0 0 180px!important;opacity:.65}
+.kanban-col-empty .kanban-cards{display:flex;align-items:center;justify-content:center;min-height:80px}
+.kanban-col-empty .kanban-empty{padding:16px 12px;font-size:.78rem}
 .kanban-col-hdr{padding:11px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:2;background:var(--surf)}
 .kanban-col-title{font-size:.78rem;font-weight:700}
 .kanban-col-count{font-size:.7rem;font-weight:600;padding:1px 7px;border-radius:100px;margin-left:auto;background:var(--surf2);color:var(--txt-m)}
@@ -737,7 +762,7 @@ body.light-mode .side-nav-sep{background:#c0cad8}
 .kcard:hover{border-color:var(--bdr-m);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
 .kcard-top{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
 .kcard-id{font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700;padding:2px 6px;border-radius:4px;background:var(--bg-el);color:var(--txt-a);flex-shrink:0}
-.kcard-name{font-size:.83rem;font-weight:600;color:var(--txt);line-height:1.35;flex:1}
+.kcard-name{font-size:.88rem;font-weight:700;color:var(--txt);line-height:1.35;flex:1}
 .kcard-badges{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
 .kcard-grp{font-size:.75rem;font-weight:700;padding:2px 7px;border-radius:3px}
 .kcard-prio{font-size:.75rem;font-weight:700;padding:2px 7px;border-radius:3px}
@@ -750,7 +775,7 @@ body.light-mode .side-nav-sep{background:#c0cad8}
 .kcard-avatar{width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:700;color:#fff;flex-shrink:0}
 .kcard-date{display:flex;align-items:center;gap:3px}
 .kcard-bar-wrap{margin-top:4px}
-.kcard-bar{height:4px;background:var(--border);border-radius:100px;overflow:hidden}
+.kcard-bar{height:6px;background:var(--border);border-radius:100px;overflow:hidden}
 .kcard-bar-fill{height:100%;border-radius:100px;transition:width .6s}
 .kcard-bar-label{display:flex;justify-content:space-between;font-size:.75rem;color:var(--txt-m);margin-top:3px}
 .kcard-dur{font-size:.75rem;color:var(--txt-m);margin-left:auto}
@@ -773,12 +798,37 @@ body.light-mode .side-nav-sep{background:#c0cad8}
 .kanban-empty{text-align:center;padding:24px 12px;color:var(--txt-m);font-size:.78rem}
 .kanban-empty-icon{font-size:1.6rem;margin-bottom:6px}
 /* ═══ KANBAN NOTES ══════════════════════════════════════════════ */
+/* ── Celdas de fecha editables en tabla Fases ── */
+.date-edit-cell{cursor:pointer;position:relative;white-space:nowrap}
+.date-edit-cell .date-edit-icon{opacity:0;font-size:.65rem;margin-left:3px;color:var(--accent);transition:.15s;vertical-align:middle}
+.date-edit-cell:hover .date-edit-icon{opacity:1}
+.date-edit-cell:hover{background:rgba(59,130,246,.07)!important;border-radius:4px}
+.inline-date-input{background:var(--bg-el);border:1.5px solid var(--accent);border-radius:6px;color:var(--txt);font-family:'JetBrains Mono',monospace;font-size:.78rem;padding:2px 6px;outline:none;width:130px}
+/* ── Tooltip cascada ── */
+.cascade-hint{font-size:.65rem;color:var(--accent);margin-left:3px;cursor:help}
 .kcard-notes-section{border-top:1px solid var(--border);margin-top:8px;padding-top:8px}
-.kcard-note-item{display:flex;gap:6px;padding:5px 7px;border-radius:6px;background:rgba(255,255,255,.03);border:1px solid var(--border);margin-bottom:4px}
+.kcard-note-item{display:flex;gap:6px;padding:5px 7px;border-radius:6px;background:rgba(255,255,255,.03);border:1px solid var(--border);margin-bottom:4px;transition:.2s}
+.kcard-note-item.resolved{background:rgba(34,197,94,.05);border-color:rgba(34,197,94,.25);opacity:.75}
+.kcard-note-item.overdue{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.06)}
 .kcard-note-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:3px}
 .kcard-note-body{flex:1;min-width:0}
 .kcard-note-txt{font-size:.75rem;color:var(--txt-s);line-height:1.4;word-break:break-word}
+.kcard-note-txt.resolved-txt{text-decoration:line-through;color:var(--txt-m)}
 .kcard-note-foot{font-size:.68rem;color:var(--txt-m);margin-top:2px;display:flex;gap:6px;align-items:center}
+/* Botón checkbox resolver nota */
+.note-check-btn{background:none;border:1.5px solid var(--border-s);border-radius:50%;width:16px;height:16px;flex-shrink:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:.6rem;transition:.2s;padding:0;margin-top:1px}
+.note-check-btn:hover{border-color:#22c55e;color:#22c55e}
+.note-check-btn.checked{background:#22c55e;border-color:#22c55e;color:#fff}
+/* Badge alerta semanal */
+.note-overdue-badge{font-size:.65rem;font-weight:700;background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3);border-radius:3px;padding:1px 4px;margin-left:2px}
+/* Banner alertas kanban */
+.kanban-alert-banner{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:flex-start;gap:10px}
+.kanban-alert-banner .ab-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px}
+.kanban-alert-banner .ab-body{flex:1;min-width:0}
+.kanban-alert-banner .ab-title{font-size:.8rem;font-weight:700;color:#f87171;margin-bottom:3px}
+.kanban-alert-banner .ab-items{font-size:.73rem;color:var(--txt-s);line-height:1.5}
+.kanban-alert-banner .ab-dismiss{background:none;border:none;color:var(--txt-m);cursor:pointer;font-size:.75rem;white-space:nowrap;align-self:center;padding:2px 6px;border-radius:4px}
+.kanban-alert-banner .ab-dismiss:hover{color:var(--txt)}
 .kcard-add-note-btn{width:100%;background:none;border:1px dashed var(--border);border-radius:6px;color:var(--txt-m);font-size:.72rem;padding:5px;cursor:pointer;margin-top:6px;transition:.15s;display:flex;align-items:center;justify-content:center;gap:4px}
 .kcard-add-note-btn:hover{border-color:var(--accent);color:var(--accent)}
 .note-modal-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.7)}
@@ -808,6 +858,10 @@ body.light-mode .side-nav-sep{background:#c0cad8}
 .cal-day-cell{background:var(--bg-card);padding:6px;min-height:110px;vertical-align:top;position:relative}
 .cal-day-cell.today-cell{background:rgba(59,130,246,.06);outline:1px solid rgba(59,130,246,.25)}
 .cal-day-cell.other-month{opacity:.45}
+.cal-day-cell.festivo{background:rgba(239,68,68,.05)!important}
+.cal-day-cell.festivo .cal-day-num{color:#f87171}
+.festivo-badge{display:inline-block;font-size:.62rem;background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3);border-radius:3px;padding:0 4px;margin-left:4px;line-height:1.6;vertical-align:middle}
+.festivo-name{display:block;font-size:.65rem;color:#f87171;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cal-day-num{font-size:.78rem;font-weight:700;color:var(--txt-m);margin-bottom:4px;display:flex;align-items:center;gap:4px}
 .cal-day-num.today-num{color:#fff;background:var(--accent);width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.73rem}
 .cal-act-pill{display:block;padding:2px 6px;border-radius:4px;font-size:.75rem;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;border-left:3px solid transparent;transition:.1s}
@@ -1192,6 +1246,20 @@ body.light-mode .status-bar{background:#e8edf3}
   .header-right{width:100%}
 }
 @media(max-width:480px){.kpi-grid{grid-template-columns:1fr}}
+
+/* ═══ REPORTE IMPRESO / PDF (Ctrl+P) ═══ */
+@media print{
+  body{background:#fff!important;color:#111!important;visibility:visible!important}
+  .side-nav,.side-nav-overlay,.tabs-nav,.app-header .header-actions,
+  .alerts-overlay,.wb-indicator,#alertsFab,.kpi-action-btn,
+  button,.app-footer .footer-logo-pill{display:none!important}
+  .app-header{border:none!important;padding:8px 0!important}
+  .tab-content{display:none!important}
+  .tab-content.active{display:block!important;width:100%!important;padding:0!important}
+  .tab-content.active *{box-shadow:none!important}
+  a{color:#111!important;text-decoration:none}
+  @page{size:landscape;margin:12mm}
+}
 </style>
 <style id="pre-auth-style">body{visibility:hidden!important}</style>
 <script>
@@ -1359,9 +1427,11 @@ body.light-mode .status-bar{background:#e8edf3}
   <button class="tab-btn active" data-tab="kpis" onclick="switchTab('kpis')"><span class="ms">dashboard</span> KPIs</button>
   <button class="tab-btn" data-tab="gantt" onclick="switchTab('gantt')"><span class="ms">view_timeline</span> Gantt</button>
   <button class="tab-btn" data-tab="phases" onclick="switchTab('phases')"><span class="ms">list_alt</span> Fases</button>
+  <span class="tab-sep"></span>
   <button class="tab-btn" data-tab="update" onclick="switchTab('update')"><span class="ms">edit_note</span> Actualizar</button>
   <button class="tab-btn" data-tab="board" onclick="switchTab('board')"><span class="ms">view_kanban</span> Tablero</button>
   <button class="tab-btn" data-tab="calendar" onclick="switchTab('calendar')"><span class="ms">calendar_month</span> Calendario</button>
+  <span class="tab-sep"></span>
   <button class="tab-btn" data-tab="bitacora" onclick="switchTab('bitacora')"><span class="ms">history</span> Bitácora</button>
   <button class="tab-btn" data-tab="equipos" onclick="switchTab('equipos')"><span class="ms">engineering</span> Equipos</button>
   <button class="tab-btn" data-tab="personal" onclick="switchTab('personal')"><span class="ms">groups</span> Personal</button>
@@ -1397,6 +1467,9 @@ body.light-mode .status-bar{background:#e8edf3}
         <div class="legend-item"><div class="legend-dot" style="background:#0ea5e9"></div>No Crítica En Prog.</div>
         <div class="legend-item"><div class="legend-dot" style="background:#475569"></div>No Crítica Pend.</div>
         <div class="legend-item"><div class="legend-dot" style="background:#dc2626;border:1px dashed #dc2626"></div>Atrasada</div>
+        <button id="btnToggleDeps" onclick="toggleGanttDeps()" style="margin-left:10px;background:rgba(71,85,105,.2);border:1px solid var(--border);border-radius:6px;color:var(--txt-s);font-size:.72rem;padding:3px 10px;cursor:pointer;display:flex;align-items:center;gap:4px">
+          <span id="depsArrowIcon">↗</span> Flechas ON
+        </button>
       </div>
     </div>
     <div class="gantt-sticky-wrap" id="ganttWrap">
@@ -1412,8 +1485,9 @@ body.light-mode .status-bar{background:#e8edf3}
 <!-- ══ TAB: FASES ═══════════════════════════════════════════════ -->
 <section class="tab-content" id="tab-phases">
   <div class="page-header"><div><h2 class="page-title">Fases del Proyecto</h2><p class="page-subtitle">Listado detallado con sub-actividades del proceso constructivo</p></div></div>
-  <div class="phases-toolbar">
-    <input class="search-input" type="text" id="searchPhases" placeholder="🔍 Buscar fase, encargado…" oninput="debounceSearch()"/>
+  <div class="phases-toolbar" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+    <button onclick="openPhaseModal()" style="background:#3b82f6;border:none;border-radius:8px;padding:8px 16px;color:#fff;font-size:.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap;flex-shrink:0"><span class="ms" style="font-size:1rem">add_circle</span>Agregar Fase</button>
+    <input class="search-input" type="text" id="searchPhases" placeholder="🔍 Buscar fase, encargado…" oninput="debounceSearch()" style="flex:1;min-width:180px"/>
     <div class="chips" id="filterChips">
       <button class="chip active" data-filter="all" onclick="setFilter('all',this)">Todas (31)</button>
       <button class="chip" data-filter="pending" onclick="setFilter('pending',this)">Pendientes</button>
@@ -1438,6 +1512,7 @@ body.light-mode .status-bar{background:#e8edf3}
           <th onclick="setSort('progress')" style="min-width:140px">% Avance</th>
           <th onclick="setSort('status')">Estado</th>
           <th onclick="setSort('critical')">Crítica</th>
+          <th style="width:90px;text-align:center;cursor:default">Acciones</th>
         </tr>
       </thead>
       <tbody id="phasesBody"></tbody>
@@ -1531,6 +1606,8 @@ body.light-mode .status-bar{background:#e8edf3}
       <span style="font-size:1.1rem">👥</span>
       <span class="admin-section-title">Gestión de Usuarios</span>
       <button class="btn btn-primary" onclick="openUserModal()">➕ Nuevo Usuario</button>
+      <button class="btn" onclick="openPhaseModal()" style="background:#3b82f6;color:#fff;border:none">➕ Nueva Fase</button>
+      <button class="btn" onclick="restoreAllPhases()" style="background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3)">♻️ Restaurar Fases</button>
     </div>
     <div style="overflow-x:auto">
       <table class="users-table">
@@ -1771,12 +1848,20 @@ const SHEET_ID = '1vZE1-3OY__CoKq_AErCDDMAoJ35vHMVH';
 const PROJECT_START_STR = '2026-05-01';
 const PROJECT_END_STR   = '2028-02-16';
 
+// Helper: lee variable CSS computada del :root (respeta light/dark mode)
+function grpColor(varName){ return getComputedStyle(document.documentElement).getPropertyValue(varName).trim(); }
+
+// Escapa HTML — previene XSS y render roto con texto de usuarios o del Sheet
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// SHA-256 síncrono (dominio público, compacto) — para no guardar contraseñas en texto plano
+function sha256(ascii){function rightRotate(v,a){return(v>>>a)|(v<<(32-a))}var mathPow=Math.pow,maxWord=mathPow(2,32),result='',words=[],asciiBitLength=ascii.length*8,hash=sha256.h=sha256.h||[],k=sha256.k=sha256.k||[],primeCounter=k.length,isComposite={},candidate=2;for(;primeCounter<64;candidate++){if(!isComposite[candidate]){for(var i=0;i<313;i+=candidate)isComposite[i]=candidate;hash[primeCounter]=(mathPow(candidate,.5)*maxWord)|0;k[primeCounter++]=(mathPow(candidate,1/3)*maxWord)|0}}ascii+='\x80';while(ascii.length%64-56)ascii+='\x00';for(i=0;i<ascii.length;i++){var j=ascii.charCodeAt(i);if(j>>8)return'';words[i>>2]|=j<<((3-i)%4)*8}words[words.length]=(asciiBitLength/maxWord)|0;words[words.length]=asciiBitLength;for(j=0;j<words.length;){var w=words.slice(j,j+=16),oldHash=hash;hash=hash.slice(0,8);for(i=0;i<64;i++){var w15=w[i-15],w2=w[i-2],a=hash[0],e=hash[4],temp1=hash[7]+(rightRotate(e,6)^rightRotate(e,11)^rightRotate(e,25))+((e&hash[5])^(~e&hash[6]))+k[i]+(w[i]=(i<16)?w[i]:(w[i-16]+(rightRotate(w15,7)^rightRotate(w15,18)^(w15>>>3))+w[i-7]+(rightRotate(w2,17)^rightRotate(w2,19)^(w2>>>10)))|0),temp2=(rightRotate(a,2)^rightRotate(a,13)^rightRotate(a,22))+((a&hash[1])^(a&hash[2])^(hash[1]&hash[2]));hash=[(temp1+temp2)|0].concat(hash);hash[4]=(hash[4]+temp1)|0}for(i=0;i<8;i++)hash[i]=(hash[i]+oldHash[i])|0}for(i=0;i<8;i++){for(j=3;j+1;j--){var b=(hash[i]>>(j*8))&255;result+=((b<16)?0:'')+b.toString(16)}}return result}
 const GROUPS = {
-  GESTION:    { label: 'Gestión y Cierre',         color: '#8b5cf6' },
-  ESTRUCTURA: { label: 'Estructura y Obra Negra',   color: '#ef4444' },
-  MEP:        { label: 'MEP e Instalaciones',       color: '#06b6d4' },
-  ACABADOS:   { label: 'Acabados y Fachada',        color: '#f59e0b' },
-  EXTERIORES: { label: 'Exteriores y Urbanismo',    color: '#10b981' },
+  GESTION:    { label: 'Gestión y Cierre',         get color(){ return grpColor('--grp-g'); } },
+  ESTRUCTURA: { label: 'Estructura y Obra Negra',   get color(){ return grpColor('--grp-e'); } },
+  MEP:        { label: 'MEP e Instalaciones',       get color(){ return grpColor('--grp-m'); } },
+  ACABADOS:   { label: 'Acabados y Fachada',        get color(){ return grpColor('--grp-a'); } },
+  EXTERIORES: { label: 'Exteriores y Urbanismo',    get color(){ return grpColor('--grp-x'); } },
 };
 
 const PHASES_RAW = [
@@ -1819,7 +1904,7 @@ function parseLocalDateMs(str){
 }
 
 /* ─── inicializar fases ─────────────────────────────── */
-const PHASES = PHASES_RAW.map(p => ({
+let PHASES = PHASES_RAW.map(p => ({
   ...p,
   startMs: parseLocalDateMs(p.start),
   endMs:   parseLocalDateMs(p.end),
@@ -1836,13 +1921,14 @@ const PHASES = PHASES_RAW.map(p => ({
   }
 }));
 
-/* ─── Dependencias entre fases ──────────────────────── */
-const PHASE_DEPENDENCIES = {
+/* ─── Dependencias entre fases (mutable — se actualiza con CRUD) ── */
+const PHASE_DEPENDENCIES_BASE = {
   F0:[], F1:['F0'], F23:['F0'], F2:['F1'], F3:['F2'], F4:['F3'], F5:['F4'], F6:['F5'], F7:['F6'],
   F16:['F6'], F17:['F7','F16'], F12:['F6'], F24:['F12'], F8:['F7'], F20:['F3'], F22:['F3'], F21:['F3'],
   F15:['F12'], F25:['F22'], F13:['F8'], F9:['F8','F12'], F14:['F13','F12'], F10:['F9'], F11:['F9'],
   F18:['F10','F11','F15','F17','F24'], F19:['F18'], F28:['F19'], F26:['F19'], F27:['F26']
 };
+let PHASE_DEPENDENCIES = { ...PHASE_DEPENDENCIES_BASE };
 
 /* ═══════════════════════════════════════════════════════════
    UTILIDADES
@@ -1850,6 +1936,13 @@ const PHASE_DEPENDENCIES = {
 function fmtDate(str){
   const d = new Date(str+'T12:00:00');
   return d.toLocaleDateString('es-CO',{day:'2-digit',month:'short',year:'2-digit'});
+}
+function msToIso(ms){
+  const d=new Date(ms);
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,'0');
+  const dd=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${dd}`;
 }
 function daysBetween(a,b){ return Math.round((b-a)/(1000*86400)); }
 const PROJECT_START_MS = parseLocalDateMs(PROJECT_START_STR);
@@ -1905,6 +1998,7 @@ function healthSemaphore(){
    ═══════════════════════════════════════════════════════════ */
 const SYNC = { lastMs: null, status: 'idle', error: null };
 const LS_KEY = 'torre_santa_isabel_v1';
+const LS_PHASES_CRUD = 'tsi_phases_crud_v1';
 let syncTimer = null;
 
 function buildGvizUrl(cb){
@@ -1946,10 +2040,13 @@ function syncWithSheet(){
 
 function mergeSheetData(table){
   if(!table || !table.rows) return;
-  // Intentar extraer columna "FASE" y "% AVANCE" de la tabla devuelta
-  const cols = (table.cols || []).map(c => (c.label||'').toUpperCase().trim());
-  const idIdx = cols.findIndex(c => c.includes('FASE') || c === 'F' || c === 'ID');
-  const pctIdx = cols.findIndex(c => c.includes('AVANCE') || c.includes('%') || c.includes('PROGRESO'));
+  // Columnas del Sheet: ID/FASE, AVANCE/%, INICIO, FIN, PREDECESORAS
+  const cols     = (table.cols || []).map(c => (c.label||'').toUpperCase().trim());
+  const idIdx    = cols.findIndex(c => c.includes('FASE') || c === 'F' || c === 'ID' || c === 'CODIGO');
+  const pctIdx   = cols.findIndex(c => c.includes('AVANCE') || c.includes('%') || c.includes('PROGRESO'));
+  const startIdx = cols.findIndex(c => c.includes('INICIO') || c.includes('START'));
+  const endIdx   = cols.findIndex(c => c.includes('FIN') || c.includes('END') || c === 'TERMINA');
+  const predIdx  = cols.findIndex(c => c.includes('PREDECESOR') || c.includes('PRED') || c.includes('DEPENDS'));
 
   if(idIdx < 0 || pctIdx < 0){
     // Si no encontramos columnas específicas, buscar patrón F0-F28 en cualquier columna
@@ -1980,14 +2077,45 @@ function mergeSheetData(table){
   table.rows.forEach(row => {
     if(!row.c) return;
     const idCell = row.c[idIdx];
-    const pctCell = row.c[pctIdx];
+    const pctCell   = row.c[pctIdx];
+    const startCell = startIdx >= 0 ? row.c[startIdx] : null;
+    const endCell   = endIdx   >= 0 ? row.c[endIdx]   : null;
+    const predCell  = predIdx  >= 0 ? row.c[predIdx]  : null;
     if(!idCell || idCell.v == null) return;
     const idVal = String(idCell.v).trim().toUpperCase();
-    const pct = pctCell && pctCell.v !== null ? parseFloat(pctCell.v) : null;
-    if(pct === null || isNaN(pct)) return;
     const phase = PHASES.find(p => p.id.toUpperCase() === idVal);
-    if(phase && phase.progressLocal === null){
+    if(!phase) return;
+
+    // Avance (solo si no tiene override local)
+    const pct = pctCell && pctCell.v !== null ? parseFloat(pctCell.v) : null;
+    if(pct !== null && !isNaN(pct) && phase.progressLocal === null){
       phase.progress = pct > 1 ? pct : pct * 100;
+    }
+
+    // Fechas desde Sheet (solo si no hay override CRUD)
+    const hasCrudOverride = !!(_CRUD.overrides[phase.id]?.start);
+    if(!hasCrudOverride){
+      if(startCell && startCell.v){
+        const sv = String(startCell.v).trim();
+        // Formato YYYY-MM-DD o DD/MM/YYYY
+        const iso = sv.match(/^\d{4}-\d{2}-\d{2}$/) ? sv :
+                    sv.match(/^(\d{2})\/(\d{2})\/(\d{4})$/) ? sv.replace(/(\d{2})\/(\d{2})\/(\d{4})/,'$3-$2-$1') : null;
+        if(iso){ phase.start = iso; phase.startMs = parseLocalDateMs(iso); }
+      }
+      if(endCell && endCell.v){
+        const ev = String(endCell.v).trim();
+        const iso = ev.match(/^\d{4}-\d{2}-\d{2}$/) ? ev :
+                    ev.match(/^(\d{2})\/(\d{2})\/(\d{4})$/) ? ev.replace(/(\d{2})\/(\d{2})\/(\d{4})/,'$3-$2-$1') : null;
+        if(iso){ phase.end = iso; phase.endMs = parseLocalDateMs(iso);
+          phase.dur = Math.max(1,Math.round((phase.endMs-phase.startMs)/86400000)); }
+      }
+    }
+
+    // Predecesoras desde Sheet (solo si no hay override CRUD)
+    const hasPredOverride = _CRUD.overrides[phase.id]?.predecessors !== undefined;
+    if(!hasPredOverride && predCell && predCell.v){
+      const preds = String(predCell.v).split(/[,;|\s]+/).map(s=>s.trim().toUpperCase()).filter(Boolean);
+      if(preds.length) PHASE_DEPENDENCIES[phase.id] = preds;
     }
   });
 }
@@ -1995,6 +2123,8 @@ function mergeSheetData(table){
 function handleSyncError(msg){
   SYNC.status = 'error';
   SYNC.error = msg;
+  loadPhasesCRUD();
+  rebuildPHASES();
   loadSnapshot();
   renderSyncUI();
   reRenderAll();
@@ -2019,6 +2149,437 @@ function loadSnapshot(){
     });
     if(data.syncedAt) SYNC.lastMs = data.syncedAt;
   }catch(e){}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CRUD DE FASES — agregar · editar · eliminar
+   ═══════════════════════════════════════════════════════════ */
+let _CRUD = { overrides:{}, added:[], deleted:[] };
+
+function loadPhasesCRUD(){
+  try{
+    const d = JSON.parse(localStorage.getItem(LS_PHASES_CRUD)||'null');
+    if(d) _CRUD = d;
+  }catch(e){}
+}
+
+function savePhasesCRUD(){
+  try{ localStorage.setItem(LS_PHASES_CRUD, JSON.stringify(_CRUD)); }catch(e){}
+}
+
+function rebuildPHASES(){
+  const base = PHASES_RAW
+    .filter(p => !_CRUD.deleted.includes(p.id))
+    .map(p => ({ ...p, ...(_CRUD.overrides[p.id]||{}) }))
+    .concat(_CRUD.added.filter(p => !_CRUD.deleted.includes(p.id)));
+  PHASES.length = 0;
+  base.map(p => ({
+    ...p,
+    startMs: parseLocalDateMs(p.start),
+    endMs:   parseLocalDateMs(p.end),
+    progress: p.progress || 0,
+    progressLocal: p.progressLocal || null,
+    get effectiveProgress(){ return this.progressLocal !== null ? this.progressLocal : this.progress; },
+    get status(){
+      const prog = this.effectiveProgress;
+      const today = Date.now();
+      if(prog >= 100) return 'COMPLETADO';
+      if(prog > 0)    return 'EN_PROGRESO';
+      if(this.endMs < today && prog < 100) return 'ATRASADO';
+      return 'PENDIENTE';
+    }
+  })).forEach(p => PHASES.push(p));
+
+  // Reconstruir PHASE_DEPENDENCIES con overrides de predecesoras
+  PHASE_DEPENDENCIES = { ...PHASE_DEPENDENCIES_BASE };
+  // Aplicar overrides de predecesoras desde _CRUD
+  Object.entries(_CRUD.overrides || {}).forEach(([id, ov]) => {
+    if(ov.predecessors !== undefined){
+      PHASE_DEPENDENCIES[id] = ov.predecessors;
+    }
+  });
+  // Añadir entradas para fases nuevas
+  (_CRUD.added || []).forEach(p => {
+    if(!_CRUD.deleted.includes(p.id)){
+      PHASE_DEPENDENCIES[p.id] = p.predecessors || [];
+    }
+  });
+  // Limpiar dependencias de fases eliminadas
+  (_CRUD.deleted || []).forEach(id => {
+    delete PHASE_DEPENDENCIES[id];
+    Object.keys(PHASE_DEPENDENCIES).forEach(k => {
+      PHASE_DEPENDENCIES[k] = PHASE_DEPENDENCIES[k].filter(d => d !== id);
+    });
+  });
+}
+
+function injectPhaseModal(){
+  if(document.getElementById('phaseModalOverlay')) return;
+  const m = document.createElement('div');
+  m.id = 'phaseModalOverlay';
+  m.style.cssText = 'display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.72);align-items:center;justify-content:center';
+  const fS = 'width:100%;box-sizing:border-box;background:var(--bg-el,#222838);border:1px solid var(--bdr,#2a3140);border-radius:8px;padding:9px 12px;color:var(--txt,#e2e8f0);font-size:.88rem;outline:none';
+  const lS = 'font-size:.72rem;font-weight:700;color:var(--txt-s,#94a3b8);display:block;margin-bottom:5px;letter-spacing:.05em';
+  m.innerHTML = `<div style="background:var(--bg-card,#1a1f2a);border:1px solid var(--bdr,#2a3140);border-radius:14px;padding:26px 24px;width:min(560px,95vw);max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.5)">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+    <h3 id="phaseModalTitle" style="margin:0;font-size:1.05rem;font-weight:700;color:var(--txt,#e2e8f0)">Nueva Fase</h3>
+    <button onclick="closePhaseModal()" style="background:none;border:none;cursor:pointer;color:var(--txt-m,#64748b);font-size:1.4rem;line-height:1;padding:2px 6px">✕</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div style="grid-column:1/-1"><label style="${lS}">NOMBRE DE FASE *</label>
+      <input id="pmName" type="text" placeholder="Ej: Instalación Eléctrica Piso 1" style="${fS}"/></div>
+    <div><label style="${lS}">GRUPO *</label>
+      <select id="pmGroup" style="${fS}">
+        <option value="GESTION">Gestión y Cierre</option>
+        <option value="ESTRUCTURA">Estructura y Obra Negra</option>
+        <option value="MEP">MEP e Instalaciones</option>
+        <option value="ACABADOS">Acabados y Fachada</option>
+        <option value="EXTERIORES">Exteriores y Urbanismo</option>
+      </select></div>
+    <div><label style="${lS}">ENCARGADO *</label>
+      <input id="pmOwner" type="text" placeholder="Ej: Residente de Obra" style="${fS}"/></div>
+    <div><label style="${lS}">FECHA INICIO *</label>
+      <input id="pmStart" type="date" style="${fS}" oninput="pmAutoEnd()"/></div>
+    <div><label style="${lS}">FECHA FIN *</label>
+      <input id="pmEnd" type="date" style="${fS}" oninput="pmAutoDur()"/></div>
+    <div style="grid-column:1/-1">
+      <label style="${lS}">DURACIÓN (días calendario)</label>
+      <div style="display:flex;align-items:center;gap:10px">
+        <input id="pmDur" type="number" min="1" max="999" placeholder="Días" style="${fS};width:110px" oninput="pmAutoEnd()"/>
+        <span id="pmDurHint" style="font-size:.75rem;color:var(--txt-m,#64748b)">← Cambia INICIO o DURACIÓN → FIN se ajusta solo</span>
+      </div>
+    </div>
+    <div style="grid-column:1/-1">
+      <label style="${lS}">PREDECESORAS (IDs separados por coma)</label>
+      <input id="pmPreds" type="text" placeholder="Ej: F0, F1, F3"
+        style="${fS}"/>
+      <div id="pmPredsHint" style="font-size:.72rem;color:var(--txt-m,#64748b);margin-top:4px">Escribe los IDs de fases que deben completarse antes (F0, F1…)</div>
+    </div>
+    <div style="grid-column:1/-1;display:flex;align-items:center;gap:10px;margin-top:2px">
+      <input id="pmCritical" type="checkbox" style="width:16px;height:16px;accent-color:#ef4444;cursor:pointer;flex-shrink:0"/>
+      <label for="pmCritical" style="font-size:.85rem;color:var(--txt-s,#94a3b8);cursor:pointer">Fase crítica (ruta crítica del proyecto)</label>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;border-top:1px solid var(--bdr,#2a3140);padding-top:16px">
+    <button onclick="closePhaseModal()" style="background:none;border:1px solid var(--bdr,#2a3140);border-radius:8px;padding:8px 18px;color:var(--txt-m,#64748b);cursor:pointer;font-size:.85rem;font-weight:600">Cancelar</button>
+    <button onclick="submitPhase()" style="background:#3b82f6;border:none;border-radius:8px;padding:8px 22px;color:#fff;cursor:pointer;font-size:.85rem;font-weight:700;display:flex;align-items:center;gap:5px"><span class="ms" style="font-size:1rem">save</span>Guardar</button>
+  </div>
+</div>`;
+  document.body.appendChild(m);
+  m.addEventListener('click', e=>{ if(e.target===m) closePhaseModal(); });
+}
+
+let _phaseEditId = null;
+
+function openPhaseModal(editId){
+  injectPhaseModal();
+  _phaseEditId = editId || null;
+  const overlay = document.getElementById('phaseModalOverlay');
+  overlay.style.display = 'flex';
+  if(editId){
+    const p = PHASES.find(x=>x.id===editId);
+    if(!p){ overlay.style.display='none'; return; }
+    document.getElementById('phaseModalTitle').textContent = '✏️ Editar — '+editId;
+    document.getElementById('pmName').value       = p.name;
+    document.getElementById('pmGroup').value      = p.group;
+    document.getElementById('pmOwner').value      = p.owner;
+    document.getElementById('pmStart').value      = p.start;
+    document.getElementById('pmEnd').value        = p.end;
+    document.getElementById('pmDur').value        = p.dur;
+    document.getElementById('pmCritical').checked = !!p.critical;
+    // Cargar predecesoras actuales
+    const curPreds = PHASE_DEPENDENCIES[editId] || [];
+    document.getElementById('pmPreds').value = curPreds.join(', ');
+  } else {
+    document.getElementById('phaseModalTitle').textContent = '➕ Nueva Fase';
+    ['pmName','pmOwner','pmStart','pmEnd','pmPreds'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('pmDur').value        = '';
+    document.getElementById('pmGroup').value      = 'GESTION';
+    document.getElementById('pmCritical').checked = false;
+  }
+}
+
+/** INICIO cambia o DUR cambia → recalcula FIN */
+function pmAutoEnd(){
+  const startVal = document.getElementById('pmStart').value;
+  const durVal   = parseInt(document.getElementById('pmDur').value);
+  if(!startVal || !durVal || durVal < 1) return;
+  const startMs  = parseLocalDateMs(startVal);
+  const endMs    = startMs + durVal * 86400000;
+  document.getElementById('pmEnd').value = msToIso(endMs);
+  const hint = document.getElementById('pmDurHint');
+  if(hint) hint.textContent = `FIN = ${msToIso(endMs)} (${durVal} días)`;
+}
+
+/** FIN cambia → recalcula DURACIÓN */
+function pmAutoDur(){
+  const startVal = document.getElementById('pmStart').value;
+  const endVal   = document.getElementById('pmEnd').value;
+  if(!startVal || !endVal) return;
+  const d = Math.max(1, Math.round((parseLocalDateMs(endVal) - parseLocalDateMs(startVal)) / 86400000));
+  document.getElementById('pmDur').value = d;
+  const hint = document.getElementById('pmDurHint');
+  if(hint) hint.textContent = `Duración calculada: ${d} días`;
+}
+
+function closePhaseModal(){
+  const o = document.getElementById('phaseModalOverlay');
+  if(o) o.style.display = 'none';
+  _phaseEditId = null;
+}
+
+function submitPhase(){
+  const name     = (document.getElementById('pmName').value||'').trim();
+  const group    = document.getElementById('pmGroup').value;
+  const owner    = (document.getElementById('pmOwner').value||'').trim();
+  const start    = document.getElementById('pmStart').value;
+  const end      = document.getElementById('pmEnd').value;
+  const critical  = document.getElementById('pmCritical').checked;
+  // Parsear predecesoras: "F0, F1, F3" → ['F0','F1','F3']
+  const predsRaw   = (document.getElementById('pmPreds').value||'').trim();
+  const predecessors = predsRaw ? predsRaw.split(/[,\s]+/).map(s=>s.trim().toUpperCase()).filter(Boolean) : [];
+  // Validar que los IDs de predecesoras existen
+  const invalidPreds = predecessors.filter(id => !PHASES.find(p=>p.id===id) && id !== (_phaseEditId||''));
+  if(invalidPreds.length){ showToast('⚠️ Predecesoras no encontradas: '+invalidPreds.join(', ')); return; }
+  if(!name||!owner||!start||!end){ showToast('⚠️ Completa todos los campos obligatorios'); return; }
+  if(start>end){ showToast('⚠️ Fecha inicio debe ser anterior a fecha fin'); return; }
+  const dur = Math.max(1,Math.round((new Date(end)-new Date(start))/86400000));
+  if(_phaseEditId){
+    const isCustom = _CRUD.added.find(x=>x.id===_phaseEditId);
+    if(isCustom){ Object.assign(isCustom,{name,group,owner,start,end,critical,dur,predecessors}); }
+    else { _CRUD.overrides[_phaseEditId]={name,group,owner,start,end,critical,dur,predecessors}; }
+    showToast('✅ '+_phaseEditId+' actualizada — Gantt y dependencias actualizados');
+  } else {
+    const newId = 'FC'+Date.now().toString().slice(-6);
+    const order = PHASES.length ? Math.max(...PHASES.map(p=>p.order||0))+1 : 100;
+    _CRUD.added.push({id:newId,order,name,group,dur,start,end,critical,owner,predecessors,progress:0,progressLocal:null});
+    showToast('✅ Fase '+newId+' creada — visible en Gantt, Fases y Kanban');
+  }
+  savePhasesCRUD(); rebuildPHASES(); loadSnapshot(); reRenderAll(); closePhaseModal();
+}
+
+function deletePhase(id){
+  const p = PHASES.find(x=>x.id===id);
+  if(!p) return;
+  if(!confirm('¿Eliminar "'+p.name+'" ('+id+')?\n\nPuedes restaurar todo desde Admin → Restaurar Fases.')) return;
+  _CRUD.deleted.push(id);
+  delete _CRUD.overrides[id];
+  savePhasesCRUD(); rebuildPHASES(); loadSnapshot(); reRenderAll();
+  showToast('🗑 Fase '+id+' eliminada');
+}
+
+function restoreAllPhases(){
+  if(!confirm('¿Restaurar TODAS las fases originales?\nSe perderán fases creadas y ediciones personalizadas.')) return;
+  _CRUD={overrides:{},added:[],deleted:[]};
+  savePhasesCRUD(); rebuildPHASES(); loadSnapshot(); reRenderAll();
+  showToast('♻️ Fases restauradas al estado original del proyecto');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CASCADA DE FECHAS — CPM (Critical Path Method)
+   ═══════════════════════════════════════════════════════════ */
+
+/** Construye mapa de fechas efectivas para todos los fases (ov > raw) */
+function buildEffDates(){
+  const eff={};
+  const allRaw=[...PHASES_RAW,...(_CRUD.added||[])].filter(p=>!(_CRUD.deleted||[]).includes(p.id));
+  allRaw.forEach(p=>{
+    const ov=_CRUD.overrides[p.id]||{};
+    eff[p.id]={
+      startMs: parseLocalDateMs(ov.start||p.start),
+      endMs:   parseLocalDateMs(ov.end||p.end),
+      dur:     p.dur
+    };
+  });
+  return eff;
+}
+
+/** Propaga fechas a todos los sucesores de changedId usando BFS + CPM */
+function cascadeDatesFrom(changedId){
+  const eff=buildEffDates();
+
+  // Mapa inverso: sucesores[id] = [ids que dependen de id]
+  const sucesores={};
+  Object.keys(PHASE_DEPENDENCIES).forEach(id=>{
+    (PHASE_DEPENDENCIES[id]||[]).forEach(predId=>{
+      if(!sucesores[predId])sucesores[predId]=[];
+      if(!sucesores[predId].includes(id))sucesores[predId].push(id);
+    });
+  });
+
+  const visited=new Set();
+  const queue=[...(sucesores[changedId]||[])];
+
+  while(queue.length){
+    const id=queue.shift();
+    if(visited.has(id))continue;
+    visited.add(id);
+
+    const preds=PHASE_DEPENDENCIES[id]||[];
+    if(!preds.length)continue;
+
+    // Fecha inicio = max(fin de todas las predecesoras) + 1 día
+    const maxPredEndMs=Math.max(...preds.map(predId=>eff[predId]?.endMs||0));
+    if(!maxPredEndMs)continue;
+
+    const newStartMs=maxPredEndMs+86400000;
+    const durMs=(eff[id]?.dur||1)*86400000;
+    const newEndMs=newStartMs+durMs;
+
+    // Actualiza mapa local
+    if(eff[id])eff[id]={...eff[id],startMs:newStartMs,endMs:newEndMs};
+
+    // Guarda en CRUD overrides
+    if(!_CRUD.overrides[id])_CRUD.overrides[id]={};
+    _CRUD.overrides[id].start=msToIso(newStartMs);
+    _CRUD.overrides[id].end=msToIso(newEndMs);
+
+    // Encola sus sucesores
+    (sucesores[id]||[]).forEach(sid=>{if(!visited.has(sid))queue.push(sid);});
+  }
+}
+
+/** Cambia una fecha (start|end) de una fase, recalcula duración y dispara cascada */
+function shiftPhaseDate(id, field, newIso){
+  if(!newIso)return;
+  if(!_CRUD.overrides[id])_CRUD.overrides[id]={};
+
+  const phase=PHASES.find(p=>p.id===id);
+  if(!phase)return;
+
+  const ov=_CRUD.overrides[id];
+  const currentStart=parseLocalDateMs(ov.start||phase.start);
+  const currentEnd=parseLocalDateMs(ov.end||phase.end);
+
+  if(field==='start'){
+    const newStartMs=parseLocalDateMs(newIso);
+    const dur=phase.dur; // mantiene duración, corre fin en paralelo
+    const newEndMs=newStartMs+dur*86400000;
+    ov.start=newIso;
+    ov.end=msToIso(newEndMs);
+    ov.dur=dur;
+  } else {
+    const newEndMs=parseLocalDateMs(newIso);
+    const newStartMs=parseLocalDateMs(ov.start||phase.start);
+    const newDur=Math.max(1,Math.round((newEndMs-newStartMs)/86400000));
+    ov.end=newIso;
+    ov.dur=newDur;
+  }
+
+  // Cascada sobre sucesores
+  cascadeDatesFrom(id);
+
+  // Contar cuántas fases se movieron en cascada
+  const moved=Object.keys(_CRUD.overrides).filter(k=>k!==id&&_CRUD.overrides[k].start).length;
+
+  savePhasesCRUD();
+  rebuildPHASES();
+  loadSnapshot();
+
+  // Forzar Gantt siempre (aunque no haya sido visitado aún)
+  renderedTabs.gantt = true;
+  reRenderAll();
+
+  // Sincronizar con Google Sheets si WB_URL está configurado
+  scheduleWriteBack();
+
+  showToast(`📅 ${id}: fecha actualizada — ${moved > 0 ? moved+' fase(s) ajustadas en cascada' : 'sin sucesoras que mover'}`);
+}
+
+/** Edición inline de fecha en tabla — reemplaza celda con input */
+function startDateEdit(cell, id, field, currentVal){
+  // Prevenir doble-edición
+  if(cell.querySelector('input')) return;
+
+  // Crear input via DOM (sin innerHTML con strings escapados)
+  const input = document.createElement('input');
+  input.type  = 'date';
+  input.className = 'inline-date-input';
+  input.value = currentVal;
+
+  // Evitar que el click del input propague al onclick de la celda
+  input.addEventListener('click', e => e.stopPropagation());
+
+  // Escape = cancelar sin guardar
+  input.addEventListener('keydown', e => {
+    if(e.key === 'Escape'){ e.preventDefault(); renderTable(); }
+  });
+
+  // Confirmar con Enter o al cerrar el picker
+  input.addEventListener('change', () => {
+    if(input.value && input.value !== currentVal){
+      shiftPhaseDate(id, field, input.value);
+    } else {
+      renderTable();
+    }
+  });
+
+  cell.innerHTML = '';
+  cell.appendChild(input);
+  input.focus();
+}
+
+/** Cambiar duración → recalcula FIN = INICIO + dur días → cascada sucesoras */
+function shiftPhaseDur(id, newDur){
+  const dur = Math.max(1, parseInt(newDur) || 1);
+  if(!_CRUD.overrides[id]) _CRUD.overrides[id] = {};
+  const phase = PHASES.find(p => p.id === id);
+  if(!phase) return;
+  const startMs = parseLocalDateMs(_CRUD.overrides[id].start || phase.start);
+  const newEndMs = startMs + dur * 86400000;
+  _CRUD.overrides[id].dur = dur;
+  _CRUD.overrides[id].end = msToIso(newEndMs);
+  cascadeDatesFrom(id);
+  savePhasesCRUD();
+  rebuildPHASES();
+  loadSnapshot();
+  renderedTabs.gantt = true;
+  reRenderAll();
+  scheduleWriteBack();
+  showToast(`⏱ ${id}: duración → ${dur}d | FIN = ${msToIso(newEndMs)}`);
+}
+
+/** Toggle flechas de predecesoras en el Gantt */
+window.GANTT_SHOW_DEPS = true;
+function toggleGanttDeps(){
+  window.GANTT_SHOW_DEPS = !window.GANTT_SHOW_DEPS;
+  const btn = document.getElementById('btnToggleDeps');
+  const ico = document.getElementById('depsArrowIcon');
+  if(btn){ btn.style.background = window.GANTT_SHOW_DEPS ? 'rgba(59,130,246,.2)' : 'rgba(71,85,105,.2)';
+           btn.style.borderColor = window.GANTT_SHOW_DEPS ? 'rgba(59,130,246,.5)' : '';
+           btn.style.color = window.GANTT_SHOW_DEPS ? '#60a5fa' : ''; }
+  if(ico) ico.textContent = window.GANTT_SHOW_DEPS ? '↗' : '—';
+  btn.lastChild.textContent = window.GANTT_SHOW_DEPS ? ' Flechas ON' : ' Flechas OFF';
+  renderGantt();
+}
+
+/** Edición inline de duración (días) */
+function startDurEdit(cell, id, currentDur){
+  if(cell.querySelector('input')) return;
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.min  = '1';
+  input.max  = '999';
+  input.value = currentDur;
+  input.className = 'inline-date-input';
+  input.style.width = '70px';
+  input.style.textAlign = 'center';
+  input.addEventListener('click', e => e.stopPropagation());
+  input.addEventListener('keydown', e => {
+    if(e.key === 'Escape'){ e.preventDefault(); renderTable(); }
+    if(e.key === 'Enter') { input.blur(); }
+  });
+  input.addEventListener('change', () => {
+    if(input.value && parseInt(input.value) !== currentDur){
+      shiftPhaseDur(id, input.value);
+    } else {
+      renderTable();
+    }
+  });
+  cell.innerHTML = '';
+  cell.appendChild(input);
+  input.focus();
+  input.select();
 }
 
 function renderSyncUI(){
@@ -2614,6 +3175,66 @@ function renderGantt(){
       </g>`;
   });
 
+  // ── FLECHAS DE PREDECESORAS (Finish-to-Start) ──────────────
+  const phaseIdx = {};
+  PHASES.forEach((p, i) => { phaseIdx[p.id] = i; });
+
+  // Definición del marcador de punta de flecha (SVG defs)
+  const arrowDefs = `
+    <defs>
+      <marker id="arr-gray" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+        <path d="M0,0 L7,3.5 L0,7 L1.5,3.5 Z" fill="#475569" opacity=".85"/>
+      </marker>
+      <marker id="arr-red" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+        <path d="M0,0 L7,3.5 L0,7 L1.5,3.5 Z" fill="#ef4444" opacity=".9"/>
+      </marker>
+      <marker id="arr-green" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+        <path d="M0,0 L7,3.5 L0,7 L1.5,3.5 Z" fill="#22c55e" opacity=".85"/>
+      </marker>
+    </defs>`;
+
+  let depArrows = '';
+  if(window.GANTT_SHOW_DEPS !== false){
+    PHASES.forEach((succ, si) => {
+      const preds = PHASE_DEPENDENCIES[succ.id] || [];
+      preds.forEach(predId => {
+        const pi = phaseIdx[predId];
+        if(pi === undefined) return;
+        const pred = PHASES[pi];
+
+        const predEndX  = xOf(pred.endMs);
+        const succStartX= xOf(succ.startMs);
+        const predMidY  = MARGIN_TOP + pi * ROW_H + ROW_H / 2;
+        const succMidY  = MARGIN_TOP + si * ROW_H + ROW_H / 2;
+
+        // Ocultar si fuera del rango visual
+        if(predEndX > MARGIN_LEFT + CHART_W + 60) return;
+        if(succStartX < MARGIN_LEFT - 60) return;
+
+        const isLate  = succ.status === 'ATRASADO';
+        const isDone  = pred.status === 'COMPLETADO';
+        const color   = isLate ? '#ef4444' : isDone ? '#22c55e' : '#475569';
+        const marker  = isLate ? 'arr-red' : isDone ? 'arr-green' : 'arr-gray';
+        const dash    = isLate ? '4,3' : '';
+        const jog = 10;
+
+        // Path estilo Finish-to-Start
+        let d;
+        if(succStartX >= predEndX + jog * 2){
+          // Normal: sucesor empieza después del fin del predecesor
+          d = `M${predEndX.toFixed(1)},${predMidY.toFixed(1)} H${(predEndX+jog).toFixed(1)} V${succMidY.toFixed(1)} H${(succStartX-1).toFixed(1)}`;
+        } else {
+          // Overlap: zigzag bordeando la barra
+          const topY = Math.min(predMidY, succMidY) - (ROW_H / 2) + 3;
+          d = `M${predEndX.toFixed(1)},${predMidY.toFixed(1)} H${(predEndX+jog).toFixed(1)} V${topY.toFixed(1)} H${(succStartX-jog).toFixed(1)} V${succMidY.toFixed(1)} H${(succStartX-1).toFixed(1)}`;
+        }
+
+        depArrows += `<path d="${d}" fill="none" stroke="${color}" stroke-width="1.3"
+          opacity="0.75" marker-end="url(#${marker})"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+      });
+    });
+  }
+
   // TODAY line
   const todayX = xOf(Date.now());
   const todayLine = todayX > MARGIN_LEFT && todayX < MARGIN_LEFT + CHART_W ? `
@@ -2666,6 +3287,7 @@ function renderGantt(){
 
   const bodySvgH = SVG_H - MARGIN_TOP;
   const bodySvg = `<svg id="ganttSvg" width="${SVG_W}" height="${bodySvgH}" viewBox="0 ${MARGIN_TOP} ${SVG_W} ${bodySvgH}" xmlns="http://www.w3.org/2000/svg" style="display:block">
+    ${arrowDefs}
     <rect width="${SVG_W}" height="${SVG_H}" y="-${MARGIN_TOP}" fill="#13171f"/>
     ${leftHeader}
     ${gridLines}
@@ -2675,6 +3297,7 @@ function renderGantt(){
     ${phaseLabels}
     ${leftBorder}
     ${bars}
+    ${depArrows}
     ${todayLine}
   </svg>`;
 
@@ -2700,12 +3323,12 @@ function renderGantt(){
     const col = getBarColor(p);
     const statusLabel = {PENDIENTE:'Pendiente',EN_PROGRESO:'En Progreso',COMPLETADO:'Completado',ATRASADO:'⚠ Atrasado'}[p.status]||p.status;
     tooltip.innerHTML = `
-      <div class="tt-title">${p.id} — ${p.name}</div>
+      <div class="tt-title">${p.id} — ${esc(p.name)}</div>
       <div class="tt-row"><span class="tt-k">Grupo</span><span class="tt-v" style="color:${GROUPS[p.group].color}">${GROUPS[p.group].label}</span></div>
       <div class="tt-row"><span class="tt-k">Duración</span><span class="tt-v mono">${p.dur} días</span></div>
       <div class="tt-row"><span class="tt-k">Inicio</span><span class="tt-v mono">${fmtDate(p.start)}</span></div>
       <div class="tt-row"><span class="tt-k">Fin</span><span class="tt-v mono">${fmtDate(p.end)}</span></div>
-      <div class="tt-row"><span class="tt-k">Encargado</span><span class="tt-v">${p.owner}</span></div>
+      <div class="tt-row"><span class="tt-k">Encargado</span><span class="tt-v">${esc(p.owner)}</span></div>
       <div class="tt-row"><span class="tt-k">Estado</span><span class="tt-v" style="color:${col}">${statusLabel}</span></div>
       <div class="tt-row"><span class="tt-k">Crítica</span><span class="tt-v">${p.critical?'🔴 Sí':'⚪ No'}</span></div>
       <div class="tt-bar"><div class="tt-fill" style="width:${p.effectiveProgress}%;background:${col}"></div></div>
@@ -3070,22 +3693,43 @@ function renderTable(){
     const hasSubs = subs.length > 0;
 
     /* ─── Phase row ─────────────────────────────────── */
-    const phaseRow = `<tr class="phase-row">
+    const rowClass = p.status === 'ATRASADO' ? 'row-atrasado'
+      : p.status === 'EN_PROGRESO' ? 'row-en-progreso' : '';
+    const phaseRow = `<tr class="phase-row ${rowClass}">
       <td class="sub-expand-cell">
         ${hasSubs
           ? `<button class="expand-btn${isOpen?' open':''}" title="${isOpen?'Colapsar':'Ver proceso constructivo'}" onclick="togglePhase('${p.id}',event)">▶</button>`
           : `<span style="color:var(--border-s);font-size:.75rem;display:block;text-align:center">—</span>`}
       </td>
       <td><span class="phase-code">${p.id}</span></td>
-      <td><strong>${p.name}</strong>${hasSubs?`<span class="sub-count-badge">${subs.length} tareas</span>`:''}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <strong>${esc(p.name)}</strong>
+          ${hasSubs?`<span class="sub-count-badge">${subs.length} tareas</span>`:''}
+          <span style="display:inline-flex;gap:3px;margin-left:4px">
+            <button onclick="openPhaseModal('${p.id}')" title="Editar fase" style="background:rgba(59,130,246,.15);border:none;border-radius:5px;padding:2px 7px;color:#60a5fa;cursor:pointer;font-size:.75rem;line-height:1.4">✏️</button>
+            <button onclick="deletePhase('${p.id}')" title="Eliminar fase" style="background:rgba(239,68,68,.1);border:none;border-radius:5px;padding:2px 7px;color:#f87171;cursor:pointer;font-size:.75rem;line-height:1.4">🗑</button>
+          </span>
+        </div>
+      </td>
       <td><span class="group-label-badge" style="background:${grpCol}20;color:${grpCol};border:1px solid ${grpCol}40;font-size:.75rem;padding:2px 8px;border-radius:4px">${GROUPS[p.group].label}</span></td>
-      <td class="mono">${p.dur}d</td>
-      <td class="mono" style="font-size:.8rem">${fmtDate(p.start)}</td>
-      <td class="mono" style="font-size:.8rem">${fmtDate(p.end)}</td>
-      <td style="font-size:.82rem">${p.owner}</td>
+      <td class="mono date-edit-cell" style="font-size:.8rem;text-align:center" title="Click para editar duración en días → el FIN se recalcula solo" onclick="startDurEdit(this,'${p.id}',${p.dur})">
+        ${p.dur}d<span class="date-edit-icon">✏️</span>
+      </td>
+      <td class="mono date-edit-cell" style="font-size:.8rem" title="Cambia INICIO → FIN se ajusta automáticamente según duración" onclick="startDateEdit(this,'${p.id}','start','${p.start}')">
+        ${fmtDate(p.start)}<span class="date-edit-icon">✏️</span>
+      </td>
+      <td class="mono date-edit-cell" style="font-size:.8rem" title="Cambia FIN → recalcula duración y corre sucesoras" onclick="startDateEdit(this,'${p.id}','end','${p.end}')">
+        ${fmtDate(p.end)}<span class="date-edit-icon">✏️</span>
+      </td>
+      <td style="font-size:.82rem">${esc(p.owner)}</td>
       <td><div class="mini-bar-wrap"><div class="mini-bar"><div class="mini-fill" style="width:${p.effectiveProgress}%;background:${col}"></div></div><span class="mini-val" style="color:${col}">${p.effectiveProgress}%</span></div></td>
       <td>${statusBadge(p.status)}</td>
       <td>${p.critical?'<span class="badge-crit bc-yes">🔴 Sí</span>':'<span class="badge-crit bc-no">⚪ No</span>'}</td>
+      <td style="text-align:center;white-space:nowrap">
+        <button onclick="openPhaseModal('${p.id}')" title="Editar fase" style="background:rgba(59,130,246,.13);border:none;border-radius:6px;padding:4px 7px;color:#60a5fa;cursor:pointer;font-size:.82rem;margin-right:3px">✏️</button>
+        <button onclick="deletePhase('${p.id}')" title="Eliminar fase" style="background:rgba(239,68,68,.1);border:none;border-radius:6px;padding:4px 7px;color:#f87171;cursor:pointer;font-size:.82rem">🗑</button>
+      </td>
     </tr>`;
 
     /* ─── Sub-activity rows ──────────────────────────── */
@@ -3118,10 +3762,12 @@ function renderTable(){
           <td class="mono" style="font-size:.75rem;color:var(--txt-m)">${s.dur>0?s.dur+'d':'—'}</td>
           <td class="mono" style="font-size:.75rem;color:var(--txt-m)">${!s.hito?fmtDate(s.start):'—'}</td>
           <td class="mono" style="font-size:.75rem;color:var(--txt-m)">${(!s.hito&&s.dur>0)?fmtDate(s.end):'—'}</td>
+
           <td style="font-size:.75rem;color:var(--txt-m)">${s.owner||''}</td>
           <td class="subact-slider-cell">${sliderHtml}</td>
           <td></td>
           <td>${s.crit?'<span class="badge-crit bc-yes" style="font-size:.75rem;padding:1px 5px">🔴</span>':'<span class="badge-crit bc-no" style="font-size:.75rem;padding:1px 5px">⚪</span>'}</td>
+          <td></td>
         </tr>`;
       }).join('');
     }
@@ -3160,9 +3806,9 @@ function renderUpdatePanel(){
       <div class="update-row${isModified?' modified':''}" id="urow-${p.id}">
         <div class="update-meta">
           <span class="um-code">${p.id}</span>
-          <span class="um-name">${p.name}</span>
+          <span class="um-name">${esc(p.name)}</span>
           ${isModified?`<span class="um-badge-mod">● local (${p.progress}% en Sheet)</span>`:''}
-          <div class="um-owner">👷 ${p.owner} · ${p.dur}d · ${fmtDate(p.start)}→${fmtDate(p.end)}</div>
+          <div class="um-owner">👷 ${esc(p.owner)} · ${p.dur}d · ${fmtDate(p.start)}→${fmtDate(p.end)}</div>
         </div>
         <div class="update-controls">
           <div class="slider-wrap">
@@ -3279,6 +3925,48 @@ const NOTE_TYPES={Hallazgo:'#f97316',Alerta:'#ef4444','Decisión':'#3b82f6',Info
 function loadKNotes(){try{return JSON.parse(localStorage.getItem(LS_K_NOTES)||'{}')}catch(e){return {}}}
 function saveKNotes(n){try{localStorage.setItem(LS_K_NOTES,JSON.stringify(n))}catch(e){}}
 function delKNote(pid,nid){const n=loadKNotes();if(n[pid])n[pid]=n[pid].filter(x=>x.id!==nid);saveKNotes(n);renderBoard();}
+function toggleNoteResolved(pid,nid){
+  const n=loadKNotes();
+  const note=(n[pid]||[]).find(x=>x.id===nid);
+  if(!note)return;
+  note.resolved=!note.resolved;
+  if(note.resolved)note.resolvedAt=new Date().toISOString().slice(0,10);
+  else delete note.resolvedAt;
+  saveKNotes(n);renderBoard();
+}
+const LS_ALERT_DISMISS='tsi_kanban_alert_v1';
+function getOverdueNotes(){
+  const notes=loadKNotes();const now=Date.now();const WEEK=7*24*3600*1000;
+  const list=[];
+  Object.entries(notes).forEach(([pid,arr])=>{
+    (arr||[]).forEach(n=>{
+      if(n.resolved)return;
+      const age=now-new Date(n.date).getTime();
+      if(age>=WEEK){
+        const phase=PHASES.find(p=>p.id===pid);
+        list.push({pid,nid:n.id,text:n.text,type:n.type,date:n.date,phaseName:phase?.name||pid,age:Math.floor(age/86400000)});
+      }
+    });
+  });
+  return list;
+}
+function buildAlertBanner(){
+  const overdue=getOverdueNotes();
+  if(!overdue.length)return '';
+  const dismissed=localStorage.getItem(LS_ALERT_DISMISS);
+  // Dismiss dura 24h (no toda la semana para no silenciar indefinidamente)
+  if(dismissed&&(Date.now()-parseInt(dismissed)<86400000))return '';
+  const items=overdue.slice(0,4).map(o=>`• <strong>${o.phaseName}</strong>: "${o.text.slice(0,50)}${o.text.length>50?'…':''}" — <em>${o.age}d sin resolver</em>`).join('<br>');
+  const more=overdue.length>4?`<br><em>+${overdue.length-4} nota(s) más...</em>`:'';
+  return `<div class="kanban-alert-banner">
+    <span class="ab-icon">⚠️</span>
+    <div class="ab-body">
+      <div class="ab-title">⏰ ${overdue.length} nota(s) sin resolver por más de 7 días</div>
+      <div class="ab-items">${items}${more}</div>
+    </div>
+    <button class="ab-dismiss" onclick="localStorage.setItem('${LS_ALERT_DISMISS}',Date.now());this.closest('.kanban-alert-banner').remove()">Ignorar hoy ✕</button>
+  </div>`;
+}
 function openNoteModal(pid){
   const p=PHASES.find(x=>x.id===pid);
   const existing=document.getElementById('kNoteModal');if(existing)existing.remove();
@@ -3289,7 +3977,7 @@ function openNoteModal(pid){
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
       <div>
         <div style="font-size:.72rem;color:var(--txt-m);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px">Nueva Nota</div>
-        <strong style="font-size:.9rem">${p?.id} — ${(p?.name||'').slice(0,30)}</strong>
+        <strong style="font-size:.9rem">${p?.id} — ${esc((p?.name||'').slice(0,30))}</strong>
       </div>
       <button onclick="document.getElementById('kNoteModal').remove()" style="background:none;border:none;color:var(--txt-m);font-size:1.3rem;cursor:pointer;line-height:1">✕</button>
     </div>
@@ -3321,7 +4009,7 @@ function submitKNote(pid){
   if(!text){document.getElementById('kNoteText')?.focus();return;}
   const notes=loadKNotes();
   if(!notes[pid])notes[pid]=[];
-  notes[pid].unshift({id:Date.now(),text,type,author,date});
+  notes[pid].unshift({id:Date.now(),text,type,author,date,resolved:false});
   saveKNotes(notes);
   document.getElementById('kNoteModal')?.remove();
   renderBoard();
@@ -3353,10 +4041,12 @@ function renderBoard(){
           const initials = ownerInitials(p.owner);
           const avColor = ownerColor(p.owner);
           const subs = (SUBACTIVITIES_RAW[p.id] || []).length;
+          // Color del % de avance: rojo solo si atrasado, gris si pendiente al 0%, color de barra si en progreso/completado
+          const pctColor = p.status === 'ATRASADO' ? '#ef4444' : p.effectiveProgress === 0 ? '#64748b' : col2;
           return `<div class="kcard" style="--bar-col:${col2};border-left:3px solid ${grpC}">
             <div class="kcard-top">
               <span class="kcard-id" style="background:${grpC}20;color:${grpC}">${p.id}</span>
-              <span class="kcard-name">${p.name}</span>
+              <span class="kcard-name">${esc(p.name)}</span>
             </div>
             <div class="kcard-badges">
               <span class="kcard-grp" style="background:${grpC}18;color:${grpC};border:1px solid ${grpC}35">${GROUPS[p.group].label}</span>
@@ -3367,21 +4057,46 @@ function renderBoard(){
             <div class="kcard-meta">
               <span class="kcard-owner">
                 <span class="kcard-avatar" style="background:${avColor}">${initials}</span>
-                ${p.owner.split(' ').slice(0,2).join(' ')}
+                ${esc(p.owner.split(' ').slice(0,2).join(' '))}
               </span>
               <span class="kcard-date">📅 ${fmtDate(p.start)}</span>
               <span class="kcard-dur">⏱ ${p.dur}d</span>
             </div>
             <div class="kcard-bar-wrap">
               <div class="kcard-bar"><div class="kcard-bar-fill" style="width:${p.effectiveProgress}%;background:${col2}"></div></div>
-              <div class="kcard-bar-label"><span>Avance</span><span style="color:${col2};font-weight:700;font-family:'JetBrains Mono',monospace">${p.effectiveProgress}%</span></div>
+              <div class="kcard-bar-label"><span>Avance</span><span style="color:${pctColor};font-weight:700;font-family:'JetBrains Mono',monospace">${p.effectiveProgress}%</span></div>
             </div>
-            ${(()=>{ const kn=(loadKNotes()[p.id]||[]); return kn.length?`<div class="kcard-notes-section">${kn.slice(0,3).map(n=>`<div class="kcard-note-item"><div class="kcard-note-dot" style="background:${NOTE_TYPES[n.type]||'#64748b'}"></div><div class="kcard-note-body"><div class="kcard-note-txt">${n.text.length>70?n.text.slice(0,70)+'…':n.text}</div><div class="kcard-note-foot"><span style="color:${NOTE_TYPES[n.type]||'#64748b'}">${n.type}</span><span>${n.date}</span><span>${n.author}</span><button onclick="delKNote('${p.id}',${n.id})" style="background:none;border:none;color:var(--txt-m);cursor:pointer;font-size:.7rem;padding:0;margin-left:auto" title="Eliminar">✕</button></div></div></div>`).join('')}${kn.length>3?`<div style="font-size:.68rem;color:var(--txt-m);text-align:center;padding:2px">+${kn.length-3} nota(s) más</div>`:''}</div>`:''; })()}
+            ${(()=>{
+              const kn=(loadKNotes()[p.id]||[]);
+              if(!kn.length)return '';
+              const now=Date.now();const WEEK=7*24*3600*1000;
+              const items=kn.slice(0,3).map(n=>{
+                const overdue=!n.resolved&&(now-new Date(n.date).getTime())>=WEEK;
+                const age=Math.floor((now-new Date(n.date).getTime())/86400000);
+                return `<div class="kcard-note-item${n.resolved?' resolved':''}${overdue?' overdue':''}">
+                  <button class="note-check-btn${n.resolved?' checked':''}" onclick="toggleNoteResolved('${p.id}',${n.id})" title="${n.resolved?'Marcar pendiente':'Marcar resuelta'}">${n.resolved?'✓':''}</button>
+                  <div class="kcard-note-dot" style="background:${NOTE_TYPES[n.type]||'#64748b'};margin-top:5px"></div>
+                  <div class="kcard-note-body">
+                    <div class="kcard-note-txt${n.resolved?' resolved-txt':''}">${esc(n.text.length>70?n.text.slice(0,70)+'…':n.text)}</div>
+                    <div class="kcard-note-foot">
+                      <span style="color:${NOTE_TYPES[n.type]||'#64748b'}">${n.type}</span>
+                      <span>${n.date}</span><span>${esc(n.author)}</span>
+                      ${overdue?`<span class="note-overdue-badge">⚠️ ${age}d</span>`:''}
+                      ${n.resolved?`<span style="color:#22c55e;font-size:.65rem">✓ resuelto ${n.resolvedAt||''}</span>`:''}
+                      <button onclick="delKNote('${p.id}',${n.id})" style="background:none;border:none;color:var(--txt-m);cursor:pointer;font-size:.7rem;padding:0;margin-left:auto" title="Eliminar">✕</button>
+                    </div>
+                  </div>
+                </div>`;
+              }).join('');
+              const more=kn.length>3?`<div style="font-size:.68rem;color:var(--txt-m);text-align:center;padding:2px">+${kn.length-3} nota(s) más</div>`:'';
+              return `<div class="kcard-notes-section">${items}${more}</div>`;
+            })()}
             <button class="kcard-add-note-btn" onclick="openNoteModal('${p.id}')"><span class="ms" style="font-size:.9rem">add_circle</span>Agregar nota</button>
           </div>`;
         }).join('');
 
-    return `<div class="kanban-col ${col.cls}">
+    const isEmpty = cards.length === 0;
+    return `<div class="kanban-col ${col.cls}${isEmpty ? ' kanban-col-empty' : ''}">
       <div class="kanban-col-hdr">
         <span style="font-size:1rem">${col.icon}</span>
         <span class="kanban-col-title">${col.label}</span>
@@ -3391,7 +4106,8 @@ function renderBoard(){
     </div>`;
   }).join('');
 
-  document.getElementById('kanbanWrap').innerHTML = html;
+  const alertBanner = buildAlertBanner();
+  document.getElementById('kanbanWrap').innerHTML = alertBanner + html;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -3439,6 +4155,78 @@ function phasesInRange(rangeStart, rangeEnd){
 /* Does a specific day (midnight ms) fall inside a phase? */
 function phaseCoversDay(p, dayMs){
   return p.startMs <= dayMs + 86399999 && p.endMs >= dayMs;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FESTIVOS COLOMBIANOS — Ley Emiliani + Pascua
+   ═══════════════════════════════════════════════════════════ */
+function easterSunday(year){
+  // Algoritmo de Butcher
+  const a=year%19, b=Math.floor(year/100), c=year%100,
+        d=Math.floor(b/4), e=b%4, f=Math.floor((b+8)/25),
+        g=Math.floor((b-f+1)/3), h=(19*a+b-d-g+15)%30,
+        i=Math.floor(c/4), k=c%4, l=(32+2*e+2*i-h-k)%7,
+        m=Math.floor((a+11*h+22*l)/451),
+        month=Math.floor((h+l-7*m+114)/31)-1, // 0-indexed
+        day=((h+l-7*m+114)%31)+1;
+  return new Date(year, month, day);
+}
+function nextMonday(date){
+  const d=new Date(date); const dow=d.getDay();
+  if(dow===1) return d; // ya es lunes
+  const diff=dow===0?1:8-dow;
+  d.setDate(d.getDate()+diff); return d;
+}
+function colombianHolidays(year){
+  const E=easterSunday(year);
+  const eMs=E.getTime();
+  const D=86400000;
+  const fixedList=[
+    {d:new Date(year,0,1),  name:'Año Nuevo'},
+    {d:new Date(year,4,1),  name:'Día del Trabajo'},
+    {d:new Date(year,6,20), name:'Independencia de Colombia'},
+    {d:new Date(year,7,7),  name:'Batalla de Boyacá'},
+    {d:new Date(year,11,8), name:'Inmaculada Concepción'},
+    {d:new Date(year,11,25),name:'Navidad'},
+  ];
+  // Ley Emiliani — se mueven al siguiente lunes
+  const moveableList=[
+    {d:new Date(year,0,6),  name:'Reyes Magos'},
+    {d:new Date(year,2,19), name:'San José'},
+    {d:new Date(year,5,29), name:'San Pedro y San Pablo'},
+    {d:new Date(year,7,15), name:'Asunción de la Virgen'},
+    {d:new Date(year,9,12), name:'Día de la Raza'},
+    {d:new Date(year,10,1), name:'Todos los Santos'},
+    {d:new Date(year,10,11),name:'Independencia de Cartagena'},
+  ];
+  // Pascua-dependientes
+  const pascualList=[
+    {d:new Date(eMs-3*D),   name:'Jueves Santo'},
+    {d:new Date(eMs-2*D),   name:'Viernes Santo'},
+    {d:nextMonday(new Date(eMs+39*D)), name:'Ascensión del Señor'},
+    {d:nextMonday(new Date(eMs+60*D)), name:'Corpus Christi'},
+    {d:nextMonday(new Date(eMs+68*D)), name:'Sagrado Corazón'},
+  ];
+  const result={};
+  [...fixedList,
+   ...moveableList.map(x=>({d:nextMonday(x.d),name:x.name})),
+   ...pascualList
+  ].forEach(({d,name})=>{
+    const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    result[key]=name;
+  });
+  return result;
+}
+// Cache de festivos por año
+const _holidaysCache={};
+function getHolidays(year){
+  if(!_holidaysCache[year]) _holidaysCache[year]=colombianHolidays(year);
+  return _holidaysCache[year];
+}
+function isHoliday(dateObj){
+  const y=dateObj.getFullYear();
+  const key=`${y}-${String(dateObj.getMonth()+1).padStart(2,'0')}-${String(dateObj.getDate()).padStart(2,'0')}`;
+  return getHolidays(y)[key]||null;
 }
 
 function renderCalendar(){
@@ -3490,11 +4278,13 @@ function renderCalWeek(){
       const cs = calStatus(p);
       const grpC = phaseColors[p.group]||'#3b82f6';
       const isStart = p.startMs >= dMs && p.startMs < dMs+86400000;
-      return `<span class="cal-act-pill st-${cs}" style="background:${grpC}22;color:${grpC};border-left-color:${grpC}" title="${p.name} — ${CAL_STATUS_LABEL[cs]}">${isStart?'▶ ':''}<strong>${p.id}</strong> ${p.name.slice(0,18)}${p.name.length>18?'…':''}</span>`;
+      return `<span class="cal-act-pill st-${cs}" style="background:${grpC}22;color:${grpC};border-left-color:${grpC}" title="${esc(p.name)} — ${CAL_STATUS_LABEL[cs]}">${isStart?'▶ ':''}<strong>${p.id}</strong> ${esc(p.name.slice(0,18))}${p.name.length>18?'…':''}</span>`;
     }).join('');
     const extra = activeTasks.length>5 ? `<span style="font-size:.66rem;color:var(--txt-m);margin-top:2px;display:block">+${activeTasks.length-5} más…</span>` : '';
-    return `<div class="cal-day-cell${isToday?' today-cell':''}">
-      <div class="cal-day-num">${isToday?`<span class="today-num">${d.getDate()}</span>`:d.getDate()}</div>
+    const festivo = isHoliday(d);
+    return `<div class="cal-day-cell${isToday?' today-cell':''}${festivo?' festivo':''}">
+      <div class="cal-day-num">${isToday?`<span class="today-num">${d.getDate()}</span>`:d.getDate()}${festivo?`<span class="festivo-badge" title="${festivo}">🇨🇴 Festivo</span>`:''}</div>
+      ${festivo?`<span class="festivo-name">🎉 ${festivo}</span>`:''}
       ${pills}${extra}
     </div>`;
   }).join('');
@@ -3540,11 +4330,13 @@ function renderCalMonth(){
       const pills = activeTasks.slice(0,3).map(p=>{
         const grpC = phaseColors[p.group]||'#3b82f6';
         const cs = calStatus(p);
-        return `<span class="cal-act-pill" style="background:${grpC}20;color:${grpC};border-left-color:${grpC};font-size:.75rem" title="${p.name}">${p.id}</span>`;
+        return `<span class="cal-act-pill" style="background:${grpC}20;color:${grpC};border-left-color:${grpC};font-size:.75rem" title="${esc(p.name)}">${p.id}</span>`;
       }).join('');
       const extra = activeTasks.length>3 ? `<span style="font-size:.75rem;color:var(--txt-m)">+${activeTasks.length-3}</span>` : '';
-      cells += `<div class="cal-month-cell${isToday?' today-cell':''}${isOtherMonth?' other-month':''}">
-        <div class="cal-day-num" style="font-size:.75rem">${isToday?`<span class="today-num">${cur.getDate()}</span>`:cur.getDate()}</div>
+      const festivo = !isOtherMonth ? isHoliday(cur) : null;
+      cells += `<div class="cal-month-cell${isToday?' today-cell':''}${isOtherMonth?' other-month':''}${festivo?' festivo':''}">
+        <div class="cal-day-num" style="font-size:.75rem">${isToday?`<span class="today-num">${cur.getDate()}</span>`:cur.getDate()}${festivo?`<span class="festivo-badge" title="${festivo}">🎉</span>`:''}</div>
+        ${festivo&&!isOtherMonth?`<span class="festivo-name">${festivo}</span>`:''}
         ${pills}${extra}
       </div>`;
       cur.setDate(cur.getDate()+1);
@@ -3596,7 +4388,7 @@ function renderCalYear(){
     const pills = activeTasks.slice(0,6).map(p=>{
       const cs=calStatus(p);
       const grpC=phaseColors[p.group]||'#3b82f6';
-      return `<div class="cal-year-phase-pill" style="background:${grpC}20;color:${grpC}" title="${p.name} — ${CAL_STATUS_LABEL[cs]}">${p.id} ${p.name.slice(0,22)}${p.name.length>22?'…':''}</div>`;
+      return `<div class="cal-year-phase-pill" style="background:${grpC}20;color:${grpC}" title="${esc(p.name)} — ${CAL_STATUS_LABEL[cs]}">${p.id} ${esc(p.name.slice(0,22))}${p.name.length>22?'…':''}</div>`;
     }).join('');
     const extraPills = activeTasks.length>6 ? `<div style="font-size:.66rem;color:var(--txt-m)">+${activeTasks.length-6} fases más…</div>` : '';
 
@@ -3638,7 +4430,10 @@ function switchTab(name){
   if(name==='equipos'){ if(!renderedTabs.equipos) renderedTabs.equipos=true; renderEquipos(); }
   if(name==='personal'){ if(!renderedTabs.personal) renderedTabs.personal=true; renderPersonal(); }
   if(name==='planeacion'){ if(!renderedTabs.planeacion) renderedTabs.planeacion=true; renderPlanning360(); }
-  if(name==='requisiciones'){ if(!renderedTabs.requisiciones) renderedTabs.requisiciones=true; renderRequisiciones(); }
+  if(name==='requisiciones'){
+    if(!renderedTabs.requisiciones){ renderedTabs.requisiciones=true; syncRequisiciones(); }
+    else renderRequisiciones();
+  }
   if(name==='compras'){ if(!renderedTabs.compras) renderedTabs.compras=true; renderCompras(); }
   if(name==='proveedores'){ if(!renderedTabs.proveedores) renderedTabs.proveedores=true; renderProveedores(); }
   if(name==='presupuesto'){ if(!renderedTabs.presupuesto) renderedTabs.presupuesto=true; renderPresupuesto(); }
@@ -3678,11 +4473,11 @@ const ROLE_COLORS = { ADMIN:'#ef4444', EDITOR:'#3b82f6', LECTOR:'#64748b', LIMIT
 const ROLE_LABELS = { ADMIN:'Admin', EDITOR:'Editor', LECTOR:'Lector', LIMITADO:'Limitado' };
 
 const DEFAULT_USERS = [
-  { id:1, name:'Director Obra', username:'admin',       password:'admin123',   role:'ADMIN',   avatar:'DA', color:'#ef4444', phases:[] },
-  { id:2, name:'Miguel Salazar', username:'miguel',     password:'obra2026',   role:'EDITOR',  avatar:'MS', color:'#3b82f6', phases:[] },
-  { id:3, name:'Residente',      username:'residente',  password:'res123',     role:'EDITOR',  avatar:'RE', color:'#8b5cf6', phases:[] },
-  { id:4, name:'Contratista',    username:'contratista',password:'cont123',    role:'LIMITADO',avatar:'CO', color:'#f59e0b', phases:['F0','F1','F2','F3'] },
-  { id:5, name:'Visitante',      username:'lector',     password:'leer123',    role:'LECTOR',  avatar:'VT', color:'#64748b', phases:[] },
+  { id:1, name:'Director Obra', username:'admin',       passHash:'27ba65273ee3fabdfbf6ca7a5ec35a61bcd82de6acac59e00c4279ce175d40a7', role:'ADMIN',   avatar:'DA', color:'#ef4444', phases:[] },
+  { id:2, name:'Miguel Salazar', username:'miguel',     passHash:'498facc556fbc00ef3b60e4638f797b1c5cba371db98d7fabdb95a70fea091d8', role:'EDITOR',  avatar:'MS', color:'#3b82f6', phases:[] },
+  { id:3, name:'Residente',      username:'residente',  passHash:'d05b43c7fb9e182dd6155b89cc948ff81228af4fd3ffde8bd397a79d91427b24', role:'EDITOR',  avatar:'RE', color:'#8b5cf6', phases:[] },
+  { id:4, name:'Contratista',    username:'contratista',passHash:'c99d8796a0ae7e1c2c88914477e1c476b2d5b70aff420d76d568b97b0d1aca6e', role:'LIMITADO',avatar:'CO', color:'#f59e0b', phases:['F0','F1','F2','F3'] },
+  { id:5, name:'Visitante',      username:'lector',     passHash:'3516fec618b3e2490587abdce9717d2e02186a69eb3a4d46c4d9626ae003ca86', role:'LECTOR',  avatar:'VT', color:'#64748b', phases:[] },
 ];
 
 function getUsers(){
@@ -3737,12 +4532,14 @@ function doLogin(){
   const username = document.getElementById('loginUser').value.trim();
   const password = document.getElementById('loginPass').value;
   const users = getUsers();
-  const user = users.find(u => u.username === username && u.password === password);
+  const user = users.find(u => u.username === username && (u.passHash ? u.passHash === sha256(password) : u.password === password));
   if(!user){
     document.getElementById('loginError').textContent = '❌ Usuario o contraseña incorrectos';
     document.getElementById('loginPass').focus();
     return;
   }
+  // Migrar usuarios legacy (password plano) a hash
+  if(user.password){ user.passHash = sha256(user.password); delete user.password; saveUsers(users); }
   CURRENT_USER = user;
   sessionStorage.setItem(SS_SESSION, JSON.stringify({ id: user.id }));
   applyRole(user);
@@ -3842,14 +4639,14 @@ function renderAdminUsers(){
     return `<tr>
       <td>
         <div style="display:flex;align-items:center;gap:8px">
-          <div class="u-avatar-sm" style="background:${u.color||'#3b82f6'}">${u.avatar||u.name[0]}</div>
+          <div class="u-avatar-sm" style="background:${u.color||'#3b82f6'}">${esc(u.avatar||u.name[0])}</div>
           <div>
-            <div style="font-weight:600;font-size:.85rem">@${u.username}</div>
+            <div style="font-weight:600;font-size:.85rem">@${esc(u.username)}</div>
             ${isMe?'<div style="font-size:.72rem;color:#22c55e">← Tú</div>':''}
           </div>
         </div>
       </td>
-      <td style="font-size:.85rem">${u.name}</td>
+      <td style="font-size:.85rem">${esc(u.name)}</td>
       <td><span class="lu-badge role-${u.role.toLowerCase()}">${ROLE_LABELS[u.role]}</span></td>
       <td style="font-size:.78rem;color:var(--txt-s)">${phasesLabel}</td>
       <td>
@@ -3875,7 +4672,7 @@ function openUserModal(editId){
     <label class="phase-check-item">
       <input type="checkbox" value="${p.id}" ${stored.includes(p.id)?'checked':''}/>
       <span style="font-family:'JetBrains Mono',monospace;color:var(--txt-a)">${p.id}</span>
-      <span style="color:var(--txt-m)">${p.name.slice(0,28)}</span>
+      <span style="color:var(--txt-m)">${esc(p.name.slice(0,28))}</span>
     </label>`).join('');
 
   if(editId){
@@ -3885,7 +4682,7 @@ function openUserModal(editId){
     document.getElementById('userModalIcon').textContent = '✏️';
     document.getElementById('umName').value = u.name;
     document.getElementById('umUsername').value = u.username;
-    document.getElementById('umPassword').value = u.password;
+    document.getElementById('umPassword').value = ''; document.getElementById('umPassword').placeholder = 'dejar vacío para no cambiar';
     document.getElementById('umRole').value = u.role;
     // Check the right phases
     document.querySelectorAll('#phasesCheckList input[type=checkbox]').forEach(cb=>{
@@ -3941,15 +4738,15 @@ function saveUser(){
   if(editId){
     const idx = users.findIndex(u=>String(u.id)===editId);
     if(idx<0) return;
-    users[idx] = { ...users[idx], name, username, role, phases, avatar, color,
-      password: password || users[idx].password };
+    users[idx] = { ...users[idx], name, username, role, phases, avatar, color };
+    if(password){ users[idx].passHash = sha256(password); delete users[idx].password; }
     // Update current session if editing self
     if(CURRENT_USER && users[idx].id === CURRENT_USER.id){
       CURRENT_USER = users[idx]; applyRole(CURRENT_USER);
     }
   } else {
     const newId = Math.max(0,...users.map(u=>u.id)) + 1;
-    users.push({ id:newId, name, username, password, role, phases, avatar, color });
+    users.push({ id:newId, name, username, passHash: sha256(password), role, phases, avatar, color });
   }
 
   saveUsers(users);
@@ -3977,7 +4774,8 @@ function changePassword(id){
   if(!newPw) return;
   if(newPw.length < 4){ showToast('❌ Mínimo 4 caracteres'); return; }
   const idx = users.findIndex(x=>x.id===id);
-  users[idx].password = newPw;
+  users[idx].passHash = sha256(newPw);
+  delete users[idx].password;
   saveUsers(users);
   showToast(`🔑 Contraseña de @${u.username} actualizada`);
 }
@@ -4009,7 +4807,7 @@ function renderPersonal(){
   const selEl = document.getElementById('personalFiltContrat');
   if(selEl){
     const cur = selEl.value;
-    selEl.innerHTML = '<option value="">Todos los contratistas</option>' + contrats.map(c=>`<option value="${c}"${c===cur?' selected':''}>${c}</option>`).join('');
+    selEl.innerHTML = '<option value="">Todos los contratistas</option>' + contrats.map(c=>`<option value="${esc(c)}"${c===cur?' selected':''}>${esc(c)}</option>`).join('');
   }
 
   let list = data;
@@ -4049,19 +4847,19 @@ function renderPersonal(){
       <td>
         <div style="display:flex;align-items:center;gap:8px">
           <div style="width:30px;height:30px;border-radius:50%;background:${CARGO_COLOR[p.cargo]||'#64748b'}22;border:1px solid ${CARGO_COLOR[p.cargo]||'#64748b'}44;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:${CARGO_COLOR[p.cargo]||'#64748b'};flex-shrink:0">
-            ${(p.nombre||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}
+            ${esc((p.nombre||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase())}
           </div>
           <div>
-            <div style="font-weight:600;color:var(--txt)">${p.nombre||'—'}</div>
-            ${p.cedula?`<div style="font-size:.72rem;color:var(--txt-m)">CC ${p.cedula}</div>`:''}
+            <div style="font-weight:600;color:var(--txt)">${esc(p.nombre||'—')}</div>
+            ${p.cedula?`<div style="font-size:.72rem;color:var(--txt-m)">CC ${esc(p.cedula)}</div>`:''}
           </div>
         </div>
       </td>
-      <td><span class="cargo-badge ${CARGO_CSS[p.cargo]||''}">${p.cargo||'—'}</span></td>
-      <td style="color:var(--txt-s);font-size:.82rem">${p.contratista||'—'}</td>
-      <td style="color:var(--txt-m);font-size:.8rem">${p.frente||'—'}</td>
-      <td class="mono" style="font-size:.78rem;color:var(--txt-m)">${p.cedula||'—'}</td>
-      <td style="font-size:.8rem;color:var(--txt-s)">${p.tel||'—'}</td>
+      <td><span class="cargo-badge ${CARGO_CSS[p.cargo]||''}">${esc(p.cargo||'—')}</span></td>
+      <td style="color:var(--txt-s);font-size:.82rem">${esc(p.contratista||'—')}</td>
+      <td style="color:var(--txt-m);font-size:.8rem">${esc(p.frente||'—')}</td>
+      <td class="mono" style="font-size:.78rem;color:var(--txt-m)">${esc(p.cedula||'—')}</td>
+      <td style="font-size:.8rem;color:var(--txt-s)">${esc(p.tel||'—')}</td>
       <td class="mono" style="font-size:.78rem;color:var(--txt-m)">${p.ingreso||'—'}</td>
       <td>
         <div style="display:flex;gap:4px">
@@ -4087,7 +4885,7 @@ function openPersonalModal(editId){
   const existing = document.getElementById('personalModal'); if(existing) existing.remove();
   const data = loadPersonal();
   const edit = editId ? data.find(p=>p.id===editId) : null;
-  const phases = PHASES.map(p=>`<option value="${p.name}"${edit?.frente===p.name?' selected':''}>${p.id} — ${p.name.slice(0,35)}</option>`).join('');
+  const phases = PHASES.map(p=>`<option value="${esc(p.name)}"${edit?.frente===p.name?' selected':''}>${p.id} — ${esc(p.name.slice(0,35))}</option>`).join('');
   const overlay = document.createElement('div');
   overlay.id='personalModal'; overlay.className='personal-modal-overlay';
   overlay.innerHTML=`<div class="personal-modal-box">
@@ -4205,7 +5003,7 @@ function renderEquipos(){
     const avgProg = phases.length ? Math.round(phases.reduce((a,p)=>a+p.effectiveProgress*p.dur,0) / Math.max(1,totalDur)) : 0;
     const lateCount = phases.filter(p=>p.status==='ATRASADO').length;
     const doneCount = phases.filter(p=>p.status==='COMPLETADO').length;
-    const initials = owner.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const initials = esc(owner.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase());
     const color = ownerColor(owner);
     const isOpen = openEquipos.has(owner);
     const barColor = lateCount>0 ? '#ef4444' : avgProg>=80 ? '#22c55e' : '#3b82f6';
@@ -4214,7 +5012,7 @@ function renderEquipos(){
       const col = getBarColor(p);
       return `<div class="equipo-phase-row">
         <span class="eq-phase-id">${p.id}</span>
-        <span class="eq-phase-name" title="${p.name}">${p.name}</span>
+        <span class="eq-phase-name" title="${esc(p.name)}">${esc(p.name)}</span>
         <div class="eq-phase-bar"><div class="eq-phase-fill" style="width:${p.effectiveProgress}%;background:${col}"></div></div>
         <span class="eq-phase-pct" style="color:${col}">${p.effectiveProgress}%</span>
         <span class="eq-phase-status">${statusBadge(p.status)}</span>
@@ -4225,7 +5023,7 @@ function renderEquipos(){
       <div class="equipo-head" onclick="toggleEquipo('${owner.replace(/'/g,"\\'")}')">
         <div class="equipo-avatar" style="background:${color}">${initials}</div>
         <div class="equipo-info">
-          <div class="equipo-name">${owner}</div>
+          <div class="equipo-name">${esc(owner)}</div>
           <div class="equipo-meta">${phases.length} fases · ${totalDur}d de trabajo${lateCount>0?` · <span style="color:#f87171">⚠️ ${lateCount} atrasada(s)</span>`:''}</div>
         </div>
         <div class="equipo-stats">
@@ -4342,7 +5140,7 @@ function renderBitacora(){
         <div class="bit-tl-card" style="${cardBg(e.source)}">
           <div class="bit-tl-card-top">
             <span class="bit-phase" style="background:${grpColor}22;border:1px solid ${grpColor}44;color:${grpColor}">${e.phaseId}</span>
-            <span class="bit-action">${e.phaseName.length>44?e.phaseName.slice(0,43)+'…':e.phaseName}</span>
+            <span class="bit-action">${esc(e.phaseName.length>44?e.phaseName.slice(0,43)+'…':e.phaseName)}</span>
             <span style="margin-left:auto;font-size:.75rem;color:var(--txt-m)">${new Date(e.ts).toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'})}</span>
           </div>
           <div class="bit-tl-change">
@@ -4355,7 +5153,7 @@ function renderBitacora(){
           </div>
           <div class="bit-meta">
             <span class="bit-source ${e.source==='sync'?'src-sync':'src-local'}">${dotIcon(e.source)} ${e.source==='sync'?'Google Sheet':'Manual'}</span>
-            ${e.user?`<span style="font-size:.73rem;color:var(--txt-m)">👤 ${e.user}</span>`:''}
+            ${e.user?`<span style="font-size:.73rem;color:var(--txt-m)">👤 ${esc(e.user)}</span>`:''}
           </div>
         </div>
       </div>`;
@@ -4487,7 +5285,7 @@ function renderPlanning360(){
       <div class="plan-card" style="--pc:#ef4444"><div class="plan-card-title"><span class="ms" style="color:#ef4444">emergency_home</span>Matriz de riesgos priorizada</div><div class="risk-list">${risks.map(r=>`<div class="risk-item"><span class="risk-dot" style="background:${r.sev==='ALTO'?'#ef4444':r.sev==='MEDIO'?'#f59e0b':'#22c55e'}"></span><div style="flex:1"><div class="risk-title">${r.phase.id} · ${r.phase.name}</div><div class="risk-meta">${r.reason}</div></div><span class="risk-badge ${r.sev==='ALTO'?'rb-high':r.sev==='MEDIO'?'rb-med':'rb-low'}">${r.sev}</span></div>`).join('')}</div></div>
     </div>
     <div class="plan-grid-3">
-      <div class="plan-card" style="--pc:#10b981"><div class="plan-card-title"><span class="ms" style="color:#10b981">route</span>Ruta crítica ejecutiva</div><div class="critical-list">${cp.slice(0,10).map(p=>`<div class="critical-item"><span class="phase-code">${p.id}</span><div><div class="critical-title">${p.name}</div><div class="critical-meta">${fmtDate(p.start)} → ${fmtDate(p.end)} · ${p.effectiveProgress}% · ${p.owner}</div></div></div>`).join('')}</div></div>
+      <div class="plan-card" style="--pc:#10b981"><div class="plan-card-title"><span class="ms" style="color:#10b981">route</span>Ruta crítica ejecutiva</div><div class="critical-list">${cp.slice(0,10).map(p=>`<div class="critical-item"><span class="phase-code">${p.id}</span><div><div class="critical-title">${esc(p.name)}</div><div class="critical-meta">${fmtDate(p.start)} → ${fmtDate(p.end)} · ${p.effectiveProgress}% · ${esc(p.owner)}</div></div></div>`).join('')}</div></div>
       <div class="plan-card" style="--pc:#06b6d4"><div class="plan-card-title"><span class="ms" style="color:#06b6d4">rocket_launch</span>Backlog técnico recomendado</div><div class="improve-list">${backlog.slice(0,4).map((b,i)=>`<div class="improve-item"><span class="phase-code">${i+1}</span><div><div class="improve-title">${b.t}</div><div class="improve-meta">${b.m}</div></div></div>`).join('')}</div></div>
       <div class="plan-card" style="--pc:#f97316"><div class="plan-card-title"><span class="ms" style="color:#f97316">timeline</span>Plan 30-60-90</div><div class="roadmap"><div class="road-col"><div class="road-h">30 días</div><div class="road-step"><strong>Validar datos:</strong> fechas, pesos, costos, ruta crítica y permisos.</div><div class="road-step"><strong>Roles:</strong> permisos por fase y bitácora de responsable.</div></div><div class="road-col"><div class="road-h">60 días</div><div class="road-step"><strong>Campo:</strong> fotos, actas, observaciones, RFI y no conformidades.</div><div class="road-step"><strong>Integración:</strong> Apps Script/Firebase para escritura segura.</div></div><div class="road-col"><div class="road-h">90 días</div><div class="road-step"><strong>BI:</strong> costos, EV/PV/AC, reportes PDF y comité.</div><div class="road-step"><strong>Escala:</strong> multiobra, proveedores y tablero financiero.</div></div></div></div>
     </div>`;
@@ -4508,12 +5306,12 @@ function computeAlerts(){
   // Fases atrasadas críticas
   PHASES.filter(p => p.status === 'ATRASADO' && p.critical).forEach(p => {
     const lag = daysBetween(p.endMs, today);
-    alerts.push({ sev:'critica', icon:'🔴', title:`${p.id} — ${p.name.slice(0,35)}`, detail:`Fase crítica con ${lag} días de retraso. Avance: ${p.effectiveProgress}%.`, forecast: `Impacto en ruta crítica: ~${lag}d`, color:'red' });
+    alerts.push({ sev:'critica', icon:'🔴', title:`${p.id} — ${esc(p.name.slice(0,35))}`, detail:`Fase crítica con ${lag} días de retraso. Avance: ${p.effectiveProgress}%.`, forecast: `Impacto en ruta crítica: ~${lag}d`, color:'red' });
   });
   // Fases atrasadas no críticas
   PHASES.filter(p => p.status === 'ATRASADO' && !p.critical).forEach(p => {
     const lag = daysBetween(p.endMs, today);
-    alerts.push({ sev:'alerta', icon:'🟠', title:`${p.id} — ${p.name.slice(0,35)}`, detail:`${lag} días de retraso. Avance actual: ${p.effectiveProgress}%.`, forecast: null, color:'orange' });
+    alerts.push({ sev:'alerta', icon:'🟠', title:`${p.id} — ${esc(p.name.slice(0,35))}`, detail:`${lag} días de retraso. Avance actual: ${p.effectiveProgress}%.`, forecast: null, color:'orange' });
   });
   // Brecha de avance global
   if(gap > 15)
@@ -4567,7 +5365,8 @@ function toggleAlerts(){
 /* ═══════════════════════════════════════════════════════════
    WRITE-BACK (placeholder — requiere Apps Script)
    ═══════════════════════════════════════════════════════════ */
-const WB_URL = ''; // ← Pegar URL del Apps Script Web App aquí
+const WB_URL = ''; // ← Pegar URL /exec del Apps Script (ver apps-script-writeback.gs en esta carpeta)
+const RQ_SHEET_ID = ''; // ← Pegar ID del Sheet de Requisiciones aquí
 let wbTimer = null;
 
 function scheduleWriteBack(){
@@ -4577,13 +5376,34 @@ function scheduleWriteBack(){
 
 function doWriteBack(){
   if(!WB_URL){ showWbIndicator('idle'); return; }
-  const modified = PHASES.filter(p => p.progressLocal !== null);
-  if(!modified.length){ showWbIndicator('idle'); return; }
+  // Construir payload: avance local + overrides de fechas/predecesoras
+  const payload = [];
+  PHASES.forEach(p => {
+    const entry = { id: p.id };
+    let changed = false;
+    if(p.progressLocal !== null){ entry.progress = p.progressLocal; changed = true; }
+    const ov = _CRUD.overrides[p.id] || {};
+    if(ov.start){ entry.start = ov.start; changed = true; }
+    if(ov.end)  { entry.end   = ov.end;   changed = true; }
+    if(ov.predecessors){ entry.predecessors = ov.predecessors.join(','); changed = true; }
+    if(ov.name) { entry.name  = ov.name;  changed = true; }
+    if(changed) payload.push(entry);
+  });
+  // Fases nuevas (añadidas por CRUD)
+  _CRUD.added.forEach(p => {
+    if(!_CRUD.deleted.includes(p.id))
+      payload.push({ id:p.id, name:p.name, group:p.group, start:p.start, end:p.end,
+                     owner:p.owner, critical:p.critical, progress:p.progress||0,
+                     predecessors:(p.predecessors||[]).join(','), isNew:true });
+  });
+  // Fases eliminadas
+  _CRUD.deleted.forEach(id => payload.push({ id, deleted:true }));
+  if(!payload.length){ showWbIndicator('idle'); return; }
   showWbIndicator('saving');
-  const payload = modified.map(p=>({ id:p.id, progress:p.progressLocal }));
   fetch(WB_URL, {
     method:'POST',
-    headers:{'Content-Type':'application/json'},
+    // text/plain evita el preflight CORS que Apps Script no soporta
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
     body: JSON.stringify({ sheetId: SHEET_ID, updates: payload })
   })
   .then(r=>r.json())
@@ -4621,6 +5441,8 @@ function showWbIndicator(state){
    ═══════════════════════════════════════════════════════════ */
 function init(){
   initAuth(); // verificar sesión PRIMERO antes de renderizar
+  loadPhasesCRUD();  // ← cargar cambios CRUD guardados (fechas, fases nuevas/eliminadas)
+  rebuildPHASES();   // ← aplicar overrides sobre PHASES antes de cualquier render
   loadSubProgress(); // warm up cache
   loadSnapshot();
   renderGlobalProgress();
@@ -4901,96 +5723,234 @@ function renderCompras(){
 /* ════════════════════════════════════════
    RENDER: REQUISICIONES
    ════════════════════════════════════════ */
+/* ── Datos de requisiciones cargados desde Google Sheets ── */
+let RQ_DATA = [];   // se llena con syncRequisiciones()
+let RQ_LAST_SYNC = null;
+let RQ_STATUS = 'idle'; // idle | loading | ok | error | no-sheet
+
+const RQ_ESTADO_CFG = {
+  BORRADOR:    { label:'Borrador',    cls:'oc-c-muted', color:'#64748b' },
+  PENDIENTE:   { label:'Pendiente',   cls:'oc-c-amb',   color:'#f59e0b' },
+  EN_REVISION: { label:'En revisión', cls:'oc-c-blu',   color:'#3b82f6' },
+  APROBADA:    { label:'Aprobada',    cls:'oc-c-grn',   color:'#22c55e' },
+  RECHAZADA:   { label:'Rechazada',   cls:'oc-c-red',   color:'#ef4444' },
+  OC_EMITIDA:  { label:'OC Emitida',  cls:'oc-c-vlt',   color:'#a78bfa' },
+};
+const RQ_PRIORIDAD_CFG = {
+  ALTA:  { label:'Alta',  color:'#ef4444' },
+  MEDIA: { label:'Media', color:'#f59e0b' },
+  BAJA:  { label:'Baja',  color:'#22c55e' },
+};
+
+function syncRequisiciones(onDone){
+  if(!RQ_SHEET_ID){ RQ_STATUS='no-sheet'; if(onDone)onDone(); renderRequisiciones(); return; }
+  RQ_STATUS = 'loading';
+  renderRequisiciones();
+  const cb = 'rqCb' + Date.now();
+  const url = `https://docs.google.com/spreadsheets/d/${RQ_SHEET_ID}/gviz/tq?tqx=responseHandler:${cb}&sheet=Sheet1`;
+  const s = document.createElement('script'); s.src = url;
+  window[cb] = function(res){
+    delete window[cb]; s.remove();
+    try{
+      const cols = (res.table.cols||[]).map(c=>(c.label||'').toUpperCase().trim());
+      const idx = k => cols.findIndex(c=>c.includes(k));
+      const iCod  = idx('CODIGO');  const iDes = idx('DESC');
+      const iFase = idx('FASE');    const iFec = idx('FECHA');
+      const iEnc  = idx('ENCARG'); const iEst = idx('ESTADO');
+      const iVal  = idx('VALOR');   const iPri = idx('PRIOR');
+      const iNot  = idx('NOTA');    const iUrl = idx('ARCHIVO');
+      RQ_DATA = (res.table.rows||[]).filter(r=>r.c&&r.c[iCod]?.v).map((r,i)=>{
+        const v = n => (r.c[n]?.v??'');
+        const est = String(v(iEst)).toUpperCase().replace(/ /g,'_').replace('Ó','O').replace('É','E').replace('Á','A');
+        return {
+          num: i+1,
+          codigo:  String(v(iCod)).trim(),
+          desc:    String(v(iDes)).trim(),
+          fase:    String(v(iFase)).trim().toUpperCase(),
+          fecha:   String(v(iFec)).trim(),
+          encargado: String(v(iEnc)).trim(),
+          estado:  est || 'PENDIENTE',
+          valor:   parseFloat(v(iVal))||0,
+          prioridad: String(v(iPri)).toUpperCase().trim()||'MEDIA',
+          notas:   String(v(iNot)||'').trim(),
+          archivo: String(v(iUrl)||'').trim(),
+        };
+      });
+      RQ_STATUS = 'ok';
+      RQ_LAST_SYNC = new Date();
+    }catch(e){ RQ_STATUS = 'error'; }
+    renderRequisiciones();
+    if(onDone) onDone();
+  };
+  s.onerror = ()=>{ delete window[cb]; s.remove(); RQ_STATUS='error'; renderRequisiciones(); };
+  document.head.appendChild(s);
+}
+
 function renderRequisiciones(){
-  const total = MOCK_RQ.length;
-  const aprob = MOCK_RQ.filter(r=>r.status==='Aprobada').length;
-  const rev   = MOCK_RQ.filter(r=>r.status==='En revisión').length;
-  const pend  = MOCK_RQ.filter(r=>r.status==='Pendiente').length;
-  const rech  = MOCK_RQ.filter(r=>r.status==='Rechazada').length;
-  const totalAll = 48; // del SVG schema
+  const el = document.getElementById('comprasRq');
+  if(!el) return;
 
-  const rows = MOCK_RQ.map((r,i)=>`
-    <tr>
-      <td>${i+1}</td>
-      <td>${ocBadge(r.code, r.estado)}</td>
-      <td title="${r.desc}">${r.desc}</td>
-      <td>${r.phase}</td>
-      <td>${r.date}</td>
-      <td>${r.owner}</td>
-      <td>${ocBadge(r.status, r.estado)}</td>
-    </tr>`).join('');
+  // ── Sin Sheet configurado ──
+  if(RQ_STATUS === 'no-sheet' || !RQ_SHEET_ID){
+    el.innerHTML = `<div style="padding:32px;text-align:center;color:var(--txt-m)">
+      <div style="font-size:2rem;margin-bottom:12px">📋</div>
+      <div style="font-size:1rem;font-weight:700;color:var(--txt);margin-bottom:8px">Sheet de Requisiciones no configurado</div>
+      <div style="font-size:.85rem;max-width:480px;margin:0 auto;line-height:1.7">
+        Crea el Google Sheet con las columnas: <code>CODIGO · DESCRIPCION · FASE · FECHA_REQ · ENCARGADO · ESTADO · VALOR · PRIORIDAD · NOTAS · ARCHIVO_DRIVE</code><br><br>
+        Luego pega el ID del Sheet en:<br>
+        <code style="background:var(--bg-el);padding:4px 10px;border-radius:6px;font-size:.8rem">const RQ_SHEET_ID = '← TU_ID_AQUÍ';</code>
+      </div>
+      <a href="https://drive.google.com/drive/folders/1HLYI4F_hIw6pYYnswoHg2GM9CQH7OIJ7" target="_blank"
+        style="display:inline-flex;align-items:center;gap:6px;margin-top:18px;background:var(--accent);color:#fff;padding:8px 18px;border-radius:8px;text-decoration:none;font-weight:600;font-size:.85rem">
+        <span class="ms">folder_open</span>Abrir carpeta Drive
+      </a>
+    </div>`;
+    return;
+  }
 
-  const html = `
-  <div class="oc-wrap">
+  // ── Cargando ──
+  if(RQ_STATUS === 'loading'){
+    el.innerHTML = `<div style="padding:40px;text-align:center;color:var(--txt-m)">
+      <div class="spin-icon ms" style="font-size:2rem;animation:spin 1s linear infinite">sync</div>
+      <div style="margin-top:10px;font-size:.85rem">Conectando con Google Sheets…</div>
+    </div>`;
+    return;
+  }
+
+  // ── Error ──
+  if(RQ_STATUS === 'error'){
+    el.innerHTML = `<div style="padding:32px;text-align:center;color:#f87171">
+      <div style="font-size:1.5rem;margin-bottom:8px">⚠️</div>
+      <div style="font-weight:700">No se pudo leer el Sheet</div>
+      <div style="font-size:.8rem;color:var(--txt-m);margin-top:6px">Verifica que el Sheet es público (Compartir → Cualquier persona con el enlace → Lector)</div>
+      <button onclick="syncRequisiciones()" style="margin-top:14px;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:7px 16px;cursor:pointer;font-size:.82rem">🔄 Reintentar</button>
+    </div>`;
+    return;
+  }
+
+  // ── Datos OK ──
+  const data = RQ_DATA;
+  const total    = data.length;
+  const byEst    = e => data.filter(r=>r.estado===e).length;
+  const borrador = byEst('BORRADOR');
+  const pend     = byEst('PENDIENTE');
+  const enrev    = byEst('EN_REVISION');
+  const aprobada = byEst('APROBADA');
+  const rechazada= byEst('RECHAZADA');
+  const ocEmit   = byEst('OC_EMITIDA');
+
+  // KPI valor total
+  const valorTotal = data.reduce((s,r)=>s+r.valor,0);
+  const fmtVal = v => v>=1000000 ? `$${(v/1000000).toFixed(1)}M` : v>0 ? `$${(v/1000).toFixed(0)}k` : '—';
+
+  // Barras por fase
+  const byFase = {};
+  data.forEach(r=>{ byFase[r.fase]=(byFase[r.fase]||0)+1; });
+  const topFases = Object.entries(byFase).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const maxF = topFases[0]?.[1]||1;
+  const faseBarras = topFases.map(([fase,cnt])=>{
+    const p = PHASES.find(x=>x.id===fase);
+    const nombre = p ? p.name.slice(0,20) : fase;
+    const col = p ? GROUPS[p.group]?.color : '#3b82f6';
+    return `<div class="oc-br">
+      <span class="oc-bl" title="${p?.name||fase}">${fase} ${nombre}</span>
+      <div class="oc-bt"><div class="oc-bf" style="width:${Math.round(cnt/maxF*100)}%;background:${col}"></div></div>
+      <span class="oc-bv" style="color:${col}">${cnt}</span>
+    </div>`;
+  }).join('');
+
+  // Alertas dinámicas
+  const hoy = Date.now();
+  const semana = 7*86400000;
+  const vencenSemana = data.filter(r=>r.estado==='PENDIENTE'&&r.fecha&&(parseLocalDateMs(r.fecha)-hoy)<semana&&(parseLocalDateMs(r.fecha)-hoy)>0).length;
+  const alerts = [
+    pend>0    ? `<div class="oc-alert-item oc-a-warn"><span class="ms" style="font-size:1rem">pending</span><div><strong>${pend} pendientes</strong> esperando revisión del director de obra.</div></div>` : '',
+    vencenSemana>0 ? `<div class="oc-alert-item oc-a-warn"><span class="ms" style="font-size:1rem">schedule</span><div><strong>${vencenSemana} RQ vencen esta semana</strong> sin cotización — programar levantamiento.</div></div>` : '',
+    aprobada>0 ? `<div class="oc-alert-item oc-a-info"><span class="ms" style="font-size:1rem">check_circle</span><div><strong>${aprobada} aprobadas</strong> listas para emitir OC al proveedor.</div></div>` : '',
+  ].filter(Boolean).join('') || `<div style="padding:12px 20px;color:var(--txt-m);font-size:.82rem">Sin alertas activas.</div>`;
+
+  // Tabla lista
+  const statusBadgeRQ = est => {
+    const c = RQ_ESTADO_CFG[est] || RQ_ESTADO_CFG.PENDIENTE;
+    return `<span style="background:${c.color}18;color:${c.color};border:1px solid ${c.color}40;border-radius:4px;padding:2px 8px;font-size:.72rem;font-weight:700;white-space:nowrap">${c.label}</span>`;
+  };
+  const prioBadge = pri => {
+    const c = RQ_PRIORIDAD_CFG[pri] || RQ_PRIORIDAD_CFG.MEDIA;
+    return `<span style="color:${c.color};font-size:.7rem;font-weight:700">● ${c.label}</span>`;
+  };
+  const rows = data.map((r,i)=>`<tr>
+    <td style="color:var(--txt-m)">${r.num}</td>
+    <td><code style="font-size:.75rem;background:var(--bg-el);padding:2px 6px;border-radius:4px">${r.codigo}</code></td>
+    <td title="${r.desc}" style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.desc}</td>
+    <td><span style="font-size:.75rem;font-weight:700;color:#60a5fa">${r.fase}</span></td>
+    <td style="font-size:.78rem;color:var(--txt-m)">${r.fecha||'—'}</td>
+    <td style="font-size:.78rem">${r.encargado||'—'}</td>
+    <td>${prioBadge(r.prioridad)}</td>
+    <td>${statusBadgeRQ(r.estado)}</td>
+    <td style="font-size:.78rem;color:var(--txt-m);text-align:right">${fmtVal(r.valor)}</td>
+    <td style="text-align:center">${r.archivo?`<a href="${r.archivo}" target="_blank" title="Ver archivo en Drive" style="color:var(--accent);text-decoration:none"><span class="ms" style="font-size:1rem">attach_file</span></a>`:'—'}</td>
+  </tr>`).join('');
+
+  const syncStr = RQ_LAST_SYNC ? RQ_LAST_SYNC.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}) : '—';
+
+  const html = `<div class="oc-wrap">
     <div class="oc-topbar">
       <div>
         <h2><span class="ms" style="font-size:1rem">assignment</span>Programa de Requisiciones</h2>
-        <p>Torre Santa Isabel · ${totalAll} requisiciones · 6 estados · vinculadas al EDT</p>
+        <p>Torre Santa Isabel · <strong>${total}</strong> requisiciones · sincronizado ${syncStr}
+          <button onclick="syncRequisiciones()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:.75rem;margin-left:6px" title="Recargar desde Sheet">🔄 Actualizar</button>
+        </p>
       </div>
       <div class="oc-actions">
-        <button class="oc-btn"><span class="ms" style="font-size:.95rem">download</span>Exportar</button>
-        <button class="oc-btn oc-btn-primary"><span class="ms" style="font-size:.95rem">add</span>Nueva RQ</button>
+        <a href="https://docs.google.com/spreadsheets/d/${RQ_SHEET_ID}/edit" target="_blank" class="oc-btn"><span class="ms" style="font-size:.95rem">table_chart</span>Abrir Sheet</a>
+        <a href="https://drive.google.com/drive/folders/1HLYI4F_hIw6pYYnswoHg2GM9CQH7OIJ7" target="_blank" class="oc-btn"><span class="ms" style="font-size:.95rem">folder_open</span>Drive</a>
       </div>
     </div>
     <div class="oc-tabs">
       <button class="oc-tab on" data-subtab="dashboard" onclick="showOCSubTab('comprasRq','dashboard')">Dashboard</button>
-      <button class="oc-tab"     data-subtab="lista"     onclick="showOCSubTab('comprasRq','lista')">Lista</button>
+      <button class="oc-tab" data-subtab="lista" onclick="showOCSubTab('comprasRq','lista')">Lista (${total})</button>
     </div>
 
     <div class="oc-panel on" data-subtab="dashboard">
       <div class="oc-kpis">
-        <div class="oc-kpi"><div class="oc-kl">Total</div><div class="oc-kv oc-c-grn">${totalAll}</div><div class="oc-kd">requisiciones</div></div>
-        <div class="oc-kpi"><div class="oc-kl">Pendientes</div><div class="oc-kv oc-c-amb">14</div><div class="oc-kd">por revisar</div></div>
-        <div class="oc-kpi"><div class="oc-kl">Aprobadas</div><div class="oc-kv oc-c-grn">22</div><div class="oc-kd">listas para OC</div></div>
-        <div class="oc-kpi"><div class="oc-kl">En revisión</div><div class="oc-kv oc-c-red">8</div><div class="oc-kd">requiere atención</div></div>
-        <div class="oc-kpi"><div class="oc-kl">Rechazadas</div><div class="oc-kv oc-c-red">4</div><div class="oc-kd">cerradas</div></div>
+        <div class="oc-kpi"><div class="oc-kl">Total</div><div class="oc-kv">${total}</div><div class="oc-kd">requisiciones</div></div>
+        <div class="oc-kpi"><div class="oc-kl">Pendientes</div><div class="oc-kv oc-c-amb">${pend}</div><div class="oc-kd">por revisar</div></div>
+        <div class="oc-kpi"><div class="oc-kl">En revisión</div><div class="oc-kv oc-c-blu">${enrev}</div><div class="oc-kd">en proceso</div></div>
+        <div class="oc-kpi"><div class="oc-kl">Aprobadas</div><div class="oc-kv oc-c-grn">${aprobada}</div><div class="oc-kd">listas para OC</div></div>
+        <div class="oc-kpi"><div class="oc-kl">OC Emitidas</div><div class="oc-kv oc-c-vlt">${ocEmit}</div><div class="oc-kd">en compra</div></div>
+        <div class="oc-kpi"><div class="oc-kl">Valor est.</div><div class="oc-kv oc-c-grn">${fmtVal(valorTotal)}</div><div class="oc-kd">total requisiciones</div></div>
       </div>
       <div class="oc-charts">
-        <div class="oc-box">
-          <h4>Requisiciones por fase</h4>
-          <div class="oc-br"><span class="oc-bl">F2 Cimentación</span><div class="oc-bt"><div class="oc-bf" style="width:68%;background:var(--grn)"></div></div><span class="oc-bv oc-c-grn">18</span></div>
-          <div class="oc-br"><span class="oc-bl">F3 Estructura</span><div class="oc-bt"><div class="oc-bf" style="width:52%;background:var(--acc)"></div></div><span class="oc-bv oc-c-blu">14</span></div>
-          <div class="oc-br"><span class="oc-bl">F4 Eléctrico</span><div class="oc-bt"><div class="oc-bf" style="width:38%;background:var(--amb)"></div></div><span class="oc-bv oc-c-amb">10</span></div>
-          <div class="oc-br"><span class="oc-bl">F0–F1</span><div class="oc-bt"><div class="oc-bf" style="width:22%;background:var(--vlt)"></div></div><span class="oc-bv oc-c-vlt">6</span></div>
-        </div>
+        <div class="oc-box"><h4>Por fase constructiva</h4>${faseBarras||'<div style="color:var(--txt-m);font-size:.8rem;padding:8px">Sin datos por fase aún</div>'}</div>
         <div class="oc-box">
           <h4>Estado del ciclo</h4>
-          <div class="oc-br"><span class="oc-bl">Borrador</span><div class="oc-bt"><div class="oc-bf" style="width:10%;background:#64748b"></div></div><span class="oc-bv" style="color:var(--txt-m)">5</span></div>
-          <div class="oc-br"><span class="oc-bl">Pendiente</span><div class="oc-bt"><div class="oc-bf" style="width:30%;background:var(--amb)"></div></div><span class="oc-bv oc-c-amb">14</span></div>
-          <div class="oc-br"><span class="oc-bl">Aprobada</span><div class="oc-bt"><div class="oc-bf" style="width:46%;background:var(--grn)"></div></div><span class="oc-bv oc-c-grn">22</span></div>
-          <div class="oc-br"><span class="oc-bl">En revisión</span><div class="oc-bt"><div class="oc-bf" style="width:17%;background:var(--red)"></div></div><span class="oc-bv oc-c-red">8</span></div>
+          ${Object.entries(RQ_ESTADO_CFG).map(([k,c])=>{
+            const n=byEst(k); const pct=total>0?Math.round(n/total*100):0;
+            return `<div class="oc-br"><span class="oc-bl">${c.label}</span><div class="oc-bt"><div class="oc-bf" style="width:${pct}%;background:${c.color}"></div></div><span class="oc-bv" style="color:${c.color}">${n}</span></div>`;
+          }).join('')}
         </div>
       </div>
       <hr class="oc-divider">
-      <div class="oc-sect-t">Próximas acciones</div>
-      <div style="padding:0 20px 16px">
-        <div class="oc-alert-item oc-a-info"><span class="ms" style="font-size:1rem">arrow_forward</span><div><strong>14 requisiciones pendientes</strong> esperando revisión del director de obra.</div></div>
-        <div class="oc-alert-item oc-a-warn"><span class="ms" style="font-size:1rem">schedule</span><div><strong>3 RQ vencen esta semana</strong> sin cotización — programar levantamiento.</div></div>
-        <div class="oc-alert-item oc-a-info"><span class="ms" style="font-size:1rem">link</span><div><strong>22 RQ aprobadas</strong> listas para emitir OC al proveedor seleccionado.</div></div>
-      </div>
+      <div class="oc-sect-t">Alertas activas</div>
+      <div style="padding:0 20px 16px">${alerts}</div>
     </div>
 
     <div class="oc-panel" data-subtab="lista">
-      <div class="oc-filterbar">
-        <input type="text" placeholder="🔍 Buscar requisición, fase, encargado...">
-        <select><option>Todos los estados</option><option>Pendiente</option><option>Aprobada</option><option>En revisión</option><option>Rechazada</option></select>
-        <select><option>Todas las fases</option><option>F2</option><option>F3</option><option>F4</option></select>
-      </div>
       <div class="oc-tbl-wrap">
         <table class="oc-tbl">
-          <thead><tr><th>#</th><th>Código</th><th>Ítem / descripción</th><th>Fase</th><th>Fecha req.</th><th>Encargado</th><th>Estado</th></tr></thead>
-          <tbody>${rows}</tbody>
+          <thead><tr><th>#</th><th>Código</th><th>Descripción</th><th>Fase</th><th>Fecha req.</th><th>Encargado</th><th>Prioridad</th><th>Estado</th><th>Valor</th><th>📎</th></tr></thead>
+          <tbody>${rows||'<tr><td colspan="10" style="text-align:center;color:var(--txt-m);padding:24px">Sin requisiciones registradas en el Sheet</td></tr>'}</tbody>
         </table>
       </div>
     </div>
 
     <div class="oc-footer">
-      <span>Contro360 · Requisiciones</span>
-      <span>${totalAll} requisiciones · ${aprob+22} aprobadas</span>
-      <span>${new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'short',year:'numeric'})}</span>
+      <span>Contro360 · Requisiciones · Google Sheets</span>
+      <span>${total} requisiciones · ${fmtVal(valorTotal)}</span>
+      <span>Sync: ${syncStr}</span>
     </div>
   </div>`;
-  document.getElementById('comprasRq').innerHTML = html;
+  el.innerHTML = html;
 }
 
 /* ════════════════════════════════════════
@@ -5004,7 +5964,7 @@ function renderProveedores(){
   const rows = MOCK_PROVEEDORES.map((p,i)=>`
     <tr>
       <td>${i+1}</td>
-      <td style="font-weight:600">${p.name}</td>
+      <td style="font-weight:600">${esc(p.name)}</td>
       <td style="font-family:'JetBrains Mono',monospace;color:var(--txt-m)">${p.nit}</td>
       <td>${p.contact}</td>
       <td style="text-align:center">${p.oc}</td>

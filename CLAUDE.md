@@ -1,116 +1,77 @@
-# Torre Santa Isabel — Dashboard de Programación
+# Torre Santa Isabel — Dashboard Contro360°
 
 ## Contexto del proyecto
-Dashboard HTML de gestión de obra para **Torre Santa Isabel** (proyecto de construcción colombiano).
-Desarrollado como una **single-file app** (`gantt-santa-isabel.html`) con todo CSS + JS inline.
+Dashboard HTML de gestión de obra para **Torre Santa Isabel** (construcción, Dosquebradas, Colombia).
+**Single-file app** (`gantt-santa-isabel.html`, ~6.400 líneas) con todo CSS + JS inline.
+Producción: https://contro360-tsi.surge.sh (deploy automático por GitHub Actions en cada push a `main`).
 
-## Archivo principal
+## Archivos
 ```
-gantt-santa-isabel.html   ← TODO está aquí: CSS, HTML, JS en un solo archivo
-index.html                ← Landing page de ObraFlow (SaaS de construcción)
+gantt-santa-isabel.html       ← TODO el dashboard: CSS, HTML, JS en un solo archivo
+index.html                    ← Landing page de ObraFlow (SaaS de construcción)
+apps-script-writeback.gs      ← Apps Script para escritura al Sheet (ver instrucciones dentro)
+.github/workflows/deploy.yml  ← Valida JS + copia gantt → deploy-torre/index.html + surge.sh
+deploy-torre/                 ← Carpeta generada por CI (no editar a mano)
+Presupuesto_TorreSantaIsabel_BIM.xlsx + Presupuesto_README.md
 ```
 
 ## Stack técnico
 - **Sin frameworks** — HTML/CSS/JS vanilla puro
-- **Google Sheets como base de datos** — lectura via JSONP gviz endpoint (sin CORS)
+- **Google Sheets como base de datos** — lectura via JSONP gviz (sin CORS); columnas detectadas por encabezado (FASE/ID, AVANCE, INICIO, FIN, RESPONSABLE, PREDECESOR…)
 - **SHEET_ID:** `1vZE1-3OY__CoKq_AErCDDMAoJ35vHMVH`
-- **Fuentes:** Inter + JetBrains Mono (Google Fonts)
-- **Persistencia local:** `localStorage` con key `torre_santa_isabel_v1`
+- **Write-back:** POST a `WB_URL` (Apps Script /exec) con `Content-Type: text/plain` (evita preflight CORS). `WB_URL` vacío = solo guarda local.
+- **Fuentes:** Plus Jakarta Sans + Inter + JetBrains Mono; iconos Material Symbols
+- **Persistencia local (localStorage):** `torre_santa_isabel_v1` (snapshot), `tsi_phases_crud_v1` (CRUD fases), `tsi_kanban_notes_v1`, `tsi_kpi_history_v1`, `tsi_users_v1`, `tsi_subprogress_v1`, `tsi_theme`; sesión en `sessionStorage.tsi_session`
 
-## Arquitectura del archivo HTML
-
-### Variables CSS (`:root`)
-- `--bg-app`, `--bg-card`, `--bg-el` → fondos en capas
-- `--border`, `--border-s`, `--border-f` → bordes
-- `--txt`, `--txt-s`, `--txt-m`, `--txt-a` → textos
-- `--grp-g/e/m/a/x` → colores por grupo (Gestión/Estructura/MEP/Acabados/Exteriores)
-- `body.light-mode` → sobrescribe variables para tema claro
-
-### Datos principales (JS)
-```js
-const PHASES = [...] // 29 fases (F0–F28) con: id, code, name, group, start, end, progress, owner, critical
-const SUBACTIVITIES_RAW = {...} // sub-tareas por fase con EDT, nombre, duración, responsable
-```
-
-### Tabs del dashboard
-| Tab | ID | Función de render |
-|-----|-----|-------------------|
+## Tabs del dashboard (15)
+| Tab | ID | Render |
+|-----|-----|--------|
 | KPIs | `tab-kpis` | `renderKPIs()` |
-| Gantt | `tab-gantt` | `renderGantt()` |
-| Fases | `tab-phases` | `renderTable()` |
+| Gantt | `tab-gantt` | `renderGantt()` (SVG, dependencias, hoy-line) |
+| Fases | `tab-phases` | `renderTable()` (expandible, búsqueda con debounce, paginación) |
 | Actualizar | `tab-update` | `renderUpdatePanel()` |
-| Tablero Kanban | `tab-board` | `renderBoard()` |
-| Calendario | `tab-calendar` | `renderCalendar()` |
+| Kanban | `tab-board` | `renderBoard()` (4 columnas + notas por fase) |
+| Calendario | `tab-calendar` | `renderCalendar()` (Semana/Mes/Año, festivos CO) |
+| Equipos | `tab-equipos` | agrupa fases por `owner` |
+| Personal | `tab-personal` | registro de trabajadores (CRUD local) |
+| Bitácora | `tab-bitacora` | `logChange()` → timeline de cambios |
+| Presupuesto | `tab-presupuesto` | módulo BIM: Dashboard/EDT/APU/EVM/Reporte + curva S |
+| Compras | `tab-compras` | órdenes de compra |
+| Requisiciones | `tab-requisiciones` | requiere `RQ_SHEET_ID` (aún vacío) |
+| Proveedores | `tab-proveedores` | directorio |
+| Planeación | `tab-planeacion` | Last Planner |
+| Admin | `tab-admin` | gestión de usuarios y diagnóstico |
 
-### Funciones clave
-- `syncWithSheet()` → lee Google Sheets via JSONP, auto-sync cada 60s
-- `renderGantt()` → SVG con barras, hoy-line, tooltips
-- `renderTable()` → tabla con filas expandibles (sub-actividades)
-- `renderBoard()` → Kanban 4 columnas estilo ClickUp
-- `renderCalendar()` → vistas Semana/Mes/Año con estados LIBERADO/EN_PROGRESO/etc
-- `toggleTheme()` → light/dark mode con `body.light-mode`
-- `getSubActivities(phaseId)` → calcula fechas de sub-tareas desde startMs del padre
-- `reRenderAll()` → re-renderiza todos los tabs activos tras sync
+## Auth & roles (client-side, NO es seguridad real)
+- Roles: ADMIN / EDITOR / LECTOR / LIMITADO (este último restringido a `phases:[...]`)
+- Usuarios en `localStorage.tsi_users_v1`; contraseñas como **SHA-256** (`passHash`, función `sha256()` inline). Login migra automáticamente usuarios legacy con `password` plano.
+- ⚠️ Todo es visible en el código fuente público — el acceso real debe protegerse a nivel de hosting si importa.
 
-### Sistema de estados de fase
-```js
-// Calculado en PHASES como propiedad `status`:
-'COMPLETADO'  // progress >= 100
-'ATRASADO'    // progress < expected && today > start
-'EN_PROGRESO' // progress > 0 && progress < 100
-'PENDIENTE'   // sin avance, no iniciada
-```
+## Seguridad / patrones obligatorios
+- **`esc(s)`** — escapar SIEMPRE texto de usuario o del Sheet antes de interpolarlo en `innerHTML` (nombres de fase, owner, notas, personal, etc.)
+- Contraseñas: nunca en texto plano; usar `sha256()` y campo `passHash`
+- **NUNCA** dividir en múltiples archivos — todo en el único HTML
+- **NUNCA** guardar tokens de Google en localStorage (no hay OAuth)
+- Nueva tab: (1) botón en `<nav>`, (2) `<section id="tab-X">`, (3) `renderedTabs.X=false`, (4) case en `switchTab()`, (5) re-render en `reRenderAll()`
+- Colores de grupo desde variables CSS `--grp-g/e/m/a/x`; light mode via `body.light-mode`
+- Gantt SVG posiciona con `xOf(ms)` y `wOf(startMs, endMs)`
+- Hay `@media print` (landscape) para reporte PDF via Ctrl+P — mantenerlo al agregar tabs
 
-### Sync con Google Sheets (solo lectura actualmente)
-```js
-// Endpoint JSONP:
-`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:${cb}`
-// Columnas esperadas: A=Código, B=Nombre, C=Grupo, D=FechaInicio, E=FechaFin, F=Avance%, G=Responsable, H=Crítica
-```
+## Sync
+- `syncWithSheet()` cada 60s, timeout 10s, JSONP. Overrides locales (CRUD/avance) tienen prioridad sobre el Sheet.
+- `scheduleWriteBack()` → `doWriteBack()` (debounce 600ms) envía `{sheetId, updates:[...]}` a `WB_URL`.
 
-## Próximas funciones a implementar (Roadmap)
-
-### 🔥 PRIORIDAD ALTA
-1. **Sync bidireccional con Google Sheets**
-   - Crear Google Apps Script Web App como proxy
-   - Dashboard hace POST al script con `{sheetId, row, col, value}`
-   - Script escribe en la celda y devuelve `{ok: true}`
-   - Trigger `onEdit` en el Sheet incrementa versión en celda A1
-   - Dashboard detecta cambio de versión y re-sincroniza
-
-2. **Panel de Alertas & Riesgos** (sidebar)
-   - Botón 🔔 fijo con badge contador
-   - Lista: fases críticas atrasadas, % avance vs planificado, forecast de retraso
-
-3. **Bitácora de cambios**
-   - Log en localStorage: `{timestamp, phaseId, field, oldVal, newVal, user}`
-   - Tab o modal "📋 Bitácora"
-
-### PRIORIDAD MEDIA
-4. **Vista Equipos** (nueva pestaña 👷)
-   - Agrupar fases por `owner`
-   - Barras de carga por persona
-5. **Reporte PDF ejecutivo**
-   - Usar `window.print()` con CSS `@media print` optimizado
-   - O generar HTML → PDF con jsPDF (CDN)
-6. **Dependencias en Gantt**
-   - Flechas SVG entre barras dependientes
-   - Ruta crítica resaltada en rojo
-
-### PRIORIDAD BAJA
-7. Curva S (planificado vs real)
-8. Comentarios por fase
-9. Vista mobile-first
-10. Roles: Admin / Residente / Contratista
+## Roadmap pendiente
+1. **Conectar write-back**: desplegar `apps-script-writeback.gs` y pegar URL en `WB_URL` (línea ~5360)
+2. `RQ_SHEET_ID` para requisiciones
+3. Centralizar usuarios/notas/bitácora en el Sheet (hoy divergen por dispositivo)
+4. Curva S planificado vs real en KPIs (ya existe en Presupuesto)
+5. Vista mobile-first
 
 ## Cómo probar cambios
-1. Editar `gantt-santa-isabel.html`
-2. Abrir en navegador (doble clic o arrastrar a Chrome)
-3. Para verificar JS sin errores: `node -e "const fs=require('fs');const h=fs.readFileSync('gantt-santa-isabel.html','utf8');const m=h.match(/<script>([\s\S]*?)<\/script>\s*<\/body>/);try{new Function(m[1]);console.log('✅ JS OK')}catch(e){console.error('❌',e.message)}"`
-
-## Patrones importantes a mantener
-- **NUNCA** dividir en múltiples archivos — todo debe quedar en el único HTML
-- **NUNCA** usar `localStorage` para almacenar el token de Google (no hay OAuth)
-- Al agregar una nueva tab: (1) botón en `<nav>`, (2) sección `<section id="tab-X">`, (3) `renderedTabs.X = false`, (4) case en `switchTab()`, (5) re-render en `reRenderAll()`
-- Los colores de grupo siempre desde variables CSS `--grp-*`
-- El Gantt SVG usa `xOf(ms)` y `wOf(startMs, endMs)` para posicionar barras
+1. Editar `gantt-santa-isabel.html` y abrir en navegador
+2. Validar JS (hay 2 bloques `<script>`):
+```bash
+node -e "const fs=require('fs');const h=fs.readFileSync('gantt-santa-isabel.html','utf8');[...h.matchAll(/<script>([\s\S]*?)<\/script>/g)].forEach((m,i)=>{try{new Function(m[1]);console.log(i,'OK')}catch(e){console.error(i,e.message)}})"
+```
+3. El CI valida lo mismo antes de cada deploy
