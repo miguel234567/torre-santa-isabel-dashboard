@@ -3956,7 +3956,7 @@ function buildAlertBanner(){
   const dismissed=localStorage.getItem(LS_ALERT_DISMISS);
   // Dismiss dura 24h (no toda la semana para no silenciar indefinidamente)
   if(dismissed&&(Date.now()-parseInt(dismissed)<86400000))return '';
-  const items=overdue.slice(0,4).map(o=>`• <strong>${o.phaseName}</strong>: "${o.text.slice(0,50)}${o.text.length>50?'…':''}" — <em>${o.age}d sin resolver</em>`).join('<br>');
+  const items=overdue.slice(0,4).map(o=>`• <strong>${esc(o.phaseName)}</strong>: "${esc(o.text.slice(0,50))}${o.text.length>50?'…':''}" — <em>${o.age}d sin resolver</em>`).join('<br>');
   const more=overdue.length>4?`<br><em>+${overdue.length-4} nota(s) más...</em>`:'';
   return `<div class="kanban-alert-banner">
     <span class="ab-icon">⚠️</span>
