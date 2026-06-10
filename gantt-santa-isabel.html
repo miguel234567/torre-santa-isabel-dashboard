@@ -2378,20 +2378,11 @@ function mergeSheetData(table){
     // Fechas desde Sheet (solo si no hay override CRUD)
     const hasCrudOverride = !!(_CRUD.overrides[phase.id]?.start);
     if(!hasCrudOverride){
-      if(startCell && startCell.v){
-        const sv = String(startCell.v).trim();
-        // Formato YYYY-MM-DD o DD/MM/YYYY
-        const iso = sv.match(/^\d{4}-\d{2}-\d{2}$/) ? sv :
-                    sv.match(/^(\d{2})\/(\d{2})\/(\d{4})$/) ? sv.replace(/(\d{2})\/(\d{2})\/(\d{4})/,'$3-$2-$1') : null;
-        if(iso){ phase.start = iso; phase.startMs = parseLocalDateMs(iso); }
-      }
-      if(endCell && endCell.v){
-        const ev = String(endCell.v).trim();
-        const iso = ev.match(/^\d{4}-\d{2}-\d{2}$/) ? ev :
-                    ev.match(/^(\d{2})\/(\d{2})\/(\d{4})$/) ? ev.replace(/(\d{2})\/(\d{2})\/(\d{4})/,'$3-$2-$1') : null;
-        if(iso){ phase.end = iso; phase.endMs = parseLocalDateMs(iso);
-          phase.dur = Math.max(1,Math.round((phase.endMs-phase.startMs)/86400000)); }
-      }
+      const isoStart = gvizCellToISO(startCell);
+      if(isoStart){ phase.start = isoStart; phase.startMs = parseLocalDateMs(isoStart); }
+      const isoEnd = gvizCellToISO(endCell);
+      if(isoEnd){ phase.end = isoEnd; phase.endMs = parseLocalDateMs(isoEnd);
+        phase.dur = Math.max(1,Math.round((phase.endMs-phase.startMs)/86400000)); }
     }
 
     // Predecesoras desde Sheet (solo si no hay override CRUD)
@@ -2401,6 +2392,18 @@ function mergeSheetData(table){
       if(preds.length) PHASE_DEPENDENCIES[phase.id] = preds;
     }
   });
+}
+
+function gvizCellToISO(cell){
+  if(!cell || cell.v == null) return null;
+  if(cell.v instanceof Date){
+    const d = cell.v;
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  const s = String(cell.f != null ? cell.f : cell.v).trim();
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  const m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  return m ? (m[3]+'-'+m[2]+'-'+m[1]) : null;
 }
 
 function handleSyncError(msg){
