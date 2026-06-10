@@ -1,4 +1,4 @@
-name: Deploy to surge.sh
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -9,6 +9,11 @@ on:
 concurrency:
   group: deploy-${{ github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   validate:
@@ -44,7 +49,6 @@ jobs:
 
       - name: Verificar HTML básico
         run: |
-          # El archivo debe existir y pesar al menos 100KB (sanity check)
           test -f gantt-santa-isabel.html
           SIZE=$(stat -c%s gantt-santa-isabel.html)
           echo "Tamaño dashboard: $SIZE bytes"
@@ -52,54 +56,43 @@ jobs:
             echo "❌ Dashboard sospechosamente pequeño ($SIZE bytes)"
             exit 1
           fi
-          # Debe contener el tab principal
           grep -q '<section class="tab-content active" id="tab-kpis">' gantt-santa-isabel.html || (echo "❌ Falta tab-kpis" && exit 1)
           echo "✅ HTML básico OK"
 
   deploy:
-    name: Deploy a surge.sh
+    name: Deploy a GitHub Pages
     needs: validate
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'      # Solo deploy desde main
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Preparar carpeta deploy-torre
+      - name: Preparar carpeta de publicación
         run: |
-          mkdir -p deploy-torre
-          # Copiar dashboard como index.html (surge sirve index.html por defecto)
-          cp gantt-santa-isabel.html deploy-torre/index.html
-          # Copiar logos si existen
+          mkdir -p _site
+          cp gantt-santa-isabel.html _site/index.html
           if [ -d "IMAGENES_LOGOS" ]; then
-            cp -r IMAGENES_LOGOS deploy-torre/
+            cp -r IMAGENES_LOGOS _site/
           fi
-          # Archivo CNAME (si en el futuro usas dominio propio)
-          # echo "dashboard.cvaconstructora.com" > deploy-torre/CNAME
-          ls -la deploy-torre/
+          ls -la _site/
 
-      - name: Instalar surge CLI
-        run: npm install --global surge
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
 
-      - name: Deploy a surge.sh
-        env:
-          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
-          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
-        run: |
-          if [ -z "$SURGE_LOGIN" ] || [ -z "$SURGE_TOKEN" ]; then
-            echo "❌ Faltan secrets SURGE_LOGIN o SURGE_TOKEN"
-            echo "   Configurar en: github.com/<usuario>/<repo>/settings/secrets/actions"
-            exit 1
-          fi
-          surge deploy-torre contro360-tsi.surge.sh
+      - name: Subir artefacto
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
 
       - name: Resumen
         run: |
-          echo "🚀 Deployed to https://contro360-tsi.surge.sh"
+          echo "🚀 Publicado en ${{ steps.deployment.outputs.page_url }}"
           echo "   Commit: ${{ github.sha }}"
-          echo "   Mensaje: ${{ github.event.head_commit.message }}"
