@@ -1844,7 +1844,8 @@ body.light-mode .status-bar{background:#e8edf3}
 /* ═══════════════════════════════════════════════════════════
    DATOS DEL PROYECTO
    ═══════════════════════════════════════════════════════════ */
-const SHEET_ID = '1vZE1-3OY__CoKq_AErCDDMAoJ35vHMVH';
+const SHEET_ID = '1SSbn7rlpvIKXzKSDYWQzQj1ez_zB3lR0YjsIj2AQN3U';
+const SHEET_TAB = 'CONTROL_DASHBOARD'; // pestaña que lee/escribe el dashboard
 const PROJECT_START_STR = '2026-05-01';
 const PROJECT_END_STR   = '2028-02-16';
 
@@ -2002,7 +2003,7 @@ const LS_PHASES_CRUD = 'tsi_phases_crud_v1';
 let syncTimer = null;
 
 function buildGvizUrl(cb){
-  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:${cb}&_=${Date.now()}`;
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${encodeURIComponent(SHEET_TAB)}&tqx=responseHandler:${cb}&_=${Date.now()}`;
 }
 
 function syncWithSheet(){
@@ -5365,7 +5366,7 @@ function toggleAlerts(){
 /* ═══════════════════════════════════════════════════════════
    WRITE-BACK (placeholder — requiere Apps Script)
    ═══════════════════════════════════════════════════════════ */
-const WB_URL = ''; // ← Pegar URL /exec del Apps Script (ver apps-script-writeback.gs en esta carpeta)
+const WB_URL = 'https://script.google.com/macros/s/AKfycbx4rU27dcs08i9suobyLOR8x2EadBOsz1cgVEjQNbsY6NZhJXGaf3U3mpTZ8grQTQ60SA/exec';
 const RQ_SHEET_ID = ''; // ← Pegar ID del Sheet de Requisiciones aquí
 let wbTimer = null;
 
