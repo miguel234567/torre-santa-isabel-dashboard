@@ -1516,7 +1516,18 @@ body.light-mode .status-bar{background:#e8edf3}
   .dep-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 }
 
-/* ═══ REPORTE IMPRESO / PDF (Ctrl+P) ═══ */
+/* ─── Pulido extra teléfonos (revisión en dispositivo real) ────── */
+@media(max-width:480px){
+  .status-bar{padding:6px 10px;font-size:.68rem;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .status-bar::-webkit-scrollbar{display:none}
+  .sb-item{padding:0 9px}
+  .kanban-col{flex:0 0 88vw;min-width:280px}
+  .kcard{padding:12px}
+  .kcard-name{font-size:.85rem;line-height:1.3}
+  .kcard-add-note-btn{min-height:38px;font-size:.78rem}
+  .app-footer{font-size:.6rem;padding:10px 12px;line-height:1.5}
+  .tab-content{padding:12px 10px}
+}
 
 /* ═══ REPORTE IMPRESO / PDF (Ctrl+P) ═══ */
 @media print{
