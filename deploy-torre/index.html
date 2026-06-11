@@ -274,6 +274,23 @@ body.light-mode .footer-logo-pill img{filter:none;opacity:.65}
 /* Light mode overrides */
 body.light-mode .oc-tbl tr:hover td{background:rgba(0,0,0,.02)}
 body.light-mode .oc-bt{background:rgba(0,0,0,.06)}
+/* ── Requisiciones expandibles ── */
+.rq-expand-btn{background:none;border:none;cursor:pointer;color:var(--txt-m);font-size:.85rem;padding:2px 4px;border-radius:3px;transition:.15s;line-height:1}
+.rq-expand-btn:hover{color:var(--acc);background:var(--acc-s)}
+.rq-row.open .rq-expand-btn{color:var(--acc)}
+.rq-detail>td{padding:0!important;border-bottom:1px solid var(--bdr-m)!important}
+.rq-detail-inner{background:var(--surf2);padding:12px 20px 16px;border-top:1px solid var(--bdr)}
+.rq-items-tbl{width:100%;border-collapse:collapse;font-size:.75rem;min-width:640px}
+.rq-items-tbl th{font-size:.63rem;font-weight:700;color:var(--txt-m);padding:6px 8px;border-bottom:1px solid var(--bdr-m);text-align:left;text-transform:uppercase;letter-spacing:.07em;white-space:nowrap;background:transparent}
+.rq-items-tbl td{padding:6px 8px;border-bottom:1px solid var(--bdr);color:var(--txt);vertical-align:middle;white-space:nowrap}
+.rq-items-tbl tr:last-child td{border-bottom:none}
+.rq-anulado td{text-decoration:line-through;opacity:.55}
+.rq-item-btn{background:none;border:1px solid var(--bdr);border-radius:4px;cursor:pointer;color:var(--txt-m);font-size:.72rem;padding:2px 7px;transition:.15s;font-family:inherit}
+.rq-item-btn:hover:not(:disabled){background:var(--surf);border-color:var(--bdr-m);color:var(--txt)}
+.rq-item-btn:disabled{opacity:.45;cursor:not-allowed}
+.rq-fase-sel{font-size:.75rem;padding:3px 8px;border-radius:4px;border:1px solid var(--bdr);background:var(--surf2);color:var(--txt);cursor:pointer;font-family:inherit;max-width:180px}
+.rq-fase-sel:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 2px var(--acc-s)}
+body.light-mode .rq-detail-inner{background:rgba(0,0,0,.02)}
 
 /* ═══ MÓDULO PRESUPUESTO BIM (.bp-*) ═══════════════════════════════ */
 .bp-wrap{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r-lg);overflow:hidden}
@@ -5775,6 +5792,7 @@ function fmtCOP(n){
 let RQ_DATA = [];   // se llena con syncRequisiciones()
 let RQ_LAST_SYNC = null;
 let RQ_STATUS = 'idle'; // idle | loading | ok | error | no-sheet
+const RQ_OPEN = new Set(); // códigos de RQ con detalle expandido
 
 const RQ_ESTADO_CFG = {
   BORRADOR:    { label:'Borrador',    cls:'oc-c-muted', color:'#64748b' },
@@ -5814,6 +5832,7 @@ function syncRequisiciones(onDone){
       return {
         num:        i+1,
         codigo:     String(p.consecutivo || p.tab || '').trim(),
+        tab:        String(p.tab || '').trim(),
         desc:       desc,
         fase:       String(p.fase || '').trim().toUpperCase(),
         fecha:      String(p.fechaPedido || '').trim(),
@@ -5839,6 +5858,143 @@ function syncRequisiciones(onDone){
     renderRequisiciones();
     if(onDone) onDone();
   });
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Helpers para interactividad del módulo Requisiciones
+   ───────────────────────────────────────────────────────────────── */
+
+/** POST genérico a WB_URL; devuelve Promise<json> y muestra toast en error */
+function rqAction(payload){
+  return fetch(WB_URL, {
+    method: 'POST',
+    headers: {'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify(payload)
+  })
+  .then(function(r){ return r.json(); })
+  .catch(function(e){
+    showToast('❌ Error de red: ' + (e.message||'sin conexión'));
+    throw e;
+  });
+}
+
+/** Alterna la fila de detalle de una RQ */
+function rqToggleRow(codigo){
+  if(RQ_OPEN.has(codigo)) RQ_OPEN.delete(codigo);
+  else RQ_OPEN.add(codigo);
+  renderRequisiciones();
+}
+
+/** Asigna fase a una RQ desde el <select>; selectEl = el elemento select */
+function rqSetFase(codigo, selectEl){
+  const rq = RQ_DATA.find(function(x){ return x.codigo === codigo; });
+  if(!rq) return;
+  const fase = selectEl.value;
+  selectEl.disabled = true;
+  rqAction({action:'pedidoSetFase', sheetId:RQ_SHEET_ID, tab:rq.tab, fase:fase})
+  .then(function(res){
+    if(!res.ok) throw new Error(res.error||'Error servidor');
+    rq.fase = res.fase || fase;
+    showToast('✅ Fase asignada: ' + rq.fase);
+    renderRequisiciones();
+  })
+  .catch(function(e){
+    showToast('❌ ' + (e.message||'No se pudo asignar fase'));
+    selectEl.disabled = false;
+  });
+}
+
+/** Toggle anular/restaurar un ítem */
+function rqAnularItem(codigo, fila, btnEl){
+  const rq = RQ_DATA.find(function(x){ return x.codigo === codigo; });
+  if(!rq) return;
+  if(btnEl) btnEl.disabled = true;
+  rqAction({action:'pedidoAnularItem', sheetId:RQ_SHEET_ID, tab:rq.tab, fila:fila})
+  .then(function(res){
+    if(!res.ok) throw new Error(res.error||'Error servidor');
+    const item = rq.items.find(function(it){ return it.fila === fila; });
+    if(item) item.anulado = res.anulado;
+    showToast(res.anulado ? '🚫 Ítem anulado' : '↩ Ítem restaurado');
+    renderRequisiciones();
+  })
+  .catch(function(e){
+    showToast('❌ ' + (e.message||'No se pudo anular ítem'));
+    if(btnEl) btnEl.disabled = false;
+  });
+}
+
+/** Editar cantidad de un ítem (prompt) */
+function rqEditItem(codigo, fila, articuloLabel, cantActual, btnEl){
+  var nueva = prompt('Nueva cantidad para ' + articuloLabel + ':', cantActual);
+  if(nueva === null || String(nueva).trim() === '') return;
+  var cantNum = parseFloat(String(nueva).trim().replace(',','.'));
+  if(isNaN(cantNum) || cantNum < 0){
+    showToast('❌ Cantidad inválida');
+    return;
+  }
+  if(btnEl) btnEl.disabled = true;
+  var rqForTab = RQ_DATA.find(function(x){ return x.codigo === codigo; });
+  rqAction({action:'pedidoEditItem', sheetId:RQ_SHEET_ID, tab:rqForTab ? rqForTab.tab : '', fila:fila, cant:cantNum})
+  .then(function(res){
+    // rq puede no estar en scope — buscamos de nuevo
+    var rq2 = RQ_DATA.find(function(x){ return x.codigo === codigo; });
+    if(!res.ok) throw new Error(res.error||'Error servidor');
+    if(rq2){
+      var item = rq2.items.find(function(it){ return it.fila === fila; });
+      if(item) item.cant = cantNum;
+    }
+    showToast('✅ Cantidad actualizada');
+    renderRequisiciones();
+  })
+  .catch(function(e){
+    showToast('❌ ' + (e.message||'No se pudo editar ítem'));
+    if(btnEl) btnEl.disabled = false;
+  });
+}
+
+/** Construye el HTML de la tabla de ítems de una RQ (usado en la fila expandida) */
+function rqBuildDetail(rq){
+  var canEdit = CURRENT_USER && (CURRENT_USER.role === 'ADMIN' || CURRENT_USER.role === 'EDITOR');
+  if(!rq.items || rq.items.length === 0){
+    return '<div style="color:var(--txt-m);font-size:.8rem;padding:8px 0">Sin artículos registrados.</div>';
+  }
+  var fmtV = function(v){ return v ? '$' + Number(v).toLocaleString('es-CO') : '—'; };
+  var header = '<table class="rq-items-tbl"><thead><tr>'
+    + '<th>#</th><th>Artículo / Descripción</th><th>Und</th>'
+    + '<th>Cant.</th><th>Ingresado</th><th>Faltante</th>'
+    + '<th>V/Unit</th><th>V/Total</th><th>Proveedor</th>'
+    + (canEdit ? '<th>Acciones</th>' : '')
+    + '</tr></thead><tbody>';
+
+  var rows = rq.items.map(function(it){
+    var anulado = it.anulado;
+    var trCls = anulado ? ' class="rq-anulado"' : '';
+    var artLabel = esc(it.articulo || '');
+    var desc = it.descripcion ? (' <span style="color:var(--txt-m);font-weight:400">' + esc(it.descripcion) + '</span>') : '';
+    var badge = anulado ? ' <span style="font-size:.65rem;background:var(--red-s);color:var(--red);border:1px solid var(--red-b);border-radius:3px;padding:1px 5px;vertical-align:middle">ANULADO</span>' : '';
+    var acciones = '';
+    if(canEdit){
+      var anularLabel = anulado ? '↩ Restaurar' : '🚫 Anular';
+      acciones = '<td style="white-space:nowrap;display:flex;gap:4px">'
+        + '<button class="rq-item-btn" title="' + (anulado?'Restaurar':'Anular') + '" onclick="rqAnularItem(' + JSON.stringify(rq.codigo) + ',' + JSON.stringify(it.fila) + ',this)">' + anularLabel + '</button>'
+        + (!anulado ? '<button class="rq-item-btn" title="Editar cantidad" onclick="rqEditItem(' + JSON.stringify(rq.codigo) + ',' + JSON.stringify(it.fila) + ',' + JSON.stringify(String(it.articulo||'')) + ',' + JSON.stringify(it.cant) + ',this)">✏ Cant.</button>' : '')
+        + '</td>';
+    }
+    return '<tr' + trCls + '>'
+      + '<td style="color:var(--txt-m)">' + esc(String(it.fila||'')) + '</td>'
+      + '<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis">' + artLabel + desc + badge + '</td>'
+      + '<td>' + esc(String(it.und||'')) + '</td>'
+      + '<td style="text-align:right">' + esc(String(it.cant||'')) + '</td>'
+      + '<td style="text-align:right;color:var(--grn)">' + esc(String(it.cantIngreso||'0')) + '</td>'
+      + '<td style="text-align:right;color:' + (Number(it.cantFaltante)>0?'var(--amb)':'var(--txt-m)') + '">' + esc(String(it.cantFaltante||'0')) + '</td>'
+      + '<td style="text-align:right">' + fmtV(it.vUnitario) + '</td>'
+      + '<td style="text-align:right;font-weight:600">' + fmtV(it.vTotal) + '</td>'
+      + '<td style="max-width:120px;overflow:hidden;text-overflow:ellipsis">' + esc(String(it.proveedor||'—')) + '</td>'
+      + acciones
+      + '</tr>';
+  }).join('');
+
+  return header + rows + '</tbody></table>';
 }
 
 function renderRequisiciones(){
@@ -5932,18 +6088,61 @@ function renderRequisiciones(){
     const c = RQ_PRIORIDAD_CFG[pri] || RQ_PRIORIDAD_CFG.MEDIA;
     return `<span style="color:${c.color};font-size:.7rem;font-weight:700">● ${c.label}</span>`;
   };
-  const rows = data.map((r,i)=>`<tr>
-    <td style="color:var(--txt-m)">${r.num}</td>
-    <td><code style="font-size:.75rem;background:var(--bg-el);padding:2px 6px;border-radius:4px">${esc(r.codigo)}</code></td>
-    <td title="${esc(r.desc)}" style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(r.desc)}${r.itemsCount>0?`<span style="font-size:.7rem;color:var(--txt-m);background:var(--bg-el);border:1px solid var(--border);padding:1px 6px;border-radius:3px;margin-left:6px">⊞ ${r.itemsCount} ítems</span>`:''}</td>
-    <td><span style="font-size:.75rem;font-weight:700;color:#60a5fa">${esc(r.fase)}</span></td>
-    <td style="font-size:.78rem;color:var(--txt-m)">${esc(r.fecha)||'—'}</td>
-    <td style="font-size:.78rem">${esc(r.encargado)||'—'}</td>
-    <td>${prioBadge(r.prioridad)}</td>
-    <td>${statusBadgeRQ(r.estado)}</td>
-    <td style="font-size:.78rem;color:var(--txt-m);text-align:right">${fmtVal(r.valor)}</td>
-    <td style="text-align:center">${r.archivo?`<a href="${esc(r.archivo)}" target="_blank" title="Ver archivo en Drive" style="color:var(--accent);text-decoration:none"><span class="ms" style="font-size:1rem">attach_file</span></a>`:'—'}</td>
-  </tr>`).join('');
+  const canEdit = CURRENT_USER && (CURRENT_USER.role === 'ADMIN' || CURRENT_USER.role === 'EDITOR');
+  const phaseOptions = PHASES.map(ph=>{
+    const label = (ph.id + ' — ' + ph.name).slice(0,32);
+    return `<option value="${esc(ph.id)}">${esc(label)}</option>`;
+  }).join('');
+
+  const rows = data.map((r,i)=>{
+    const isOpen = RQ_OPEN.has(r.codigo);
+    const arrowIcon = isOpen ? '▾' : '▸';
+    const codigoJson = JSON.stringify(r.codigo);
+
+    // Fase cell: select (editable) or badge (readonly)
+    let faseCell;
+    if(canEdit){
+      const selOpts = `<option value="">(sin fase)</option>` + phaseOptions.replace(
+        `value="${esc(r.fase)}"`,
+        `value="${esc(r.fase)}" selected`
+      );
+      faseCell = `<td><select class="rq-fase-sel" onchange="rqSetFase(${codigoJson},this)" title="Asignar fase">${selOpts}</select></td>`;
+    } else {
+      faseCell = `<td><span style="font-size:.75rem;font-weight:700;color:#60a5fa">${esc(r.fase)||'—'}</span></td>`;
+    }
+
+    const mainRow = `<tr class="rq-row${isOpen?' open':''}" style="cursor:pointer" onclick="rqToggleRow(${codigoJson})">
+      <td style="color:var(--txt-m);white-space:nowrap">
+        <button class="rq-expand-btn" onclick="event.stopPropagation();rqToggleRow(${codigoJson})" title="${isOpen?'Cerrar':'Ver materiales'}">${arrowIcon}</button>
+        ${r.num}
+      </td>
+      <td onclick="event.stopPropagation()"><code style="font-size:.75rem;background:var(--bg-el);padding:2px 6px;border-radius:4px">${esc(r.codigo)}</code></td>
+      <td title="${esc(r.desc)}" style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" onclick="event.stopPropagation()">${esc(r.desc)}${r.itemsCount>0?`<span style="font-size:.7rem;color:var(--txt-m);background:var(--bg-el);border:1px solid var(--border);padding:1px 6px;border-radius:3px;margin-left:6px">⊞ ${r.itemsCount}</span>`:''}</td>
+      <td onclick="event.stopPropagation()">${faseCell.replace(/^<td>/,'').replace(/<\/td>$/,'')}</td>
+      <td style="font-size:.78rem;color:var(--txt-m)">${esc(r.fecha)||'—'}</td>
+      <td style="font-size:.78rem">${esc(r.encargado)||'—'}</td>
+      <td>${prioBadge(r.prioridad)}</td>
+      <td>${statusBadgeRQ(r.estado)}</td>
+      <td style="font-size:.78rem;color:var(--txt-m);text-align:right">${fmtVal(r.valor)}</td>
+      <td style="text-align:center">${r.archivo?`<a href="${esc(r.archivo)}" target="_blank" title="Ver en Drive" style="color:var(--accent);text-decoration:none" onclick="event.stopPropagation()"><span class="ms" style="font-size:1rem">attach_file</span></a>`:'—'}</td>
+    </tr>`;
+
+    let detailRow = '';
+    if(isOpen){
+      const colspan = canEdit ? 10 : 10;
+      detailRow = `<tr class="rq-detail">
+        <td colspan="${colspan}">
+          <div class="rq-detail-inner">
+            <div style="font-size:.7rem;font-weight:700;color:var(--txt-m);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">
+              Materiales · ${esc(r.codigo)} ${r.desc ? '· '+esc(r.desc.slice(0,60)) : ''}
+            </div>
+            <div style="overflow-x:auto">${rqBuildDetail(r)}</div>
+          </div>
+        </td>
+      </tr>`;
+    }
+    return mainRow + detailRow;
+  }).join('');
 
   const syncStr = RQ_LAST_SYNC ? RQ_LAST_SYNC.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}) : '—';
 
