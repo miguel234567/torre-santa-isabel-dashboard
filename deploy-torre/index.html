@@ -6207,6 +6207,12 @@ function renderRequisiciones(){
 }
 
 /* ── buildOCFromPedidos: mapea RQ_DATA → array de OC reales ─ */
+function showOCSubTab(wrapId, tabId){
+  const wrap = document.getElementById(wrapId); if(!wrap) return;
+  wrap.querySelectorAll('.oc-tab').forEach(t=>t.classList.toggle('on', t.dataset.subtab===tabId));
+  wrap.querySelectorAll('.oc-panel').forEach(p=>p.classList.toggle('on', p.dataset.subtab===tabId));
+}
+
 function ocBadge(label, estado){
   const cls = {ok:'oc-b-ok', warn:'oc-b-warn', red:'oc-b-red', gray:'oc-b-gray', purple:'oc-b-purple', info:'oc-b-info'}[estado] || 'oc-b-gray';
   return `<span class="oc-badge ${cls}">${label}</span>`;
