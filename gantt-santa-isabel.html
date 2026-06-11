@@ -5763,252 +5763,14 @@ const SHEET_ID_COMPRAS = '';  // ← pegar Sheet ID aquí cuando esté listo
 const SHEETS_COMPRAS_TABS = { rq:'Requisiciones', oc:'OC', pv:'Proveedores' };
 
 /* ── Datos mock (mientras no haya Sheet conectado) ────────── */
-const MOCK_RQ = [
-  {code:'RQ-001', desc:'Acero corrugado 3/8" – 12 ton',  phase:'F2', date:'05/Jun/26', owner:'R. Gómez',  status:'Aprobada',   estado:'ok'},
-  {code:'RQ-002', desc:'Concreto 3000 PSI – 20 m³',      phase:'F2', date:'06/Jun/26', owner:'R. Gómez',  status:'Aprobada',   estado:'ok'},
-  {code:'RQ-003', desc:'Formaleta metálica columnas',    phase:'F3', date:'10/Jun/26', owner:'C. Torres', status:'En revisión',estado:'warn'},
-  {code:'RQ-004', desc:'Cable THHN AWG #4 – 500 m',      phase:'F4', date:'12/Jun/26', owner:'M. Arias',  status:'Pendiente',  estado:'gray'},
-  {code:'RQ-005', desc:'Tubería conduit 1" – 200 m',     phase:'F4', date:'15/Jun/26', owner:'M. Arias',  status:'Aprobada',   estado:'ok'},
-  {code:'RQ-006', desc:'Acero corrugado 1/2" – 8 ton',   phase:'F3', date:'12/May/26', owner:'C. Torres', status:'Rechazada',  estado:'red'},
-];
-
-const MOCK_OC = [
-  {code:'OC-001', desc:'Acero corrugado 3/8" – 12 ton',  prov:'Aceros del Valle',    phase:'F2', value:48, emit:'02/Jun', deliv:'10/Jun', status:'Aprobada', estado:'ok'},
-  {code:'OC-002', desc:'Concreto 3000 PSI – 20 m³',      prov:'Concretera Eje',      phase:'F2', value:32, emit:'03/Jun', deliv:'08/Jun', status:'Emitida',  estado:'warn'},
-  {code:'OC-003', desc:'Formaleta metálica columnas',    prov:'Alquileres RCN',      phase:'F3', value:18, emit:'—',      deliv:'12/Jun', status:'Borrador', estado:'gray'},
-  {code:'OC-018', desc:'Acero corrugado 1/2" – 8 ton',   prov:'Aceros del Valle',    phase:'F3', value:38, emit:'15/May', deliv:'28/May', status:'Vencida',  estado:'red'},
-  {code:'OC-022', desc:'Cable THHN AWG #4 – 500 m',      prov:'Dist. Eléctrico JR',  phase:'F4', value:22, emit:'01/Jun', deliv:'15/Jun', status:'Recibida', estado:'purple'},
-  {code:'OC-023', desc:'Tubería conduit 1" – 200 m',     prov:'Dist. Eléctrico JR',  phase:'F4', value:8,  emit:'02/Jun', deliv:'20/Jun', status:'Emitida',  estado:'warn'},
-];
-
-const MOCK_PROVEEDORES = [
-  {name:'Aceros del Valle S.A.',     nit:'800.123.456-7', contact:'J. Martínez',  oc:8, value:234, status:'Activo'},
-  {name:'Concretera Eje S.A.S.',     nit:'900.234.567-1', contact:'L. Vargas',    oc:5, value:165, status:'Activo'},
-  {name:'Alquileres RCN',            nit:'901.345.678-2', contact:'P. Restrepo',  oc:4, value:115, status:'Activo'},
-  {name:'Dist. Eléctrico JR Ltda.',  nit:'860.456.789-3', contact:'A. Quintero',  oc:6, value:83,  status:'Activo'},
-  {name:'Maderas del Sur',           nit:'901.567.890-4', contact:'S. Ríos',      oc:3, value:42,  status:'Activo'},
-  {name:'Pinturas Andes',            nit:'860.678.901-5', contact:'D. Mejía',     oc:2, value:28,  status:'Activo'},
-  {name:'Vidrios y Cristal',         nit:'901.789.012-6', contact:'F. Cano',      oc:1, value:18,  status:'Inactivo'},
-  {name:'Hierros y Tuberías',        nit:'860.890.123-7', contact:'I. Pinzón',    oc:5, value:166, status:'Activo'},
-];
-
-/* ── Helper: badge OC por estado ──────────────────────────── */
-function ocBadge(label, estado){
-  const cls = {ok:'oc-b-ok', warn:'oc-b-warn', red:'oc-b-red', gray:'oc-b-gray', purple:'oc-b-purple', info:'oc-b-info'}[estado] || 'oc-b-gray';
-  return `<span class="oc-badge ${cls}">${label}</span>`;
+/* ── fmtCOP: formatea pesos colombianos ───────────────────── */
+function fmtCOP(n){
+  if(typeof n !== 'number' || isNaN(n)) return '—';
+  if(n >= 1e9) return '$' + (n/1e9).toFixed(2) + 'B';
+  if(n >= 1e6) return '$' + (n/1e6).toFixed(1) + 'M';
+  return '$' + n.toLocaleString('es-CO');
 }
 
-/* ── Sub-tab switcher para módulos compras ───────────────── */
-function showOCSubTab(wrapId, tabId){
-  const wrap = document.getElementById(wrapId); if(!wrap) return;
-  wrap.querySelectorAll('.oc-tab').forEach(t=>t.classList.toggle('on', t.dataset.subtab===tabId));
-  wrap.querySelectorAll('.oc-panel').forEach(p=>p.classList.toggle('on', p.dataset.subtab===tabId));
-}
-
-/* ════════════════════════════════════════
-   RENDER: ÓRDENES DE COMPRA
-   ════════════════════════════════════════ */
-function renderCompras(){
-  const totalOC = MOCK_OC.length;
-  const emit  = MOCK_OC.filter(o=>o.status==='Emitida').length;
-  const aprob = MOCK_OC.filter(o=>o.status==='Aprobada').length;
-  const recib = MOCK_OC.filter(o=>o.status==='Recibida').length;
-  const venc  = MOCK_OC.filter(o=>o.status==='Vencida').length;
-  const total$ = MOCK_OC.reduce((s,o)=>s+o.value,0);
-  const venc$  = MOCK_OC.filter(o=>o.status==='Vencida').reduce((s,o)=>s+o.value,0);
-
-  const rowsList = MOCK_OC.map((o,i)=>`
-    <tr>
-      <td>${i+1}</td>
-      <td>${ocBadge(o.code, o.estado)}</td>
-      <td title="${o.desc}">${o.desc}</td>
-      <td>${o.prov}</td>
-      <td>${o.phase}</td>
-      <td class="oc-c-${o.estado==='red'?'red':o.estado==='warn'?'amb':o.estado==='ok'?'grn':o.estado==='purple'?'vlt':'blu'}">$${o.value}M</td>
-      <td>${o.emit}</td>
-      <td>${o.deliv}</td>
-      <td>${ocBadge(o.status, o.estado)}</td>
-    </tr>`).join('');
-
-  const html = `
-  <div class="oc-wrap">
-    <div class="oc-topbar">
-      <div>
-        <h2><span class="ms" style="font-size:1rem">shopping_cart</span>Órdenes de Compra</h2>
-        <p>Torre Santa Isabel · ${totalOC} OC activas · vinculadas a requisiciones</p>
-      </div>
-      <div class="oc-actions">
-        <button class="oc-btn"><span class="ms" style="font-size:.95rem">download</span>Exportar</button>
-        <button class="oc-btn oc-btn-primary"><span class="ms" style="font-size:.95rem">add</span>Nueva OC</button>
-      </div>
-    </div>
-    <div class="oc-tabs" id="oc-tabs">
-      <button class="oc-tab on" data-subtab="dashboard" onclick="showOCSubTab('comprasOC','dashboard')">Dashboard</button>
-      <button class="oc-tab"     data-subtab="lista"     onclick="showOCSubTab('comprasOC','lista')">Lista de OC</button>
-      <button class="oc-tab"     data-subtab="detalle"   onclick="showOCSubTab('comprasOC','detalle')">Detalle OC</button>
-      <button class="oc-tab"     data-subtab="reporte"   onclick="showOCSubTab('comprasOC','reporte')">Reporte gerencial</button>
-    </div>
-
-    <!-- DASHBOARD -->
-    <div class="oc-panel on" data-subtab="dashboard">
-      <div class="oc-kpis">
-        <div class="oc-kpi"><div class="oc-kl">OC totales</div><div class="oc-kv">${totalOC}</div><div class="oc-kd">período activo</div></div>
-        <div class="oc-kpi"><div class="oc-kl">Emitidas</div><div class="oc-kv oc-c-blu">${emit}</div><div class="oc-kd">en trámite</div></div>
-        <div class="oc-kpi"><div class="oc-kl">Aprobadas</div><div class="oc-kv oc-c-grn">${aprob}</div><div class="oc-kd">con proveedor</div></div>
-        <div class="oc-kpi"><div class="oc-kl">Recibidas</div><div class="oc-kv oc-c-vlt">${recib}</div><div class="oc-kd">material en obra</div></div>
-        <div class="oc-kpi"><div class="oc-kl">Vencidas</div><div class="oc-kv oc-c-red">${venc}</div><div class="oc-kd">sin recepción</div></div>
-      </div>
-      <div class="oc-charts">
-        <div class="oc-box">
-          <h4>Valor comprometido por fase</h4>
-          <div class="oc-br"><span class="oc-bl">F2 Cimentación</span><div class="oc-bt"><div class="oc-bf" style="width:72%;background:var(--grn)"></div></div><span class="oc-bv oc-c-grn">$398M</span></div>
-          <div class="oc-br"><span class="oc-bl">F3 Estructura</span><div class="oc-bt"><div class="oc-bf" style="width:48%;background:var(--acc)"></div></div><span class="oc-bv oc-c-blu">$265M</span></div>
-          <div class="oc-br"><span class="oc-bl">F4 Eléctrico</span><div class="oc-bt"><div class="oc-bf" style="width:22%;background:var(--amb)"></div></div><span class="oc-bv oc-c-amb">$120M</span></div>
-          <div class="oc-br"><span class="oc-bl">F0–F1</span><div class="oc-bt"><div class="oc-bf" style="width:12%;background:var(--vlt)"></div></div><span class="oc-bv oc-c-vlt">$68M</span></div>
-        </div>
-        <div class="oc-box">
-          <h4>Estado del flujo de aprobación</h4>
-          <div class="oc-br"><span class="oc-bl">Borrador</span><div class="oc-bt"><div class="oc-bf" style="width:12%;background:#64748b"></div></div><span class="oc-bv" style="color:var(--txt-m)">4</span></div>
-          <div class="oc-br"><span class="oc-bl">Emitida</span><div class="oc-bt"><div class="oc-bf" style="width:35%;background:var(--acc)"></div></div><span class="oc-bv oc-c-blu">${emit}</span></div>
-          <div class="oc-br"><span class="oc-bl">Aprobada</span><div class="oc-bt"><div class="oc-bf" style="width:41%;background:var(--grn)"></div></div><span class="oc-bv oc-c-grn">${aprob}</span></div>
-          <div class="oc-br"><span class="oc-bl">Recibida</span><div class="oc-bt"><div class="oc-bf" style="width:18%;background:var(--vlt)"></div></div><span class="oc-bv oc-c-vlt">${recib}</span></div>
-          <div class="oc-br"><span class="oc-bl">Vencida</span><div class="oc-bt"><div class="oc-bf" style="width:6%;background:var(--red)"></div></div><span class="oc-bv oc-c-red">${venc}</span></div>
-        </div>
-      </div>
-      <hr class="oc-divider">
-      <div class="oc-sect-t">Alertas activas</div>
-      <div style="padding:0 20px 16px">
-        <div class="oc-alert-item oc-a-red"><span class="ms" style="font-size:1rem">warning</span><div><strong>OC-018 vencida</strong> — Acero corrugado 1/2" sin recepción. Proveedor: Aceros del Valle. Vencía 28/May.</div></div>
-        <div class="oc-alert-item oc-a-warn"><span class="ms" style="font-size:1rem">schedule</span><div><strong>3 OC próximas a vencer</strong> — en los próximos 7 días sin confirmación de entrega.</div></div>
-        <div class="oc-alert-item oc-a-info"><span class="ms" style="font-size:1rem">info</span><div><strong>4 OC en borrador</strong> — vinculadas a RQ aprobadas, pendientes de emisión a proveedor.</div></div>
-      </div>
-    </div>
-
-    <!-- LISTA -->
-    <div class="oc-panel" data-subtab="lista">
-      <div class="oc-filterbar">
-        <input type="text" placeholder="🔍 Buscar OC, proveedor, ítem...">
-        <select><option>Todos los estados</option><option>Borrador</option><option>Emitida</option><option>Aprobada</option><option>Recibida</option><option>Vencida</option></select>
-        <select><option>Todas las fases</option><option>F2</option><option>F3</option><option>F4</option></select>
-        <input type="date" value="2026-05-01">
-        <input type="date" value="2026-06-02">
-      </div>
-      <div class="oc-tbl-wrap">
-        <table class="oc-tbl">
-          <thead><tr><th>#</th><th>Código</th><th>Ítem / descripción</th><th>Proveedor</th><th>Fase</th><th>Valor</th><th>F. emisión</th><th>F. entrega</th><th>Estado</th></tr></thead>
-          <tbody>${rowsList}</tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- DETALLE OC -->
-    <div class="oc-panel" data-subtab="detalle">
-      <div style="padding:14px 20px 8px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-        <div>
-          ${ocBadge('OC-001','ok')}
-          <span style="font-family:'Plus Jakarta Sans',sans-serif;font-size:1rem;font-weight:700;margin-left:10px">Acero corrugado 3/8" – 12 ton</span>
-        </div>
-        <div style="display:flex;gap:6px">
-          <button class="oc-btn"><span class="ms" style="font-size:.95rem">edit</span>Editar</button>
-          <button class="oc-btn"><span class="ms" style="font-size:.95rem">download</span>PDF</button>
-        </div>
-      </div>
-      <div class="oc-sect-t" style="margin-top:10px">Flujo de aprobación</div>
-      <div class="oc-flow">
-        <div class="oc-flow-step done">Requisición<br>aprobada</div>
-        <div class="oc-flow-arrow">›</div>
-        <div class="oc-flow-step done">Cotizaciones<br>recibidas</div>
-        <div class="oc-flow-arrow">›</div>
-        <div class="oc-flow-step done">Comparativo<br>enviado</div>
-        <div class="oc-flow-arrow">›</div>
-        <div class="oc-flow-step active">OC emitida<br>a proveedor</div>
-        <div class="oc-flow-arrow">›</div>
-        <div class="oc-flow-step">Recepción<br>en obra</div>
-        <div class="oc-flow-arrow">›</div>
-        <div class="oc-flow-step">Factura<br>recibida</div>
-        <div class="oc-flow-arrow">›</div>
-        <div class="oc-flow-step">Cerrada</div>
-      </div>
-      <div class="oc-detail-grid">
-        <div class="oc-d-box">
-          <h4><span class="ms" style="font-size:1rem">description</span>Datos generales</h4>
-          <div class="oc-d-row"><span class="oc-d-label">Código OC</span><span class="oc-d-val">OC-001</span></div>
-          <div class="oc-d-row"><span class="oc-d-label">Requisición origen</span><span class="oc-d-val oc-c-blu">RQ-001</span></div>
-          <div class="oc-d-row"><span class="oc-d-label">Fase vinculada</span><span class="oc-d-val">F2 · Cimentación</span></div>
-          <div class="oc-d-row"><span class="oc-d-label">Encargado</span><span class="oc-d-val">R. Gómez</span></div>
-          <div class="oc-d-row"><span class="oc-d-label">Fecha emisión</span><span class="oc-d-val">02/Jun/2026</span></div>
-          <div class="oc-d-row"><span class="oc-d-label">Fecha entrega</span><span class="oc-d-val">10/Jun/2026</span></div>
-        </div>
-        <div class="oc-d-box">
-          <h4><span class="ms" style="font-size:1rem">storefront</span>Proveedor y valor</h4>
-          <div class="oc-d-row"><span class="oc-d-label">Proveedor</span><span class="oc-d-val">Aceros del Valle S.A.</span></div>
-          <div class="oc-d-row"><span class="oc-d-label">NIT</span><span class="oc-d-val">800.123.456-7</span></div>
-          <div class="oc-d-row"><span class="oc-d-label">Contacto</span><span class="oc-d-val">J. Martínez</span></div>
-          <div class="oc-d-row"><span class="oc-d-label">Valor neto</span><span class="oc-d-val oc-c-grn">$48.000.000</span></div>
-          <div class="oc-d-row"><span class="oc-d-label">IVA 19%</span><span class="oc-d-val">$9.120.000</span></div>
-          <div class="oc-d-row"><span class="oc-d-label">Total OC</span><span class="oc-d-val oc-c-grn" style="font-size:.9rem">$57.120.000</span></div>
-        </div>
-      </div>
-      <hr class="oc-divider">
-      <div class="oc-sect-t">Ítems de la OC</div>
-      <div class="oc-tbl-wrap">
-        <table class="oc-tbl">
-          <thead><tr><th>#</th><th>Descripción</th><th>Unidad</th><th>Cantidad</th><th>V. unitario</th><th>V. total</th></tr></thead>
-          <tbody>
-            <tr><td>1</td><td>Acero corrugado 3/8" Grado 60</td><td>ton</td><td>12</td><td>$3.800.000</td><td class="oc-c-grn">$45.600.000</td></tr>
-            <tr><td>2</td><td>Flejes amarre #16</td><td>kg</td><td>40</td><td>$6.000</td><td class="oc-c-grn">$240.000</td></tr>
-            <tr><td>3</td><td>Transporte puerta a obra</td><td>global</td><td>1</td><td>$2.160.000</td><td class="oc-c-grn">$2.160.000</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- REPORTE GERENCIAL -->
-    <div class="oc-panel" data-subtab="reporte">
-      <div class="oc-filterbar">
-        <input type="date" value="2026-05-01">
-        <input type="date" value="2026-06-02">
-        <select><option>Todas las fases</option><option>F2</option><option>F3</option><option>F4</option></select>
-        <select><option>Todos los proveedores</option><option>Aceros del Valle</option><option>Concretera Eje</option></select>
-        <button class="oc-btn"><span class="ms" style="font-size:.95rem">download</span>PDF</button>
-        <button class="oc-btn"><span class="ms" style="font-size:.95rem">table_chart</span>Excel</button>
-      </div>
-      <div class="oc-kpis">
-        <div class="oc-kpi"><div class="oc-kl">Total comprometido</div><div class="oc-kv oc-c-blu">$${total$+819}M</div><div class="oc-kd">${totalOC} OC activas</div></div>
-        <div class="oc-kpi"><div class="oc-kl">Ejecutado / pagado</div><div class="oc-kv oc-c-grn">$398M</div><div class="oc-kd">46.8% del total</div></div>
-        <div class="oc-kpi"><div class="oc-kl">Por recibir</div><div class="oc-kv oc-c-amb">$453M</div><div class="oc-kd">53.2% pendiente</div></div>
-        <div class="oc-kpi"><div class="oc-kl">En riesgo</div><div class="oc-kv oc-c-red">$${venc$+48}M</div><div class="oc-kd">${venc} OC vencidas</div></div>
-        <div class="oc-kpi"><div class="oc-kl">Proveedores activos</div><div class="oc-kv oc-c-vlt">8</div><div class="oc-kd">período</div></div>
-      </div>
-      <div class="oc-charts">
-        <div class="oc-box">
-          <h4>Top 4 proveedores por valor</h4>
-          <div class="oc-br"><span class="oc-bl">Aceros del Valle</span><div class="oc-bt"><div class="oc-bf" style="width:74%;background:var(--grn)"></div></div><span class="oc-bv oc-c-grn">$234M</span></div>
-          <div class="oc-br"><span class="oc-bl">Concretera Eje</span><div class="oc-bt"><div class="oc-bf" style="width:52%;background:var(--acc)"></div></div><span class="oc-bv oc-c-blu">$165M</span></div>
-          <div class="oc-br"><span class="oc-bl">Alquileres RCN</span><div class="oc-bt"><div class="oc-bf" style="width:36%;background:var(--vlt)"></div></div><span class="oc-bv oc-c-vlt">$115M</span></div>
-          <div class="oc-br"><span class="oc-bl">Dist. Eléctrico JR</span><div class="oc-bt"><div class="oc-bf" style="width:26%;background:var(--amb)"></div></div><span class="oc-bv oc-c-amb">$83M</span></div>
-        </div>
-        <div class="oc-box">
-          <h4>Comprometido vs ejecutado por fase</h4>
-          <div class="oc-br"><span class="oc-bl">F2 Cimentación</span><div class="oc-bt"><div class="oc-bf" style="width:52%;background:var(--grn)"></div></div><span class="oc-bv oc-c-grn">52%</span></div>
-          <div class="oc-br"><span class="oc-bl">F3 Estructura</span><div class="oc-bt"><div class="oc-bf" style="width:8%;background:var(--red)"></div></div><span class="oc-bv oc-c-red">8%</span></div>
-          <div class="oc-br"><span class="oc-bl">F4 Eléctrico</span><div class="oc-bt"><div class="oc-bf" style="width:18%;background:var(--amb)"></div></div><span class="oc-bv oc-c-amb">18%</span></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="oc-footer">
-      <span>Contro360 · Órdenes de Compra</span>
-      <span>Torre Santa Isabel · ${totalOC} OC activas</span>
-      <span>${new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'short',year:'numeric'})}</span>
-    </div>
-  </div>`;
-  document.getElementById('comprasOC').innerHTML = html;
-}
-
-/* ════════════════════════════════════════
-   RENDER: REQUISICIONES
-   ════════════════════════════════════════ */
 /* ── Datos de requisiciones cargados desde Google Sheets ── */
 let RQ_DATA = [];   // se llena con syncRequisiciones()
 let RQ_LAST_SYNC = null;
@@ -6060,6 +5822,8 @@ function syncRequisiciones(onDone){
         valor:      p.total || 0,
         prioridad:  'MEDIA',
         notas:      String(p.observaciones || '').trim(),
+        fechaEntrega: String(p.fechaEntrega || '').trim(),
+        obra:       String(p.obra || '').trim(),
         archivo:    'https://docs.google.com/spreadsheets/d/' + RQ_SHEET_ID + '/edit#gid=' + p.gid,
         items:      items,
         itemsCount: items.length,
@@ -6243,80 +6007,467 @@ function renderRequisiciones(){
   el.innerHTML = html;
 }
 
+/* ── buildOCFromPedidos: mapea RQ_DATA → array de OC reales ─ */
+function ocBadge(label, estado){
+  const cls = {ok:'oc-b-ok', warn:'oc-b-warn', red:'oc-b-red', gray:'oc-b-gray', purple:'oc-b-purple', info:'oc-b-info'}[estado] || 'oc-b-gray';
+  return `<span class="oc-badge ${cls}">${label}</span>`;
+}
+
+function buildOCFromPedidos(){
+  if(!Array.isArray(RQ_DATA) || RQ_DATA.length === 0) return [];
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  return RQ_DATA.map(rq => {
+    const items = Array.isArray(rq.items) ? rq.items : [];
+
+    // proveedor más frecuente entre items con proveedor definido
+    const provCount = {};
+    items.forEach(it => {
+      const pv = String(it.proveedor || '').trim();
+      if(pv) provCount[pv] = (provCount[pv]||0) + 1;
+    });
+    const provKeys = Object.keys(provCount);
+    const prov = provKeys.length > 0
+      ? provKeys.reduce((a,b) => provCount[a]>=provCount[b]?a:b)
+      : '—';
+
+    // status derivado de items
+    const itemsConCant = items.filter(it => Number(it.cant||0) > 0);
+    let estado, statusLabel;
+    if(itemsConCant.length > 0 && itemsConCant.every(it => Number(it.cantIngreso||0) >= Number(it.cant||0))){
+      estado = 'ok'; statusLabel = 'Recibida';
+    } else if(items.some(it => Number(it.cantIngreso||0) > 0)){
+      estado = 'amb'; statusLabel = 'Parcial';
+    } else {
+      // check vencida: si hay fechaEntrega pasada y no está Recibida
+      let vencida = false;
+      if(rq.fechaEntrega){
+        const parts = rq.fechaEntrega.split('/');
+        let dEntrega;
+        if(parts.length === 3){
+          // could be D/M/YYYY or M/D/YYYY — try both
+          dEntrega = new Date(parts[2], parts[1]-1, parts[0]);
+          if(isNaN(dEntrega.getTime())) dEntrega = new Date(rq.fechaEntrega);
+        } else {
+          dEntrega = new Date(rq.fechaEntrega);
+        }
+        if(!isNaN(dEntrega.getTime())){ dEntrega.setHours(0,0,0,0); if(dEntrega < today) vencida = true; }
+      }
+      if(vencida){ estado = 'red'; statusLabel = 'Vencida'; }
+      else { estado = 'blu'; statusLabel = 'Emitida'; }
+    }
+
+    return {
+      code:    'PED ' + esc(rq.codigo),
+      desc:    rq.desc,
+      prov:    prov,
+      phase:   rq.fase || '—',
+      value:   rq.valor || 0,
+      emit:    rq.fecha || '—',
+      deliv:   rq.fechaEntrega || '—',
+      estado:  estado,
+      status:  statusLabel,
+      items:   items,
+    };
+  });
+}
+
+/* ════════════════════════════════════════
+   RENDER: ÓRDENES DE COMPRA
+   ════════════════════════════════════════ */
+function renderCompras(){
+  const el = document.getElementById('comprasOC');
+  if(!el) return;
+
+  // Manejo de estado de carga
+  if(RQ_STATUS === 'idle'){
+    el.innerHTML = `<div style="padding:40px;text-align:center;color:var(--txt-m)"><span class="ms" style="font-size:2rem;display:block;margin-bottom:10px">sync</span>Cargando pedidos…</div>`;
+    syncRequisiciones(()=>renderCompras());
+    return;
+  }
+  if(RQ_STATUS === 'loading'){
+    el.innerHTML = `<div style="padding:40px;text-align:center;color:var(--txt-m)"><span class="ms" style="font-size:2rem;display:block;margin-bottom:10px">hourglass_top</span>Sincronizando datos con Google Sheets…</div>`;
+    return;
+  }
+  if(RQ_STATUS === 'no-sheet' || !RQ_SHEET_ID){
+    el.innerHTML = `<div style="padding:36px;text-align:center;color:var(--txt-m)">
+      <div style="font-size:2rem;margin-bottom:12px">🛒</div>
+      <div style="font-size:1rem;font-weight:700;color:var(--txt);margin-bottom:8px">Sheet de pedidos no configurado</div>
+      <div style="font-size:.85rem;max-width:480px;margin:0 auto;line-height:1.7">
+        Configura el ID del libro de pedidos en <code>RQ_SHEET_ID</code>.<br>
+        Las órdenes de compra se derivan automáticamente de los pedidos registrados en el formato ISO.
+      </div></div>`;
+    return;
+  }
+  if(RQ_STATUS === 'error'){
+    el.innerHTML = `<div style="padding:36px;text-align:center;color:var(--txt-m)">
+      <div style="font-size:2rem;margin-bottom:12px">⚠️</div>
+      <div style="font-size:1rem;font-weight:700;color:var(--txt);margin-bottom:8px">Error al cargar pedidos</div>
+      <div style="font-size:.85rem;margin-bottom:16px">No se pudo conectar con el Apps Script. Verifica que WB_URL esté configurado y el script esté desplegado.</div>
+      <button onclick="syncRequisiciones(()=>renderCompras())" style="background:var(--acc-s);color:var(--acc);border:1px solid var(--acc-b);border-radius:8px;padding:7px 16px;cursor:pointer;font-size:.82rem;font-weight:600">🔄 Reintentar</button>
+    </div>`;
+    return;
+  }
+
+  const OC = buildOCFromPedidos();
+  const totalOC  = OC.length;
+
+  // Estado vacío amable si no hay datos con valor/proveedor
+  if(totalOC === 0){
+    el.innerHTML = `<div class="oc-wrap"><div class="oc-topbar"><div><h2><span class="ms" style="font-size:1rem">shopping_cart</span>Órdenes de Compra</h2><p>Torre Santa Isabel · derivadas de los pedidos del formato ISO</p></div></div>
+      <div style="padding:40px;text-align:center;color:var(--txt-m)">
+        <div style="font-size:2rem;margin-bottom:12px">📦</div>
+        <div style="font-size:1rem;font-weight:700;color:var(--txt);margin-bottom:8px">Sin pedidos cargados aún</div>
+        <div style="font-size:.85rem;max-width:500px;margin:0 auto;line-height:1.7">
+          Los pedidos aún no tienen <strong>V/TOTAL</strong> ni <strong>PROVEEDOR</strong> diligenciados en el formato ISO.<br>
+          Una vez el encargado de campo complete el libro, las OC aparecerán aquí automáticamente.
+        </div>
+        <button onclick="syncRequisiciones(()=>renderCompras())" style="margin-top:16px;background:var(--acc-s);color:var(--acc);border:1px solid var(--acc-b);border-radius:8px;padding:7px 16px;cursor:pointer;font-size:.82rem;font-weight:600">🔄 Actualizar pedidos</button>
+      </div></div>`;
+    return;
+  }
+
+  const emitidas  = OC.filter(o=>o.status==='Emitida').length;
+  const parciales = OC.filter(o=>o.status==='Parcial').length;
+  const recibidas = OC.filter(o=>o.status==='Recibida').length;
+  const vencidas  = OC.filter(o=>o.status==='Vencida').length;
+  const totalVal  = OC.reduce((s,o)=>s+o.value,0);
+  const recibVal  = OC.filter(o=>o.status==='Recibida').reduce((s,o)=>s+o.value,0);
+  const pctRecib  = totalVal>0 ? Math.round(recibVal/totalVal*100) : 0;
+
+  // KPIs por fase
+  const byPhase = {};
+  OC.forEach(o=>{ const k=o.phase||'—'; byPhase[k]=(byPhase[k]||0)+o.value; });
+  const phaseEntries = Object.entries(byPhase).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+  const maxPhaseVal  = phaseEntries[0]?.[1] || 1;
+  const phaseColors  = ['var(--grn)','var(--acc)','var(--amb)','var(--vlt)','var(--red)'];
+  const phaseBars = phaseEntries.map(([fase,val],i)=>{
+    const ph = PHASES.find(x=>x.id===fase);
+    const nombre = ph ? ph.name.slice(0,18) : fase;
+    const col = phaseColors[i % phaseColors.length];
+    const pct = Math.round(val/maxPhaseVal*100);
+    return `<div class="oc-br">
+      <span class="oc-bl" title="${esc(ph?.name||fase)}">${esc(fase)} ${esc(nombre)}</span>
+      <div class="oc-bt"><div class="oc-bf" style="width:${pct}%;background:${col}"></div></div>
+      <span class="oc-bv" style="color:${col}">${fmtCOP(val)}</span>
+    </div>`;
+  }).join('') || '<div style="color:var(--txt-m);font-size:.8rem;padding:8px">Sin datos por fase aún</div>';
+
+  // Estado del flujo
+  const flowCounts = {Emitida:emitidas, Parcial:parciales, Recibida:recibidas, Vencida:vencidas};
+  const flowColors = {Emitida:'var(--acc)',Parcial:'var(--amb)',Recibida:'var(--grn)',Vencida:'var(--red)'};
+  const flowBars = Object.entries(flowCounts).map(([lbl,n])=>{
+    const pct = totalOC>0?Math.round(n/totalOC*100):0;
+    const col = flowColors[lbl];
+    const vcls = lbl==='Emitida'?'oc-c-blu':lbl==='Parcial'?'oc-c-amb':lbl==='Recibida'?'oc-c-grn':'oc-c-red';
+    return `<div class="oc-br">
+      <span class="oc-bl">${esc(lbl)}</span>
+      <div class="oc-bt"><div class="oc-bf" style="width:${pct}%;background:${col}"></div></div>
+      <span class="oc-bv ${vcls}">${n}</span>
+    </div>`;
+  }).join('');
+
+  // Alertas activas
+  const alertas = [];
+  if(vencidas > 0){
+    const vOC = OC.filter(o=>o.status==='Vencida');
+    alertas.push(`<div class="oc-alert-item oc-a-red"><span class="ms" style="font-size:1rem">warning</span><div><strong>${vencidas} pedido${vencidas>1?'s':''} vencido${vencidas>1?'s':''}</strong> — sin recepción registrada: ${vOC.slice(0,3).map(o=>`<code>${esc(o.code)}</code>`).join(', ')}${vOC.length>3?' y más':''}</div></div>`);
+  }
+  const sinProv = OC.filter(o=>o.prov==='—').length;
+  if(sinProv > 0){
+    alertas.push(`<div class="oc-alert-item oc-a-warn"><span class="ms" style="font-size:1rem">storefront</span><div><strong>${sinProv} pedido${sinProv>1?'s':''} sin proveedor asignado</strong> — diligenciar en el formato ISO para habilitar trazabilidad.</div></div>`);
+  }
+  const sinValor = OC.filter(o=>o.value===0||o.value===null).length;
+  if(sinValor > 0){
+    alertas.push(`<div class="oc-alert-item oc-a-info"><span class="ms" style="font-size:1rem">attach_money</span><div><strong>${sinValor} pedido${sinValor>1?'s':''} sin V/TOTAL</strong> — completar costos en el formato para el reporte financiero.</div></div>`);
+  }
+  const alertasHtml = alertas.join('') || `<div style="padding:12px 20px;color:var(--txt-m);font-size:.82rem">Sin alertas activas.</div>`;
+
+  // Lista OC rows
+  const stBadge = (o) => {
+    const map = {ok:'oc-b-ok',amb:'oc-b-warn',red:'oc-b-red',blu:'oc-b-info',gray:'oc-b-gray'};
+    const cls = map[o.estado] || 'oc-b-gray';
+    return `<span class="oc-badge ${cls}">${esc(o.status)}</span>`;
+  };
+  const rowsList = OC.map((o,i)=>`
+    <tr>
+      <td style="color:var(--txt-m)">${i+1}</td>
+      <td>${ocBadge(esc(o.code), o.estado)}</td>
+      <td title="${esc(o.desc)}" style="max-width:200px;overflow:hidden;text-overflow:ellipsis">${esc(o.desc)}${o.items.length>0?`<span style="font-size:.68rem;color:var(--txt-m);background:var(--surf2);border:1px solid var(--bdr);padding:1px 5px;border-radius:3px;margin-left:5px">⊞ ${o.items.length}</span>`:''}</td>
+      <td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;color:var(--txt-s)">${esc(o.prov)}</td>
+      <td><span style="font-size:.75rem;font-weight:700;color:var(--acc)">${esc(o.phase)}</span></td>
+      <td>${o.emit==='—'?'—':esc(o.emit)}</td>
+      <td>${o.deliv==='—'?'—':esc(o.deliv)}</td>
+      <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:.78rem">${fmtCOP(o.value)}</td>
+      <td>${stBadge(o)}</td>
+    </tr>`).join('');
+
+  // Detalle OC: selector + tabla de items
+  const selOpts = OC.map((o,i)=>`<option value="${i}">${esc(o.code)} — ${esc(o.desc.slice(0,50))}</option>`).join('');
+  const firstOC = OC[0];
+  const detailItemRows = (oc) => {
+    if(!oc || !oc.items || oc.items.length===0)
+      return '<tr><td colspan="7" style="text-align:center;color:var(--txt-m);padding:20px">Sin ítems registrados para este pedido</td></tr>';
+    return oc.items.map((it,i)=>`<tr>
+      <td style="color:var(--txt-m)">${i+1}</td>
+      <td title="${esc(it.articulo||'')}">${esc(it.articulo||'—')}</td>
+      <td style="color:var(--txt-m)">${esc(it.und||'—')}</td>
+      <td style="text-align:right">${it.cant||'—'}</td>
+      <td style="text-align:right;color:var(--grn)">${it.cantIngreso||0}</td>
+      <td style="text-align:right;color:var(--amb)">${it.cantFaltante||0}</td>
+      <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:.78rem">${fmtCOP(Number(it.vTotal)||0)}</td>
+      <td style="color:var(--txt-s);font-size:.75rem">${esc(it.proveedor||'—')}</td>
+    </tr>`).join('');
+  };
+
+  // Top 3 proveedores para reporte
+  const provTotals = {};
+  OC.forEach(o=>{ if(o.prov!=='—') provTotals[o.prov]=(provTotals[o.prov]||0)+o.value; });
+  const top3Prov = Object.entries(provTotals).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  const maxProvVal = top3Prov[0]?.[1]||1;
+  const top3Colors = ['var(--grn)','var(--acc)','var(--vlt)'];
+  const top3Bars = top3Prov.length>0
+    ? top3Prov.map(([pv,val],i)=>`<div class="oc-br">
+        <span class="oc-bl" title="${esc(pv)}">${esc(pv.slice(0,18))}</span>
+        <div class="oc-bt"><div class="oc-bf" style="width:${Math.round(val/maxProvVal*100)}%;background:${top3Colors[i]}"></div></div>
+        <span class="oc-bv" style="color:${top3Colors[i]}">${fmtCOP(val)}</span>
+      </div>`).join('')
+    : '<div style="color:var(--txt-m);font-size:.8rem;padding:8px">Sin proveedores asignados aún</div>';
+
+  const sinValorizados = OC.filter(o=>o.value===0).length;
+
+  const syncStr = RQ_LAST_SYNC ? RQ_LAST_SYNC.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}) : '—';
+
+  const html = `
+  <div class="oc-wrap">
+    <div class="oc-topbar">
+      <div>
+        <h2><span class="ms" style="font-size:1rem">shopping_cart</span>Órdenes de Compra</h2>
+        <p>Torre Santa Isabel · ${totalOC} pedido${totalOC!==1?'s':''} · derivados del formato ISO
+          <button onclick="syncRequisiciones(()=>{renderedTabs.compras=false;renderCompras()})" style="background:none;border:none;color:var(--acc);cursor:pointer;font-size:.75rem;margin-left:6px" title="Recargar desde Sheet">🔄</button>
+        </p>
+      </div>
+    </div>
+    <div class="oc-tabs" id="oc-main-tabs">
+      <button class="oc-tab on"  data-subtab="dashboard" onclick="showOCSubTab('comprasOC','dashboard')">Dashboard</button>
+      <button class="oc-tab"     data-subtab="lista"     onclick="showOCSubTab('comprasOC','lista')">Lista (${totalOC})</button>
+      <button class="oc-tab"     data-subtab="detalle"   onclick="showOCSubTab('comprasOC','detalle')">Detalle</button>
+      <button class="oc-tab"     data-subtab="reporte"   onclick="showOCSubTab('comprasOC','reporte')">Reporte gerencial</button>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="oc-panel on" data-subtab="dashboard">
+      <div class="oc-kpis">
+        <div class="oc-kpi"><div class="oc-kl">Total pedidos</div><div class="oc-kv">${totalOC}</div><div class="oc-kd">del formato ISO</div></div>
+        <div class="oc-kpi"><div class="oc-kl">Emitidos</div><div class="oc-kv oc-c-blu">${emitidas}</div><div class="oc-kd">en trámite</div></div>
+        <div class="oc-kpi"><div class="oc-kl">Parciales</div><div class="oc-kv oc-c-amb">${parciales}</div><div class="oc-kd">ingreso parcial</div></div>
+        <div class="oc-kpi"><div class="oc-kl">Recibidos</div><div class="oc-kv oc-c-grn">${recibidas}</div><div class="oc-kd">material en obra</div></div>
+        <div class="oc-kpi"><div class="oc-kl">Vencidos</div><div class="oc-kv oc-c-red">${vencidas}</div><div class="oc-kd">sin recepción</div></div>
+      </div>
+      <div class="oc-charts">
+        <div class="oc-box">
+          <h4>Valor comprometido por fase</h4>
+          ${phaseBars}
+        </div>
+        <div class="oc-box">
+          <h4>Estado del flujo</h4>
+          ${flowBars}
+        </div>
+      </div>
+      <hr class="oc-divider">
+      <div class="oc-sect-t">Alertas activas</div>
+      <div style="padding:0 20px 16px">${alertasHtml}</div>
+    </div>
+
+    <!-- LISTA -->
+    <div class="oc-panel" data-subtab="lista">
+      <div class="oc-tbl-wrap">
+        <table class="oc-tbl">
+          <thead><tr><th>#</th><th>Código</th><th>Descripción</th><th>Proveedor</th><th>Fase</th><th>F. pedido</th><th>F. entrega</th><th>Valor</th><th>Estado</th></tr></thead>
+          <tbody>${rowsList}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- DETALLE OC -->
+    <div class="oc-panel" data-subtab="detalle">
+      <div style="padding:14px 20px 10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <label style="font-size:.78rem;font-weight:600;color:var(--txt-m)">Seleccionar pedido:</label>
+        <select id="oc-detail-sel" onchange="renderOCDetailItems()" style="font-size:.82rem;padding:5px 10px;border-radius:var(--r);border:1px solid var(--bdr);background:var(--surf2);color:var(--txt);outline:none;font-family:inherit;max-width:360px">
+          ${selOpts}
+        </select>
+      </div>
+      <div id="oc-detail-items-wrap">
+        <div class="oc-tbl-wrap">
+          <table class="oc-tbl">
+            <thead><tr><th>#</th><th>Artículo</th><th>Und</th><th>Cant</th><th>Ingresado</th><th>Faltante</th><th>V. Total</th><th>Proveedor</th></tr></thead>
+            <tbody id="oc-detail-items-body">${detailItemRows(firstOC)}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORTE GERENCIAL -->
+    <div class="oc-panel" data-subtab="reporte">
+      <div class="oc-kpis">
+        <div class="oc-kpi"><div class="oc-kl">Total comprometido</div><div class="oc-kv oc-c-blu">${fmtCOP(totalVal)}</div><div class="oc-kd">${totalOC} pedidos</div></div>
+        <div class="oc-kpi"><div class="oc-kl">% recibido</div><div class="oc-kv oc-c-grn">${pctRecib}%</div><div class="oc-kd">${fmtCOP(recibVal)}</div></div>
+        <div class="oc-kpi"><div class="oc-kl">Sin valorizar</div><div class="oc-kv oc-c-amb">${sinValorizados}</div><div class="oc-kd">V/TOTAL en 0</div></div>
+        <div class="oc-kpi"><div class="oc-kl">Sin proveedor</div><div class="oc-kv oc-c-red">${sinProv}</div><div class="oc-kd">pendientes asignar</div></div>
+      </div>
+      <div class="oc-charts">
+        <div class="oc-box">
+          <h4>Top 3 proveedores por valor</h4>
+          ${top3Bars}
+        </div>
+        <div class="oc-box">
+          <h4>Estado del flujo (conteo)</h4>
+          ${flowBars}
+        </div>
+      </div>
+      <div style="padding:12px 20px 16px;font-size:.8rem;color:var(--txt-m)">
+        Los pedidos sin V/TOTAL o sin PROVEEDOR no se reflejan en los totales financieros. Completar el formato ISO para activar el reporte completo.
+      </div>
+    </div>
+
+    <div class="oc-footer">
+      <span>Contro360 · Órdenes de Compra · datos reales del formato ISO</span>
+      <span>${totalOC} pedidos · ${fmtCOP(totalVal)}</span>
+      <span>Sync: ${syncStr}</span>
+    </div>
+  </div>`;
+
+  el.innerHTML = html;
+
+  // función inline para cargar items del pedido seleccionado en detalle
+  window._OC_LIST = OC;
+  window.renderOCDetailItems = function(){
+    const sel = document.getElementById('oc-detail-sel');
+    if(!sel) return;
+    const idx = parseInt(sel.value, 10);
+    const oc = window._OC_LIST[idx];
+    const tbody = document.getElementById('oc-detail-items-body');
+    if(tbody) tbody.innerHTML = detailItemRows(oc);
+  };
+}
+
 /* ════════════════════════════════════════
    RENDER: PROVEEDORES
    ════════════════════════════════════════ */
 function renderProveedores(){
-  const totalProv = MOCK_PROVEEDORES.length;
-  const activos = MOCK_PROVEEDORES.filter(p=>p.status==='Activo').length;
-  const totalValor = MOCK_PROVEEDORES.reduce((s,p)=>s+p.value,0);
+  const el = document.getElementById('comprasPv');
+  if(!el) return;
 
-  const rows = MOCK_PROVEEDORES.map((p,i)=>`
+  if(RQ_STATUS === 'idle'){
+    el.innerHTML = `<div style="padding:40px;text-align:center;color:var(--txt-m)"><span class="ms" style="font-size:2rem;display:block;margin-bottom:10px">sync</span>Cargando proveedores…</div>`;
+    syncRequisiciones(()=>renderProveedores());
+    return;
+  }
+  if(RQ_STATUS === 'loading'){
+    el.innerHTML = `<div style="padding:40px;text-align:center;color:var(--txt-m)"><span class="ms" style="font-size:2rem;display:block;margin-bottom:10px">hourglass_top</span>Sincronizando…</div>`;
+    return;
+  }
+  if(RQ_STATUS === 'no-sheet' || !RQ_SHEET_ID){
+    el.innerHTML = `<div style="padding:36px;text-align:center;color:var(--txt-m)">
+      <div style="font-size:2rem;margin-bottom:12px">🏪</div>
+      <div style="font-size:1rem;font-weight:700;color:var(--txt);margin-bottom:8px">Sheet de pedidos no configurado</div>
+      <div style="font-size:.85rem;max-width:480px;margin:0 auto;line-height:1.7">
+        Los proveedores se agregan automáticamente desde los ítems de los pedidos del formato ISO.<br>
+        Configura <code>RQ_SHEET_ID</code> para activar este módulo.
+      </div></div>`;
+    return;
+  }
+  if(RQ_STATUS === 'error'){
+    el.innerHTML = `<div style="padding:36px;text-align:center;color:var(--txt-m)">
+      <div style="font-size:2rem;margin-bottom:12px">⚠️</div>
+      <div style="font-size:.9rem;margin-bottom:16px">Error al cargar pedidos</div>
+      <button onclick="syncRequisiciones(()=>renderProveedores())" style="background:var(--acc-s);color:var(--acc);border:1px solid var(--acc-b);border-radius:8px;padding:7px 16px;cursor:pointer;font-size:.82rem;font-weight:600">🔄 Reintentar</button>
+    </div>`;
+    return;
+  }
+
+  // Agregar proveedores desde items (normalizado para agrupar)
+  const provMap = {};  // key: nombre normalizado → {display, pedidos:Set, valor}
+  RQ_DATA.forEach(rq => {
+    const items = Array.isArray(rq.items) ? rq.items : [];
+    items.forEach(it => {
+      const raw = String(it.proveedor || '').trim();
+      if(!raw) return;
+      const key = raw.toUpperCase();
+      if(!provMap[key]){
+        provMap[key] = { display: raw, pedidos: new Set(), valor: 0 };
+      }
+      provMap[key].pedidos.add(rq.codigo || String(rq.num));
+      provMap[key].valor += Number(it.vTotal || 0);
+    });
+  });
+
+  const provList = Object.values(provMap).sort((a,b) => b.valor - a.valor);
+  const totalProv = provList.length;
+
+  if(totalProv === 0){
+    el.innerHTML = `<div class="oc-wrap"><div class="oc-topbar"><div>
+        <h2><span class="ms" style="font-size:1rem">storefront</span>Proveedores</h2>
+        <p>Torre Santa Isabel · directorio derivado de ítems de pedidos</p></div></div>
+      <div style="padding:40px;text-align:center;color:var(--txt-m)">
+        <div style="font-size:2rem;margin-bottom:12px">🏪</div>
+        <div style="font-size:1rem;font-weight:700;color:var(--txt);margin-bottom:8px">Sin proveedores registrados</div>
+        <div style="font-size:.85rem;max-width:500px;margin:0 auto;line-height:1.7">
+          Ningún ítem de pedido tiene <strong>PROVEEDOR</strong> diligenciado en el formato ISO.<br>
+          El directorio se construye automáticamente una vez el campo esté completado.
+        </div>
+      </div></div>`;
+    return;
+  }
+
+  const totalValor = provList.reduce((s,p) => s + p.valor, 0);
+  const topProv = provList[0];
+
+  const rows = provList.map((p,i) => `
     <tr>
-      <td>${i+1}</td>
-      <td style="font-weight:600">${esc(p.name)}</td>
-      <td style="font-family:'JetBrains Mono',monospace;color:var(--txt-m)">${p.nit}</td>
-      <td>${p.contact}</td>
-      <td style="text-align:center">${p.oc}</td>
-      <td class="oc-c-grn">$${p.value}M</td>
-      <td>${ocBadge(p.status, p.status==='Activo'?'ok':'gray')}</td>
+      <td style="color:var(--txt-m)">${i+1}</td>
+      <td style="font-weight:600">${esc(p.display)}</td>
+      <td style="text-align:center">${p.pedidos.size}</td>
+      <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:.78rem">${fmtCOP(p.valor)}</td>
+      <td>${ocBadge('Activo','ok')}</td>
     </tr>`).join('');
+
+  const syncStr = RQ_LAST_SYNC ? RQ_LAST_SYNC.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}) : '—';
 
   const html = `
   <div class="oc-wrap">
     <div class="oc-topbar">
       <div>
         <h2><span class="ms" style="font-size:1rem">storefront</span>Proveedores</h2>
-        <p>${totalProv} proveedores · ${activos} activos · $${totalValor}M comprometidos</p>
-      </div>
-      <div class="oc-actions">
-        <button class="oc-btn"><span class="ms" style="font-size:.95rem">download</span>Exportar</button>
-        <button class="oc-btn oc-btn-primary"><span class="ms" style="font-size:.95rem">add</span>Nuevo proveedor</button>
+        <p>${totalProv} proveedor${totalProv!==1?'es':''} · directorio real del formato ISO
+          <button onclick="syncRequisiciones(()=>{renderedTabs.proveedores=false;renderProveedores()})" style="background:none;border:none;color:var(--acc);cursor:pointer;font-size:.75rem;margin-left:6px" title="Recargar">🔄</button>
+        </p>
       </div>
     </div>
 
     <div class="oc-kpis">
-      <div class="oc-kpi"><div class="oc-kl">Total proveedores</div><div class="oc-kv oc-c-blu">${totalProv}</div><div class="oc-kd">en directorio</div></div>
-      <div class="oc-kpi"><div class="oc-kl">Activos</div><div class="oc-kv oc-c-grn">${activos}</div><div class="oc-kd">con OC vigentes</div></div>
-      <div class="oc-kpi"><div class="oc-kl">Top proveedor</div><div class="oc-kv oc-c-vlt" style="font-size:.95rem;line-height:1.2">Aceros del Valle</div><div class="oc-kd">$234M comprometidos</div></div>
-      <div class="oc-kpi"><div class="oc-kl">Valor total</div><div class="oc-kv oc-c-grn">$${totalValor}M</div><div class="oc-kd">comprometido</div></div>
-      <div class="oc-kpi"><div class="oc-kl">Inactivos</div><div class="oc-kv" style="color:var(--txt-m)">${totalProv-activos}</div><div class="oc-kd">archivados</div></div>
+      <div class="oc-kpi"><div class="oc-kl">Total proveedores</div><div class="oc-kv oc-c-blu">${totalProv}</div><div class="oc-kd">del directorio real</div></div>
+      <div class="oc-kpi"><div class="oc-kl">Todos activos</div><div class="oc-kv oc-c-grn">${totalProv}</div><div class="oc-kd">con pedidos</div></div>
+      <div class="oc-kpi"><div class="oc-kl">Top proveedor</div><div class="oc-kv oc-c-vlt" style="font-size:.85rem;line-height:1.3">${esc(topProv.display.slice(0,20))}</div><div class="oc-kd">${fmtCOP(topProv.valor)}</div></div>
+      <div class="oc-kpi"><div class="oc-kl">Valor total</div><div class="oc-kv oc-c-grn">${fmtCOP(totalValor)}</div><div class="oc-kd">comprometido</div></div>
     </div>
 
     <hr class="oc-divider">
     <div class="oc-sect-t">Directorio de proveedores</div>
-    <div class="oc-filterbar">
-      <input type="text" placeholder="🔍 Buscar por nombre, NIT, contacto...">
-      <select><option>Todos</option><option>Activos</option><option>Inactivos</option></select>
-    </div>
     <div class="oc-tbl-wrap">
       <table class="oc-tbl">
-        <thead><tr><th>#</th><th>Razón social</th><th>NIT</th><th>Contacto</th><th>OC</th><th>Valor</th><th>Estado</th></tr></thead>
+        <thead><tr><th>#</th><th>Proveedor</th><th>Pedidos</th><th>Valor</th><th>Estado</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>
 
     <div class="oc-footer">
-      <span>Contro360 · Proveedores</span>
-      <span>${totalProv} en directorio</span>
-      <span>${new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'short',year:'numeric'})}</span>
+      <span>Contro360 · Proveedores · datos reales del formato ISO</span>
+      <span>${totalProv} proveedores · ${fmtCOP(totalValor)}</span>
+      <span>Sync: ${syncStr}</span>
     </div>
   </div>`;
   document.getElementById('comprasPv').innerHTML = html;
-}
-
-/* ════════════════════════════════════════
-   FUTURE: Sync con Sheet de Drive
-   ════════════════════════════════════════ */
-function fetchComprasFromSheet(){
-  if(!SHEET_ID_COMPRAS){
-    console.log('[compras] SHEET_ID_COMPRAS vacío — usando datos mock. Pegue ID en la constante para activar sync.');
-    return;
-  }
-  // Implementación futura: hacer 3 calls JSONP, uno por cada tab del sheet
-  // siguiendo el mismo patrón que syncWithSheet() del módulo principal.
-  // Por cada hoja → poblar MOCK_RQ / MOCK_OC / MOCK_PROVEEDORES con datos reales.
-  // Luego: if(renderedTabs.requisiciones) renderRequisiciones(); etc.
 }
 
 /* ═══════════════════════════════════════════════════════════
