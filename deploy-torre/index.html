@@ -320,6 +320,8 @@ body.light-mode .oc-bt{background:rgba(0,0,0,.06)}
 /* ── Select ── */
 .rq-fase-sel{font-size:.75rem;padding:3px 8px;border-radius:4px;border:1px solid var(--bdr);background:var(--surf2);color:var(--txt);cursor:pointer;font-family:inherit;max-width:180px}
 .rq-fase-sel:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 2px var(--acc-s)}
+body.light-mode .rq-fase-sel{background:#fff;color:#1e293b;border-color:#cbd5e1}
+body.light-mode .rq-fase-sel option{background:#fff;color:#1e293b}
 /* ── Light mode overrides ── */
 body.light-mode .rq-detail-inner{background:rgba(255,255,255,.9)}
 body.light-mode .rq-items-tbl tbody tr:nth-child(even) td{background:rgba(0,0,0,.025)}
@@ -6302,10 +6304,13 @@ function renderRequisiciones(){
     </div>
   </div>`;
   el.innerHTML = html;
+  if(OC_ACTIVE_SUB['comprasRq']) showOCSubTab('comprasRq', OC_ACTIVE_SUB['comprasRq']);
 }
 
 /* ── buildOCFromPedidos: mapea RQ_DATA → array de OC reales ─ */
+const OC_ACTIVE_SUB = {};
 function showOCSubTab(wrapId, tabId){
+  OC_ACTIVE_SUB[wrapId] = tabId;
   const wrap = document.getElementById(wrapId); if(!wrap) return;
   wrap.querySelectorAll('.oc-tab').forEach(t=>t.classList.toggle('on', t.dataset.subtab===tabId));
   wrap.querySelectorAll('.oc-panel').forEach(p=>p.classList.toggle('on', p.dataset.subtab===tabId));
@@ -6641,6 +6646,7 @@ function renderCompras(){
   </div>`;
 
   el.innerHTML = html;
+  if(OC_ACTIVE_SUB['comprasOC']) showOCSubTab('comprasOC', OC_ACTIVE_SUB['comprasOC']);
 
   // función inline para cargar items del pedido seleccionado en detalle
   window._OC_LIST = OC;
