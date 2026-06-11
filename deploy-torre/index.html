@@ -279,18 +279,55 @@ body.light-mode .oc-bt{background:rgba(0,0,0,.06)}
 .rq-expand-btn:hover{color:var(--acc);background:var(--acc-s)}
 .rq-row.open .rq-expand-btn{color:var(--acc)}
 .rq-detail>td{padding:0!important;border-bottom:1px solid var(--bdr-m)!important}
-.rq-detail-inner{background:var(--surf2);padding:12px 20px 16px;border-top:1px solid var(--bdr)}
+/* ── Detail panel card ── */
+.rq-detail-inner{background:var(--surf2);border:1px solid var(--bdr-m);border-left:3px solid var(--acc);border-radius:var(--r-md);margin:10px 16px 16px;padding:0;overflow:hidden}
+/* ── Detail header ── */
+.rq-detail-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--bdr);gap:12px;flex-wrap:wrap}
+.rq-detail-header-left{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.rq-detail-header-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--txt-m)}
+.rq-chip{font-size:.68rem;padding:2px 8px;border-radius:100px;background:var(--surf);border:1px solid var(--bdr);color:var(--txt-s);white-space:nowrap}
+.rq-chip-danger{background:var(--red-s);border-color:var(--red-b);color:var(--red)}
+.rq-detail-header-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.rq-detail-total{font-size:.78rem;color:var(--txt);white-space:nowrap}
+.rq-detail-total b{font-family:'JetBrains Mono',monospace;font-size:.8rem}
+.rq-detail-sheet-link{font-size:.72rem;color:var(--acc);text-decoration:none;white-space:nowrap;transition:.15s}
+.rq-detail-sheet-link:hover{text-decoration:underline;opacity:.8}
+/* ── Items table ── */
 .rq-items-tbl{width:100%;border-collapse:collapse;font-size:.75rem;min-width:640px}
-.rq-items-tbl th{font-size:.63rem;font-weight:700;color:var(--txt-m);padding:6px 8px;border-bottom:1px solid var(--bdr-m);text-align:left;text-transform:uppercase;letter-spacing:.07em;white-space:nowrap;background:transparent}
+.rq-items-tbl th{font-size:.63rem;font-weight:700;color:var(--txt-m);padding:6px 8px;border-bottom:1px solid var(--bdr-m);text-align:left;text-transform:uppercase;letter-spacing:.07em;white-space:nowrap;background:var(--surf)}
+.rq-items-tbl th:first-child{padding-left:16px}
+.rq-items-tbl th:last-child{padding-right:16px}
 .rq-items-tbl td{padding:6px 8px;border-bottom:1px solid var(--bdr);color:var(--txt);vertical-align:middle;white-space:nowrap}
+.rq-items-tbl td:first-child{padding-left:16px}
+.rq-items-tbl td:last-child{padding-right:16px}
 .rq-items-tbl tr:last-child td{border-bottom:none}
-.rq-anulado td{text-decoration:line-through;opacity:.55}
-.rq-item-btn{background:none;border:1px solid var(--bdr);border-radius:4px;cursor:pointer;color:var(--txt-m);font-size:.72rem;padding:2px 7px;transition:.15s;font-family:inherit}
-.rq-item-btn:hover:not(:disabled){background:var(--surf);border-color:var(--bdr-m);color:var(--txt)}
+.rq-items-tbl tbody tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+/* ── Anulado row ── */
+.rq-anulado{opacity:.5}
+.rq-anulado td{text-decoration:none}
+/* ── Badge anulado ── */
+.rq-badge-anulado{background:var(--red-s);color:var(--red);border:1px solid var(--red-b);border-radius:4px;font-size:.62rem;font-weight:700;padding:1px 6px;margin-left:6px;vertical-align:middle;text-decoration:none;display:inline-block}
+/* ── Item buttons ── */
+.rq-item-btn{background:none;border:1px solid var(--bdr);border-radius:var(--r-sm);cursor:pointer;color:var(--txt-m);font-size:.72rem;padding:4px 10px;min-height:26px;transition:.15s;font-family:inherit}
+.rq-item-btn:hover:not(:disabled){background:var(--surf);border-color:var(--acc);color:var(--txt)}
 .rq-item-btn:disabled{opacity:.45;cursor:not-allowed}
+.rq-item-btn.danger:hover{border-color:var(--red);color:var(--red);background:var(--red-s)}
+/* ── Detail footer ── */
+.rq-detail-footer{display:flex;justify-content:flex-end;padding:8px 16px;border-top:1px solid var(--bdr);font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--txt-s)}
+.rq-detail-footer b{color:var(--txt);margin-left:4px}
+/* ── Empty state ── */
+.rq-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px;color:var(--txt-m);font-size:.8rem;gap:6px}
+/* ── Select ── */
 .rq-fase-sel{font-size:.75rem;padding:3px 8px;border-radius:4px;border:1px solid var(--bdr);background:var(--surf2);color:var(--txt);cursor:pointer;font-family:inherit;max-width:180px}
 .rq-fase-sel:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 2px var(--acc-s)}
-body.light-mode .rq-detail-inner{background:rgba(0,0,0,.02)}
+/* ── Light mode overrides ── */
+body.light-mode .rq-detail-inner{background:rgba(255,255,255,.9)}
+body.light-mode .rq-items-tbl tbody tr:nth-child(even) td{background:rgba(0,0,0,.025)}
+/* ── Responsive ── */
+@media(max-width:768px){
+  .rq-detail-inner{margin:8px 6px 12px}
+  .rq-detail-tbl-wrap{overflow-x:auto}
+}
 
 /* ═══ MÓDULO PRESUPUESTO BIM (.bp-*) ═══════════════════════════════ */
 .bp-wrap{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r-lg);overflow:hidden}
@@ -5955,46 +5992,112 @@ function rqEditItem(codigo, fila, articuloLabel, cantActual, btnEl){
 /** Construye el HTML de la tabla de ítems de una RQ (usado en la fila expandida) */
 function rqBuildDetail(rq){
   var canEdit = CURRENT_USER && (CURRENT_USER.role === 'ADMIN' || CURRENT_USER.role === 'EDITOR');
-  if(!rq.items || rq.items.length === 0){
-    return '<div style="color:var(--txt-m);font-size:.8rem;padding:8px 0">Sin artículos registrados.</div>';
+
+  // ── Cálculo del total de ítems activos ──
+  var totalActivo = 0;
+  var countAnulados = 0;
+  if(rq.items){
+    rq.items.forEach(function(it){
+      if(it.anulado){ countAnulados++; } else { totalActivo += Number(it.vTotal)||0; }
+    });
   }
+
+  // ── Estado vacío ──
+  if(!rq.items || rq.items.length === 0){
+    return '<div class="rq-empty"><span style="font-size:1.6rem">📭</span><span>Sin artículos registrados</span></div>';
+  }
+
   var fmtV = function(v){ return v ? '$' + Number(v).toLocaleString('es-CO') : '—'; };
-  var header = '<table class="rq-items-tbl"><thead><tr>'
+
+  // ── Header del panel ──
+  var nItems = rq.items.length;
+  var chipAnulados = countAnulados > 0
+    ? ' <span class="rq-chip rq-chip-danger">' + countAnulados + ' anulado' + (countAnulados>1?'s':'') + '</span>'
+    : '';
+  var totalStr = totalActivo > 0
+    ? '<b>' + fmtCOP(totalActivo) + '</b>'
+    : '<span style="color:var(--txt-m)">Sin valorizar</span>';
+  var sheetLink = rq.archivo
+    ? ' <a class="rq-detail-sheet-link" href="' + esc(rq.archivo) + '" target="_blank">Abrir en Sheet ↗</a>'
+    : '';
+
+  var panelHeader = '<div class="rq-detail-header">'
+    + '<div class="rq-detail-header-left">'
+    + '<span class="rq-detail-header-label">Materiales</span>'
+    + '<span class="rq-chip">' + nItems + ' ítem' + (nItems!==1?'s':'') + '</span>'
+    + chipAnulados
+    + '</div>'
+    + '<div class="rq-detail-header-right">'
+    + '<span class="rq-detail-total">Total: ' + totalStr + '</span>'
+    + sheetLink
+    + '</div>'
+    + '</div>';
+
+  // ── Tabla ──
+  var header = '<div class="rq-detail-tbl-wrap"><table class="rq-items-tbl"><thead><tr>'
     + '<th>#</th><th>Artículo / Descripción</th><th>Und</th>'
-    + '<th>Cant.</th><th>Ingresado</th><th>Faltante</th>'
-    + '<th>V/Unit</th><th>V/Total</th><th>Proveedor</th>'
-    + (canEdit ? '<th>Acciones</th>' : '')
+    + '<th style="text-align:right">Cant.</th><th style="text-align:right">Ingresado</th><th style="text-align:right">Faltante</th>'
+    + '<th style="text-align:right">V/Unit</th><th style="text-align:right">V/Total</th><th>Proveedor</th>'
+    + (canEdit ? '<th style="text-align:right">Acciones</th>' : '')
     + '</tr></thead><tbody>';
 
   var rows = rq.items.map(function(it){
     var anulado = it.anulado;
     var trCls = anulado ? ' class="rq-anulado"' : '';
-    var artLabel = esc(it.articulo || '');
-    var desc = it.descripcion ? (' <span style="color:var(--txt-m);font-weight:400">' + esc(it.descripcion) + '</span>') : '';
-    var badge = anulado ? ' <span style="font-size:.65rem;background:var(--red-s);color:var(--red);border:1px solid var(--red-b);border-radius:3px;padding:1px 5px;vertical-align:middle">ANULADO</span>' : '';
+    var artLabel = '<span style="font-weight:600">' + esc(it.articulo || '') + '</span>';
+    var desc = it.descripcion
+      ? '<span style="display:block;font-size:.68rem;color:var(--txt-m);font-weight:400;margin-top:1px">' + esc(it.descripcion) + '</span>'
+      : '';
+    var badge = anulado ? '<span class="rq-badge-anulado">ANULADO</span>' : '';
+
+    // ingresado: mostrar ✓ si completo
+    var cantIngresoNum = Number(it.cantIngreso)||0;
+    var cantNum = Number(it.cant)||0;
+    var ingresoDisplay = esc(String(it.cantIngreso||'0'));
+    var ingresoColor = 'var(--grn)';
+    if(cantNum > 0 && cantIngresoNum >= cantNum){
+      ingresoDisplay = '✓ ' + ingresoDisplay;
+    }
+
+    // faltante: punto ● si hay pendiente
+    var faltanteNum = Number(it.cantFaltante)||0;
+    var faltanteDisplay = esc(String(it.cantFaltante||'0'));
+    var faltanteColor = faltanteNum > 0 ? 'var(--amb)' : 'var(--txt-m)';
+    if(faltanteNum > 0){ faltanteDisplay = '● ' + faltanteDisplay; }
+
+    var monoStyle = 'font-family:\'JetBrains Mono\',monospace;text-align:right';
+
     var acciones = '';
     if(canEdit){
       var anularLabel = anulado ? '↩ Restaurar' : '🚫 Anular';
-      acciones = '<td style="white-space:nowrap;display:flex;gap:4px">'
-        + '<button class="rq-item-btn" title="' + (anulado?'Restaurar':'Anular') + '" onclick="rqAnularItem(' + JSON.stringify(rq.codigo) + ',' + JSON.stringify(it.fila) + ',this)">' + anularLabel + '</button>'
+      var anularBtnCls = (!anulado) ? 'rq-item-btn danger' : 'rq-item-btn';
+      acciones = '<td style="white-space:nowrap">'
+        + '<div style="display:flex;gap:6px;justify-content:flex-end">'
+        + '<button class="' + anularBtnCls + '" title="' + (anulado?'Restaurar':'Anular') + '" onclick="rqAnularItem(' + JSON.stringify(rq.codigo) + ',' + JSON.stringify(it.fila) + ',this)">' + anularLabel + '</button>'
         + (!anulado ? '<button class="rq-item-btn" title="Editar cantidad" onclick="rqEditItem(' + JSON.stringify(rq.codigo) + ',' + JSON.stringify(it.fila) + ',' + JSON.stringify(String(it.articulo||'')) + ',' + JSON.stringify(it.cant) + ',this)">✏ Cant.</button>' : '')
+        + '</div>'
         + '</td>';
     }
     return '<tr' + trCls + '>'
-      + '<td style="color:var(--txt-m)">' + esc(String(it.fila||'')) + '</td>'
-      + '<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis">' + artLabel + desc + badge + '</td>'
+      + '<td style="color:var(--txt-m);font-family:\'JetBrains Mono\',monospace">' + esc(String(it.fila||'')) + '</td>'
+      + '<td>' + artLabel + desc + badge + '</td>'
       + '<td>' + esc(String(it.und||'')) + '</td>'
-      + '<td style="text-align:right">' + esc(String(it.cant||'')) + '</td>'
-      + '<td style="text-align:right;color:var(--grn)">' + esc(String(it.cantIngreso||'0')) + '</td>'
-      + '<td style="text-align:right;color:' + (Number(it.cantFaltante)>0?'var(--amb)':'var(--txt-m)') + '">' + esc(String(it.cantFaltante||'0')) + '</td>'
-      + '<td style="text-align:right">' + fmtV(it.vUnitario) + '</td>'
-      + '<td style="text-align:right;font-weight:600">' + fmtV(it.vTotal) + '</td>'
-      + '<td style="max-width:120px;overflow:hidden;text-overflow:ellipsis">' + esc(String(it.proveedor||'—')) + '</td>'
+      + '<td style="' + monoStyle + '">' + esc(String(it.cant||'')) + '</td>'
+      + '<td style="' + monoStyle + ';color:' + ingresoColor + '">' + ingresoDisplay + '</td>'
+      + '<td style="' + monoStyle + ';color:' + faltanteColor + '">' + faltanteDisplay + '</td>'
+      + '<td style="' + monoStyle + '">' + fmtV(it.vUnitario) + '</td>'
+      + '<td style="' + monoStyle + ';font-weight:600">' + fmtV(it.vTotal) + '</td>'
+      + '<td style="max-width:140px;overflow:hidden;text-overflow:ellipsis">' + esc(String(it.proveedor||'—')) + '</td>'
       + acciones
       + '</tr>';
   }).join('');
 
-  return header + rows + '</tbody></table>';
+  // ── Footer ──
+  var footer = totalActivo > 0
+    ? '<div class="rq-detail-footer">Σ V/Total activos: <b>' + fmtCOP(totalActivo) + '</b></div>'
+    : '';
+
+  return panelHeader + header + rows + '</tbody></table></div>' + footer;
 }
 
 function renderRequisiciones(){
@@ -6132,12 +6235,7 @@ function renderRequisiciones(){
       const colspan = canEdit ? 10 : 10;
       detailRow = `<tr class="rq-detail">
         <td colspan="${colspan}">
-          <div class="rq-detail-inner">
-            <div style="font-size:.7rem;font-weight:700;color:var(--txt-m);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">
-              Materiales · ${esc(r.codigo)} ${r.desc ? '· '+esc(r.desc.slice(0,60)) : ''}
-            </div>
-            <div style="overflow-x:auto">${rqBuildDetail(r)}</div>
-          </div>
+          <div class="rq-detail-inner">${rqBuildDetail(r)}</div>
         </td>
       </tr>`;
     }
