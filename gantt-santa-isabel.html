@@ -5652,7 +5652,7 @@ function toggleAlerts(){
    WRITE-BACK (placeholder — requiere Apps Script)
    ═══════════════════════════════════════════════════════════ */
 const WB_URL = 'https://script.google.com/macros/s/AKfycbx4rU27dcs08i9suobyLOR8x2EadBOsz1cgVEjQNbsY6NZhJXGaf3U3mpTZ8grQTQ60SA/exec';
-const RQ_SHEET_ID = ''; // ← Pegar ID del Sheet de Requisiciones aquí
+const RQ_SHEET_ID = '1FGs7TKradVan4wanomsRbNDmbYkiJqRdsFAiD03kYsA'; // Libro de órdenes de pedido (una pestaña "PEDIDO N" por orden)
 let wbTimer = null;
 
 function scheduleWriteBack(){
@@ -6032,44 +6032,49 @@ function syncRequisiciones(onDone){
   if(!RQ_SHEET_ID){ RQ_STATUS='no-sheet'; if(onDone)onDone(); renderRequisiciones(); return; }
   RQ_STATUS = 'loading';
   renderRequisiciones();
-  const cb = 'rqCb' + Date.now();
-  const url = `https://docs.google.com/spreadsheets/d/${RQ_SHEET_ID}/gviz/tq?tqx=responseHandler:${cb}&sheet=Sheet1`;
-  const s = document.createElement('script'); s.src = url;
-  window[cb] = function(res){
-    delete window[cb]; s.remove();
-    try{
-      const cols = (res.table.cols||[]).map(c=>(c.label||'').toUpperCase().trim());
-      const idx = k => cols.findIndex(c=>c.includes(k));
-      const iCod  = idx('CODIGO');  const iDes = idx('DESC');
-      const iFase = idx('FASE');    const iFec = idx('FECHA');
-      const iEnc  = idx('ENCARG'); const iEst = idx('ESTADO');
-      const iVal  = idx('VALOR');   const iPri = idx('PRIOR');
-      const iNot  = idx('NOTA');    const iUrl = idx('ARCHIVO');
-      RQ_DATA = (res.table.rows||[]).filter(r=>r.c&&r.c[iCod]?.v).map((r,i)=>{
-        const v = n => (r.c[n]?.v??'');
-        const est = String(v(iEst)).toUpperCase().replace(/ /g,'_').replace('Ó','O').replace('É','E').replace('Á','A');
-        return {
-          num: i+1,
-          codigo:  String(v(iCod)).trim(),
-          desc:    String(v(iDes)).trim(),
-          fase:    String(v(iFase)).trim().toUpperCase(),
-          fecha:   String(v(iFec)).trim(),
-          encargado: String(v(iEnc)).trim(),
-          estado:  est || 'PENDIENTE',
-          valor:   parseFloat(v(iVal))||0,
-          prioridad: String(v(iPri)).toUpperCase().trim()||'MEDIA',
-          notas:   String(v(iNot)||'').trim(),
-          archivo: String(v(iUrl)||'').trim(),
-        };
-      });
-      RQ_STATUS = 'ok';
-      RQ_LAST_SYNC = new Date();
-    }catch(e){ RQ_STATUS = 'error'; }
+  fetch(WB_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'pedidos', sheetId: RQ_SHEET_ID })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if(!res.ok || !Array.isArray(res.pedidos)) throw new Error('Respuesta inválida del Apps Script');
+    RQ_DATA = res.pedidos.map((p, i) => {
+      const items = Array.isArray(p.items) ? p.items : [];
+      let desc;
+      if(items.length === 0){
+        desc = '(sin artículos)';
+      } else {
+        const primeros = items.slice(0,2).map(it=>String(it.articulo||'').trim()).filter(Boolean).join(', ');
+        desc = primeros + (items.length > 2 ? ` +${items.length-2} más` : '');
+      }
+      return {
+        num:        i+1,
+        codigo:     String(p.consecutivo || p.tab || '').trim(),
+        desc:       desc,
+        fase:       String(p.fase || '').trim().toUpperCase(),
+        fecha:      String(p.fechaPedido || '').trim(),
+        encargado:  String(p.solicitante || '').trim(),
+        estado:     'PENDIENTE',
+        valor:      p.total || 0,
+        prioridad:  'MEDIA',
+        notas:      String(p.observaciones || '').trim(),
+        archivo:    'https://docs.google.com/spreadsheets/d/' + RQ_SHEET_ID + '/edit#gid=' + p.gid,
+        items:      items,
+        itemsCount: items.length,
+      };
+    });
+    RQ_STATUS = 'ok';
+    RQ_LAST_SYNC = new Date();
     renderRequisiciones();
     if(onDone) onDone();
-  };
-  s.onerror = ()=>{ delete window[cb]; s.remove(); RQ_STATUS='error'; renderRequisiciones(); };
-  document.head.appendChild(s);
+  })
+  .catch(() => {
+    RQ_STATUS = 'error';
+    renderRequisiciones();
+    if(onDone) onDone();
+  });
 }
 
 function renderRequisiciones(){
@@ -6082,9 +6087,8 @@ function renderRequisiciones(){
       <div style="font-size:2rem;margin-bottom:12px">📋</div>
       <div style="font-size:1rem;font-weight:700;color:var(--txt);margin-bottom:8px">Sheet de Requisiciones no configurado</div>
       <div style="font-size:.85rem;max-width:480px;margin:0 auto;line-height:1.7">
-        Crea el Google Sheet con las columnas: <code>CODIGO · DESCRIPCION · FASE · FECHA_REQ · ENCARGADO · ESTADO · VALOR · PRIORIDAD · NOTAS · ARCHIVO_DRIVE</code><br><br>
-        Luego pega el ID del Sheet en:<br>
-        <code style="background:var(--bg-el);padding:4px 10px;border-radius:6px;font-size:.8rem">const RQ_SHEET_ID = '← TU_ID_AQUÍ';</code>
+        Configura el ID del libro de pedidos en <code>RQ_SHEET_ID</code>.<br><br>
+        <code style="background:var(--bg-el);padding:4px 10px;border-radius:6px;font-size:.8rem">const RQ_SHEET_ID = '← ID_DEL_LIBRO_DE_PEDIDOS';</code>
       </div>
       <a href="https://drive.google.com/drive/folders/1HLYI4F_hIw6pYYnswoHg2GM9CQH7OIJ7" target="_blank"
         style="display:inline-flex;align-items:center;gap:6px;margin-top:18px;background:var(--accent);color:#fff;padding:8px 18px;border-radius:8px;text-decoration:none;font-weight:600;font-size:.85rem">
@@ -6166,15 +6170,15 @@ function renderRequisiciones(){
   };
   const rows = data.map((r,i)=>`<tr>
     <td style="color:var(--txt-m)">${r.num}</td>
-    <td><code style="font-size:.75rem;background:var(--bg-el);padding:2px 6px;border-radius:4px">${r.codigo}</code></td>
-    <td title="${r.desc}" style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.desc}</td>
-    <td><span style="font-size:.75rem;font-weight:700;color:#60a5fa">${r.fase}</span></td>
-    <td style="font-size:.78rem;color:var(--txt-m)">${r.fecha||'—'}</td>
-    <td style="font-size:.78rem">${r.encargado||'—'}</td>
+    <td><code style="font-size:.75rem;background:var(--bg-el);padding:2px 6px;border-radius:4px">${esc(r.codigo)}</code></td>
+    <td title="${esc(r.desc)}" style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(r.desc)}${r.itemsCount>0?`<span style="font-size:.7rem;color:var(--txt-m);background:var(--bg-el);border:1px solid var(--border);padding:1px 6px;border-radius:3px;margin-left:6px">⊞ ${r.itemsCount} ítems</span>`:''}</td>
+    <td><span style="font-size:.75rem;font-weight:700;color:#60a5fa">${esc(r.fase)}</span></td>
+    <td style="font-size:.78rem;color:var(--txt-m)">${esc(r.fecha)||'—'}</td>
+    <td style="font-size:.78rem">${esc(r.encargado)||'—'}</td>
     <td>${prioBadge(r.prioridad)}</td>
     <td>${statusBadgeRQ(r.estado)}</td>
     <td style="font-size:.78rem;color:var(--txt-m);text-align:right">${fmtVal(r.valor)}</td>
-    <td style="text-align:center">${r.archivo?`<a href="${r.archivo}" target="_blank" title="Ver archivo en Drive" style="color:var(--accent);text-decoration:none"><span class="ms" style="font-size:1rem">attach_file</span></a>`:'—'}</td>
+    <td style="text-align:center">${r.archivo?`<a href="${esc(r.archivo)}" target="_blank" title="Ver archivo en Drive" style="color:var(--accent);text-decoration:none"><span class="ms" style="font-size:1rem">attach_file</span></a>`:'—'}</td>
   </tr>`).join('');
 
   const syncStr = RQ_LAST_SYNC ? RQ_LAST_SYNC.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}) : '—';
