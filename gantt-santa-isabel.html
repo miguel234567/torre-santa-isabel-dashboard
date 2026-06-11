@@ -1572,6 +1572,67 @@ body.light-mode .status-bar{background:#e8edf3}
   .dep-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 }
 
+/* ═══════════ CAPA DE PULIDO GLOBAL (design polish) ═══════════ */
+
+/* A. TIPOGRAFÍA Y RITMO ─────────────────────────────────────── */
+.tab-content h2{letter-spacing:-.02em;line-height:1.15}
+.tab-content h2+p,.tab-content h2+div{margin-top:2px}
+.kpi-stat-label,.kpi-card-title,.oc-tbl th,.rq-items-tbl th,.phases-table th,
+.oc-kl,.oc-sect-t,.oc-box h4{letter-spacing:.08em}
+
+/* B. SUPERFICIES — hover refinado ───────────────────────────── */
+.kpi-card,.kpi-stat,.oc-kpi,.gantt-wrap,.kanban-col,.plan-card,.bp-wrap{
+  transition:border-color .15s,box-shadow .15s}
+.kpi-card:hover,.kpi-stat:hover,.gantt-wrap:hover,.kanban-col:hover,
+.plan-card:hover,.bp-wrap:hover{
+  border-color:var(--bdr-m);
+  box-shadow:0 2px 8px rgba(0,0,0,.08)}
+body.light-mode .kpi-card:hover,body.light-mode .kpi-stat:hover,
+body.light-mode .gantt-wrap:hover,body.light-mode .kanban-col:hover,
+body.light-mode .plan-card:hover,body.light-mode .bp-wrap:hover{
+  box-shadow:0 1px 3px rgba(15,23,42,.06)}
+
+/* C. TABLAS GLOBALES ─────────────────────────────────────────── */
+.oc-tbl th,.rq-items-tbl th,.phases-table th{font-size:.64rem;letter-spacing:.08em}
+.oc-tbl tbody tr,.rq-items-tbl tbody tr,.phases-table tbody tr{transition:background .12s}
+.oc-tbl tbody tr:hover td,.rq-items-tbl tbody tr:hover td,
+.phases-table tbody tr:hover td{background:rgba(125,150,200,.06)}
+body.light-mode .oc-tbl tbody tr:hover td,
+body.light-mode .rq-items-tbl tbody tr:hover td,
+body.light-mode .phases-table tbody tr:hover td{background:rgba(15,23,42,.04)}
+
+/* D. BOTONES E INTERACCIÓN ───────────────────────────────────── */
+button{transition:color .15s,background .15s,border-color .15s,transform .15s}
+button:active{transform:scale(.97)}
+button:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,select:focus-visible,input:focus-visible,
+a:focus-visible{
+  outline:2px solid var(--acc);
+  outline-offset:2px;
+  border-radius:var(--r-sm,4px)}
+
+/* E. SIDEBAR — ítem activo con acento lateral ───────────────── */
+.sni{transition:background .15s,color .15s}
+.sni.active{box-shadow:inset 3px 0 0 var(--acc);font-weight:600}
+
+/* F. MODO CLARO — inputs globales (no override específico existe) */
+body.light-mode input:not([type=range]),
+body.light-mode select,
+body.light-mode textarea{
+  background:#fff;border-color:#cbd5e1;color:#1e293b}
+
+/* G. SCROLLBARS GLOBALES ─────────────────────────────────────── */
+*::-webkit-scrollbar{width:8px;height:8px}
+*::-webkit-scrollbar-track{background:transparent}
+*::-webkit-scrollbar-thumb{background:var(--bdr-m);border-radius:4px}
+body.light-mode *::-webkit-scrollbar-thumb{background:#c3cedd}
+
+/* H. TOAST ───────────────────────────────────────────────────── */
+#toast{border-radius:var(--r-md,8px)!important;box-shadow:0 8px 24px rgba(0,0,0,.25)!important}
+body.light-mode #toast{box-shadow:0 8px 24px rgba(15,23,42,.15)!important}
+
+/* ═══════════ FIN CAPA DE PULIDO GLOBAL ════════════════════════ */
+
 /* ─── Pulido extra teléfonos (revisión en dispositivo real) ────── */
 @media(max-width:480px){
   .status-bar{padding:6px 10px;font-size:.68rem;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
