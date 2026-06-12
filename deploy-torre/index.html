@@ -347,6 +347,7 @@ body.light-mode .oc-bt{background:rgba(0,0,0,.06)}
 .rq-fase-sel:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 2px var(--acc-s)}
 body.light-mode .rq-fase-sel{background:#fff;color:#1e293b;border-color:#cbd5e1}
 body.light-mode .rq-fase-sel option{background:#fff;color:#1e293b}
+.rq-estado-sel{min-width:110px}
 /* ── Light mode overrides ── */
 body.light-mode .rq-detail-inner{background:rgba(255,255,255,.9)}
 body.light-mode .rq-items-tbl tbody tr:nth-child(even) td{background:rgba(0,0,0,.025)}
@@ -1671,6 +1672,55 @@ body.light-mode #toast{box-shadow:0 8px 24px rgba(15,23,42,.15)!important}
   .tab-content{padding:12px 10px}
 }
 
+/* ═══ BITÁCORA DIARIA DE OBRA (.bo-*) ═══ */
+.bo-wrap{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+.bo-list{flex:0 0 270px;min-width:220px;background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r-lg);overflow:hidden}
+.bo-list-hdr{padding:12px 14px;font-size:.78rem;font-weight:700;color:var(--txt);border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;background:var(--surf2)}
+.bo-list-item{padding:9px 14px;border-bottom:1px solid var(--bdr);cursor:pointer;transition:.12s;font-size:.78rem}
+.bo-list-item:hover{background:var(--surf2)}
+.bo-list-item.active{background:rgba(var(--acc-rgb,59,130,246),.1);border-left:3px solid var(--acc)}
+.bo-list-item .bo-li-date{font-weight:700;color:var(--txt);font-size:.8rem}
+.bo-list-item .bo-li-meta{color:var(--txt-m);font-size:.72rem;margin-top:2px}
+.bo-form{flex:1 1 520px;background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r-lg);overflow:hidden}
+.bo-form-hdr{padding:12px 18px;border-bottom:1px solid var(--bdr);background:var(--surf2);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.bo-form-body{padding:18px}
+.bo-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.bo-field{display:flex;flex-direction:column;gap:5px;font-size:.78rem;font-weight:600;color:var(--txt-m)}
+.bo-input{background:var(--surf2);border:1px solid var(--bdr-m);border-radius:var(--r);padding:7px 10px;color:var(--txt);font-size:.85rem;font-family:inherit;outline:none;height:36px;transition:.15s;width:100%;box-sizing:border-box}
+.bo-input:focus{border-color:var(--acc)}
+.bo-textarea{background:var(--surf2);border:1px solid var(--bdr-m);border-radius:var(--r);padding:9px 10px;color:var(--txt);font-size:.84rem;font-family:inherit;outline:none;resize:vertical;min-height:80px;transition:.15s;width:100%;box-sizing:border-box}
+.bo-textarea:focus{border-color:var(--acc)}
+.bo-tbl{width:100%;border-collapse:collapse;font-size:.78rem;margin-bottom:0}
+.bo-tbl th{font-size:.68rem;font-weight:700;color:var(--txt-m);padding:6px 8px;border-bottom:1px solid var(--bdr-m);text-align:left;text-transform:uppercase;letter-spacing:.06em;background:var(--surf2)}
+.bo-tbl td{padding:5px 7px;border-bottom:1px solid var(--bdr);color:var(--txt);vertical-align:middle}
+.bo-tbl tr:last-child td{border-bottom:none}
+.bo-tbl tbody tr:hover td{background:rgba(255,255,255,.02)}
+.bo-tbl-in{background:var(--surf2);border:1px solid var(--bdr-m);border-radius:5px;padding:4px 7px;color:var(--txt);font-size:.82rem;font-family:inherit;outline:none;transition:.15s;box-sizing:border-box}
+.bo-tbl-in:focus{border-color:var(--acc)}
+.bo-tbl-in.num{width:72px;text-align:right}
+.bo-tbl-in.time{width:82px}
+.bo-tbl-in.loc{width:130px}
+.bo-sec-title{font-size:.8rem;font-weight:700;color:var(--txt);margin:16px 0 8px;display:flex;align-items:center;gap:7px}
+.bo-sec-title::before{content:'';display:block;width:3px;height:14px;background:var(--acc);border-radius:2px}
+.bo-total-row td{font-weight:700;background:rgba(255,255,255,.03)!important}
+.bo-topbar{padding:10px 18px;border-bottom:1px solid var(--bdr);background:var(--surf2);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bo-modal-overlay{position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.7)}
+.bo-modal-box{background:var(--bg-card);border:1px solid var(--border-s);border-radius:var(--r-lg);padding:24px;width:min(90vw,640px);max-height:88vh;overflow-y:auto;box-shadow:0 30px 80px rgba(0,0,0,.8);display:flex;flex-direction:column;gap:14px}
+.bo-modal-ta{background:var(--surf2);border:1px solid var(--bdr-m);border-radius:var(--r);padding:12px;color:var(--txt);font-size:.8rem;font-family:'JetBrains Mono',monospace;resize:vertical;min-height:280px;width:100%;box-sizing:border-box}
+@media(max-width:768px){
+  .bo-wrap{flex-direction:column}
+  .bo-list{flex:none;width:100%}
+  .bo-row{grid-template-columns:1fr}
+  .bo-tbl{font-size:.72rem}
+  .bo-tbl-in.loc{width:90px}
+}
+body.light-mode .bo-input,body.light-mode .bo-textarea,body.light-mode .bo-tbl-in{background:#f1f5f9;border-color:#cbd5e1;color:#1e293b}
+body.light-mode .bo-form,body.light-mode .bo-list{background:#fff;border-color:#d1dbe8}
+body.light-mode .bo-form-hdr,body.light-mode .bo-list-hdr,body.light-mode .bo-tbl th,body.light-mode .bo-topbar{background:#f8fafc}
+body.light-mode .bo-tbl td{border-color:#e2e8f0}
+body.light-mode .bo-modal-box{background:#fff}
+body.light-mode .bo-modal-ta{background:#f1f5f9;border-color:#cbd5e1;color:#1e293b}
+
 /* ═══ REPORTE IMPRESO / PDF (Ctrl+P) ═══ */
 @media print{
   body{background:#fff!important;color:#111!important;visibility:visible!important}
@@ -2008,18 +2058,36 @@ body.light-mode #toast{box-shadow:0 8px 24px rgba(15,23,42,.15)!important}
 
 <!-- ══ TAB: BITÁCORA ══════════════════════════════════════════════ -->
 <section class="tab-content" id="tab-bitacora">
-  <div class="page-header"><div><h2 class="page-title">Bitácora de Obra</h2><p class="page-subtitle">Registro cronológico de todos los cambios de avance del proyecto</p></div></div>
-  <div class="bit-toolbar">
-    <strong style="font-size:.95rem;display:none">📋 Bitácora de Cambios</strong>
-    <button class="chip active" id="bfAll"  onclick="setBitFilter('all',this)">Todos</button>
-    <button class="chip" id="bfLocal" onclick="setBitFilter('local',this)">Local</button>
-    <button class="chip" id="bfSync"  onclick="setBitFilter('sync',this)">Sync</button>
-    <span class="bit-count" id="bitCount">0 registros</span>
-    <button class="btn btn-ghost" style="margin-left:auto" onclick="exportBitacora()">⬇ Exportar CSV</button>
-    <button class="btn btn-ghost" onclick="clearBitacora()">🗑 Limpiar</button>
-  </div>
-  <div id="bitContainer">
-    <div class="bit-empty"><div class="bit-empty-icon">📋</div>Sin cambios registrados aún.<br><span style="font-size:.8rem;color:var(--txt-m)">Los ajustes de avance se guardan aquí automáticamente.</span></div>
+  <div class="page-header"><div><h2 class="page-title">Bitácora de Obra</h2><p class="page-subtitle">Registro diario de obra y cambios de avance del proyecto</p></div></div>
+  <div id="bitWrap">
+    <div class="oc-tabs">
+      <button class="oc-tab on" data-subtab="diaria" onclick="showOCSubTab('bitWrap','diaria')">📝 Diaria</button>
+      <button class="oc-tab" data-subtab="cambios" onclick="showOCSubTab('bitWrap','cambios')">🔄 Cambios</button>
+    </div>
+    <!-- ── Panel Diaria ── -->
+    <div class="oc-panel on" data-subtab="diaria" id="boPanel">
+      <div class="bo-topbar">
+        <button class="btn btn-primary" style="font-size:.78rem" onclick="boNuevoDia()">➕ Nuevo día</button>
+        <button class="btn btn-ghost" style="font-size:.78rem" onclick="boReporteRango('semanal')">📅 Reporte semanal</button>
+        <button class="btn btn-ghost" style="font-size:.78rem" onclick="boReporteRango('mensual')">📆 Reporte mensual</button>
+      </div>
+      <div id="boDiaria" style="padding:16px"></div>
+    </div>
+    <!-- ── Panel Cambios (existente) ── -->
+    <div class="oc-panel" data-subtab="cambios">
+      <div class="bit-toolbar">
+        <strong style="font-size:.95rem;display:none">📋 Bitácora de Cambios</strong>
+        <button class="chip active" id="bfAll"  onclick="setBitFilter('all',this)">Todos</button>
+        <button class="chip" id="bfLocal" onclick="setBitFilter('local',this)">Local</button>
+        <button class="chip" id="bfSync"  onclick="setBitFilter('sync',this)">Sync</button>
+        <span class="bit-count" id="bitCount">0 registros</span>
+        <button class="btn btn-ghost" style="margin-left:auto" onclick="exportBitacora()">⬇ Exportar CSV</button>
+        <button class="btn btn-ghost" onclick="clearBitacora()">🗑 Limpiar</button>
+      </div>
+      <div id="bitContainer">
+        <div class="bit-empty"><div class="bit-empty-icon">📋</div>Sin cambios registrados aún.<br><span style="font-size:.8rem;color:var(--txt-m)">Los ajustes de avance se guardan aquí automáticamente.</span></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -5174,7 +5242,7 @@ function switchTab(name){
   if(name==='update'   && !renderedTabs.update)   { renderUpdatePanel();  renderedTabs.update=true; }
   if(name==='board'){ if(!renderedTabs.board) renderedTabs.board=true; renderBoard(); }
   if(name==='calendar'){ if(!renderedTabs.calendar) renderedTabs.calendar=true; renderCalendar(); }
-  if(name==='bitacora'){ if(!renderedTabs.bitacora) renderedTabs.bitacora=true; renderBitacora(); }
+  if(name==='bitacora'){ if(!renderedTabs.bitacora) renderedTabs.bitacora=true; renderBitacora(); renderBODiariaIfActive(); }
   if(name==='equipos'){ if(!renderedTabs.equipos) renderedTabs.equipos=true; renderEquipos(); }
   if(name==='personal'){ if(!renderedTabs.personal) renderedTabs.personal=true; renderPersonal(); }
   if(name==='planeacion'){ if(!renderedTabs.planeacion) renderedTabs.planeacion=true; renderPlanning360(); }
@@ -6684,6 +6752,41 @@ function rqEntregarItem(codigo, fila, actual, btnEl){
     });
 }
 
+/** Cambia el estado de un ítem (PENDIENTE / ENTREGADO / ANULADO) desde el selector */
+function rqSetEstadoItem(codigo, fila, selectEl){
+  var rq = RQ_DATA.find(function(x){ return x.codigo === codigo; });
+  if(!rq) return;
+  var it = (rq.items||[]).find(function(x){ return x.fila === fila; });
+  if(!it) return;
+  var estadoPrev = it.anulado ? 'ANULADO' : (String(it.entregado||'').trim() ? 'ENTREGADO' : 'PENDIENTE');
+  var estado = selectEl.value;
+  var fecha = undefined;
+  if(estado === 'ENTREGADO'){
+    var hoy = new Date().toISOString().slice(0,10);
+    fecha = prompt('Fecha de entrega:', hoy);
+    if(fecha === null){ selectEl.value = estadoPrev; return; }
+    fecha = fecha.trim();
+  }
+  selectEl.disabled = true;
+  var payload = {action:'pedidoSetEstadoItem', sheetId:RQ_SHEET_ID, tab:rq.tab, fila:fila, estado:estado};
+  if(fecha !== undefined) payload.fecha = fecha;
+  rqAction(payload)
+    .then(function(res){
+      if(!res.ok) throw new Error(res.error||'Error servidor');
+      it.anulado = (estado === 'ANULADO');
+      it.entregado = res.entregado || '';
+      it.estadoModificado = res.estadoModificado || '';
+      var emoji = estado==='ENTREGADO' ? '✅' : estado==='ANULADO' ? '🚫' : '↩';
+      showToast(emoji + ' Ítem ' + estado.toLowerCase());
+      renderRequisiciones();
+    })
+    .catch(function(e){
+      showToast('❌ ' + (e.message||'No se pudo cambiar estado'));
+      selectEl.disabled = false;
+      selectEl.value = estadoPrev;
+    });
+}
+
 function rqBuildDetail(rq){
   var canEdit = CURRENT_USER && (CURRENT_USER.role === 'ADMIN' || CURRENT_USER.role === 'EDITOR');
 
@@ -6733,7 +6836,7 @@ function rqBuildDetail(rq){
   var header = '<div class="rq-detail-tbl-wrap"><table class="rq-items-tbl"><thead><tr>'
     + '<th>#</th><th>Artículo / Descripción</th><th>Und</th>'
     + '<th style="text-align:right">Cant.</th><th style="text-align:right">Ingresado</th><th style="text-align:right">Faltante</th>'
-    + '<th style="text-align:right">V/Unit</th><th style="text-align:right">V/Total</th><th>Proveedor</th><th>Entregado</th>'
+    + '<th style="text-align:right">V/Unit</th><th style="text-align:right">V/Total</th><th>Proveedor</th><th>Estado</th>'
     + (canEdit ? '<th style="text-align:right">Acciones</th>' : '')
     + '</tr></thead><tbody>';
 
@@ -6765,11 +6868,8 @@ function rqBuildDetail(rq){
 
     var acciones = '';
     if(canEdit){
-      var anularLabel = anulado ? '↩ Restaurar' : '🚫 Anular';
-      var anularBtnCls = (!anulado) ? 'rq-item-btn danger' : 'rq-item-btn';
       acciones = '<td style="white-space:nowrap">'
         + '<div style="display:flex;gap:6px;justify-content:flex-end">'
-        + '<button class="' + anularBtnCls + '" title="' + (anulado?'Restaurar':'Anular') + '" onclick="rqAnularItem(' + jsAttr(rq.codigo) + ',' + jsAttr(it.fila) + ',this)">' + anularLabel + '</button>'
         + (!anulado ? '<button class="rq-item-btn" title="Editar cantidad" onclick="rqEditItem(' + jsAttr(rq.codigo) + ',' + jsAttr(it.fila) + ',' + jsAttr(String(it.articulo||'')) + ',' + jsAttr(it.cant) + ',this)">✏ Cant.</button>' : '')
         + '</div>'
         + '</td>';
@@ -6786,14 +6886,34 @@ function rqBuildDetail(rq){
       + '<td style="max-width:140px;overflow:hidden;text-overflow:ellipsis">' + esc(String(it.proveedor||'—')) + '</td>'
       + (function(){
           var f = String(it.entregado||'').trim();
-          if(f){
-            var chip = '<span style="font-size:.68rem;background:var(--grn-s);color:var(--grn);border:1px solid var(--grn-b);border-radius:100px;padding:2px 8px;white-space:nowrap;font-family:\'JetBrains Mono\',monospace' + (canEdit?';cursor:pointer':'') + '"' + (canEdit? ' title="Cambiar fecha" onclick="rqEntregarItem(' + jsAttr(rq.codigo) + ',' + jsAttr(it.fila) + ',' + jsAttr(f) + ',this)"':'') + '>✓ ' + esc(f) + '</span>';
-            return '<td style="text-align:center">' + chip + '</td>';
+          var estadoActual = anulado ? 'ANULADO' : (f ? 'ENTREGADO' : 'PENDIENTE');
+          if(canEdit){
+            var sel = '<select class="rq-fase-sel" onchange="rqSetEstadoItem(' + jsAttr(rq.codigo) + ',' + jsAttr(it.fila) + ',this)">'
+              + '<option value="PENDIENTE"' + (estadoActual==='PENDIENTE'?' selected':'') + '>⏳ Pendiente</option>'
+              + '<option value="ENTREGADO"' + (estadoActual==='ENTREGADO'?' selected':'') + '>✅ Entregado</option>'
+              + '<option value="ANULADO"' + (estadoActual==='ANULADO'?' selected':'') + '>🚫 Anulado</option>'
+              + '</select>';
+            var sub = '';
+            if(f){ sub += '<div style="font-size:.65rem;color:var(--grn);margin-top:2px">✓ ' + esc(f) + '</div>'; }
+            if(it.estadoModificado){ sub += '<span style="font-size:.62rem;color:var(--txt-m)">mod. ' + esc(String(it.estadoModificado)) + '</span>'; }
+            return '<td style="text-align:center">' + sel + sub + '</td>';
           }
-          if(canEdit && !anulado){
-            return '<td style="text-align:center"><button class="rq-item-btn" title="Registrar entrega" onclick="rqEntregarItem(' + jsAttr(rq.codigo) + ',' + jsAttr(it.fila) + ',\'\',this)">✓ Entregar</button></td>';
+          // no-edit: chip estático
+          var chipStyle, chipLabel;
+          if(estadoActual==='ENTREGADO'){
+            chipStyle = 'background:var(--grn-s);color:var(--grn);border:1px solid var(--grn-b)';
+            chipLabel = '✓ ' + esc(f);
+          } else if(estadoActual==='ANULADO'){
+            chipStyle = 'background:rgba(220,53,69,.08);color:var(--red,#dc3545);border:1px solid rgba(220,53,69,.25)';
+            chipLabel = '🚫 Anulado';
+          } else {
+            chipStyle = 'background:var(--bg-el);color:var(--txt-m);border:1px solid var(--border)';
+            chipLabel = '⏳ Pendiente';
           }
-          return '<td style="text-align:center;color:var(--txt-m)">—</td>';
+          var chipHtml = '<span style="font-size:.68rem;border-radius:100px;padding:2px 8px;white-space:nowrap;font-family:\'JetBrains Mono\',monospace;' + chipStyle + '">' + chipLabel + '</span>';
+          var subHtml = '';
+          if(it.estadoModificado){ subHtml = '<div><span style="font-size:.62rem;color:var(--txt-m)">mod. ' + esc(String(it.estadoModificado)) + '</span></div>'; }
+          return '<td style="text-align:center">' + chipHtml + subHtml + '</td>';
         })()
       + acciones
       + '</tr>';
@@ -7019,6 +7139,8 @@ function showOCSubTab(wrapId, tabId){
   const wrap = document.getElementById(wrapId); if(!wrap) return;
   wrap.querySelectorAll('.oc-tab').forEach(t=>t.classList.toggle('on', t.dataset.subtab===tabId));
   wrap.querySelectorAll('.oc-panel').forEach(p=>p.classList.toggle('on', p.dataset.subtab===tabId));
+  // Bitácora Diaria: cargar al activar sub-tab
+  if(wrapId==='bitWrap' && tabId==='diaria') renderBODiaria();
 }
 
 function ocBadge(label, estado){
@@ -7862,6 +7984,464 @@ function fetchPresupuestoFromSheet(){
   // Implementación futura: JSONP a hojas EDT/APU/OrdenesCambio
   // Mismo patrón que syncWithSheet().
 }
+
+/* ═══════════════════════════════════════════════════════════
+   BITÁCORA DIARIA DE OBRA
+   ═══════════════════════════════════════════════════════════ */
+
+var BIT_OBRA = null;
+var BIT_OBRA_LOADING = false;
+var BO_SELECTED_DATE = null;
+
+var BO_CONTRATISTAS_DEFAULT = [
+  'CVA Administración','Huber Osorio','Redsis Electricidad',
+  'EFIGAS','Residente de Obra','SST','Interventor (1A1)'
+];
+
+var BO_ENSAYOS_DEFAULT = [
+  {e:'Cilindros',r:'No',t:'',u:''},
+  {e:'Muretes',r:'No',t:'',u:''},
+  {e:'Cono y arena',r:'No',t:'',u:''},
+  {e:'Prueba Hidráulica',r:'No',t:'',u:''}
+];
+
+var BO_EQUIPOS_DEFAULT = [
+  {m:'Herramientas menores',u:'No',hi:'',hf:''},
+  {m:'Mezcladora',u:'No',hi:'',hf:''},
+  {m:'Pulidora 4"',u:'No',hi:'',hf:''},
+  {m:'Pulidora 9"',u:'No',hi:'',hf:''}
+];
+
+var BITACORA_OBRA_HEADERS = ['FECHA','INFORME_NO','PERSONAL_JSON','ACTIVIDADES','OBSERVACIONES','ENSAYOS_JSON','EQUIPOS_JSON','USUARIO','MODIFICADO'];
+
+function boTodayStr(){
+  return new Date().toISOString().slice(0,10);
+}
+
+function boLoadCache(cb){
+  if(BIT_OBRA !== null){ cb(BIT_OBRA); return; }
+  if(BIT_OBRA_LOADING){ setTimeout(function(){ boLoadCache(cb); }, 400); return; }
+  BIT_OBRA_LOADING = true;
+  sheetTableRead('BITACORA_OBRA', function(rows, cols){
+    var data = rows.filter(function(r){ return r[0] && r[0] !== 'FECHA'; });
+    BIT_OBRA = data.map(function(r){
+      return {
+        fecha: r[0]||'', informe_no: r[1]||'',
+        personal_json: r[2]||'{}', actividades: r[3]||'',
+        observaciones: r[4]||'', ensayos_json: r[5]||'[]',
+        equipos_json: r[6]||'[]', usuario: r[7]||'', modificado: r[8]||''
+      };
+    });
+    BIT_OBRA_LOADING = false;
+    cb(BIT_OBRA);
+  }, function(){
+    BIT_OBRA = [];
+    BIT_OBRA_LOADING = false;
+    cb(BIT_OBRA);
+  });
+}
+
+function boSaveCache(record, cb){
+  boLoadCache(function(list){
+    var idx = list.findIndex(function(r){ return r.fecha === record.fecha; });
+    if(idx >= 0) list[idx] = record; else list.push(record);
+    BIT_OBRA = list;
+    var rows = list.map(function(r){
+      return [r.fecha, r.informe_no, r.personal_json, r.actividades,
+              r.observaciones, r.ensayos_json, r.equipos_json, r.usuario, r.modificado];
+    });
+    sheetTableReplace('BITACORA_OBRA', BITACORA_OBRA_HEADERS, rows)
+      .then(function(res){
+        if(!res.ok) showToast('⚠️ Bitácora: no se guardó en Sheet');
+        else { showToast('✅ Bitácora guardada'); if(cb) cb(); }
+      })
+      .catch(function(){ showToast('⚠️ Bitácora: error de red'); });
+  });
+}
+
+function boNextInformeNo(list){
+  var max = 0;
+  list.forEach(function(r){ var n = parseInt(r.informe_no)||0; if(n>max) max=n; });
+  return String(max+1);
+}
+
+function boGetRecord(fecha){
+  if(!BIT_OBRA) return null;
+  return BIT_OBRA.find(function(r){ return r.fecha === fecha; }) || null;
+}
+
+function renderBODiaria(){
+  var wrap = document.getElementById('boDiaria');
+  if(!wrap) return;
+  wrap.innerHTML = '<div style="color:var(--txt-m);font-size:.82rem;padding:20px">Cargando...</div>';
+  boLoadCache(function(list){
+    var sorted = list.slice().sort(function(a,b){ return b.fecha.localeCompare(a.fecha); }).slice(0,20);
+    if(!BO_SELECTED_DATE){
+      BO_SELECTED_DATE = sorted.length ? sorted[0].fecha : boTodayStr();
+    }
+    var listHTML = sorted.map(function(r){
+      var active = r.fecha === BO_SELECTED_DATE ? ' active' : '';
+      var safeDate = esc(r.fecha);
+      return '<div class="bo-list-item' + active + '" onclick="boSelectDate(\'' + safeDate + '\')">'
+        + '<div class="bo-li-date">' + safeDate + '</div>'
+        + '<div class="bo-li-meta">Informe #' + esc(r.informe_no) + ' &middot; ' + esc(r.usuario||'') + '</div>'
+        + '</div>';
+    }).join('');
+    if(!listHTML) listHTML = '<div style="padding:12px 14px;font-size:.78rem;color:var(--txt-m)">Sin registros a&uacute;n.</div>';
+
+    var sel = boGetRecord(BO_SELECTED_DATE);
+    var formHTML = boRenderForm(BO_SELECTED_DATE, sel, list);
+
+    wrap.innerHTML = ''
+      + '<div class="bo-wrap">'
+      +   '<div class="bo-list">'
+      +     '<div class="bo-list-hdr"><span>D&iacute;as registrados</span>'
+      +     '<span style="color:var(--txt-m);font-size:.72rem">' + sorted.length + '/20</span></div>'
+      +     listHTML
+      +   '</div>'
+      +   '<div class="bo-form" id="boFormWrap">' + formHTML + '</div>'
+      + '</div>';
+    boCalcTotal();
+  });
+}
+
+function boSelectDate(fecha){
+  BO_SELECTED_DATE = fecha;
+  renderBODiaria();
+}
+
+function boNuevoDia(){
+  boLoadCache(function(list){
+    BO_SELECTED_DATE = boTodayStr();
+    renderBODiaria();
+  });
+}
+
+function boRenderForm(fecha, rec, list){
+  var informeNo = rec ? rec.informe_no : boNextInformeNo(list||BIT_OBRA||[]);
+  var actividades = rec ? rec.actividades : '';
+  var observaciones = rec ? rec.observaciones : '';
+
+  var personal = {};
+  try{ personal = JSON.parse(rec ? rec.personal_json : '{}'); }catch(e){}
+  var personalRows = BO_CONTRATISTAS_DEFAULT.map(function(c){ return {nombre:c, n:personal[c]||''}; });
+  Object.keys(personal).forEach(function(k){
+    if(BO_CONTRATISTAS_DEFAULT.indexOf(k) < 0) personalRows.push({nombre:k, n:personal[k]||''});
+  });
+
+  var ensayos = JSON.parse(JSON.stringify(BO_ENSAYOS_DEFAULT));
+  try{
+    JSON.parse(rec ? rec.ensayos_json : '[]').forEach(function(item){
+      var found = ensayos.find(function(e){ return e.e === item.e; });
+      if(found){ found.r=item.r||'No'; found.t=item.t||''; found.u=item.u||''; }
+    });
+  }catch(e){}
+
+  var equipos = JSON.parse(JSON.stringify(BO_EQUIPOS_DEFAULT));
+  try{
+    JSON.parse(rec ? rec.equipos_json : '[]').forEach(function(item){
+      var found = equipos.find(function(e){ return e.m === item.m; });
+      if(found){ found.u=item.u||'No'; found.hi=item.hi||''; found.hf=item.hf||''; }
+      else equipos.push({m:item.m, u:item.u||'No', hi:item.hi||'', hf:item.hf||''});
+    });
+  }catch(e){}
+
+  var canEdit = CURRENT_USER && (CURRENT_USER.role==='ADMIN' || CURRENT_USER.role==='EDITOR');
+  var dis = canEdit ? '' : ' disabled';
+
+  var pRows = personalRows.map(function(p,i){
+    return '<tr><td style="min-width:160px">' + esc(p.nombre) + '</td>'
+      + '<td><input class="bo-tbl-in num" type="number" min="0" id="bo_p_' + i + '"'
+      + ' data-nombre="' + esc(p.nombre) + '" value="' + esc(p.n) + '"' + dis
+      + ' oninput="boCalcTotal()"></td></tr>';
+  }).join('');
+
+  var eRows = ensayos.map(function(e,i){
+    var sSi = (e.r==='Sí'||e.r==='Si') ? ' selected' : '';
+    var sNo = sSi ? '' : ' selected';
+    return '<tr>'
+      + '<td>' + esc(e.e) + '</td>'
+      + '<td><select class="bo-tbl-in" id="bo_e_r_' + i + '"' + dis + '>'
+      +   '<option value="No"' + sNo + '>No</option>'
+      +   '<option value="Sí"' + sSi + '>Sí</option>'
+      + '</select></td>'
+      + '<td><input class="bo-tbl-in num" type="number" min="0" id="bo_e_t_' + i + '" value="' + esc(e.t) + '"' + dis + '></td>'
+      + '<td><input class="bo-tbl-in loc" type="text" id="bo_e_u_' + i + '" value="' + esc(e.u) + '"' + dis + ' placeholder="Ubicación"></td>'
+      + '</tr>';
+  }).join('');
+
+  var qRows = equipos.map(function(q,i){
+    var sSi = (q.u==='Sí'||q.u==='Si') ? ' selected' : '';
+    var sNo = sSi ? '' : ' selected';
+    return '<tr>'
+      + '<td style="min-width:150px">' + esc(q.m) + '</td>'
+      + '<td><select class="bo-tbl-in" id="bo_q_u_' + i + '"' + dis + '>'
+      +   '<option value="No"' + sNo + '>No</option>'
+      +   '<option value="Sí"' + sSi + '>Sí</option>'
+      + '</select></td>'
+      + '<td><input class="bo-tbl-in time" type="time" id="bo_q_hi_' + i + '" value="' + esc(q.hi) + '"' + dis + '></td>'
+      + '<td><input class="bo-tbl-in time" type="time" id="bo_q_hf_' + i + '" value="' + esc(q.hf) + '"' + dis + '></td>'
+      + '</tr>';
+  }).join('');
+
+  var btns = canEdit
+    ? '<button class="btn btn-primary" style="font-size:.78rem" onclick="boGuardarDia()">💾 Guardar día</button>'
+      + '<button class="wa-btn" style="font-size:.78rem;margin-left:6px" onclick="boWaDia()">📲 WhatsApp</button>'
+      + '<button class="btn btn-ghost" style="font-size:.78rem;margin-left:6px" onclick="window.print()">🖨 Imprimir</button>'
+    : '<span style="font-size:.75rem;color:var(--txt-m)">🔒 Sólo lectura</span>'
+      + '<button class="wa-btn" style="font-size:.78rem;margin-left:auto" onclick="boWaDia()">📲 WhatsApp</button>'
+      + '<button class="btn btn-ghost" style="font-size:.78rem;margin-left:6px" onclick="window.print()">🖨 Imprimir</button>';
+
+  return '<div class="bo-form-hdr">' + btns + '</div>'
+    + '<div class="bo-form-body">'
+    + '<div class="bo-row">'
+    +   '<div class="bo-field">Fecha'
+    +     '<input class="bo-input" type="date" id="bo_fecha" value="' + esc(fecha) + '"' + dis + '>'
+    +   '</div>'
+    +   '<div class="bo-field">Informe de obra No.'
+    +     '<input class="bo-input" type="number" id="bo_informe_no" value="' + esc(informeNo) + '"' + dis + '>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="bo-sec-title">Personal de Obra</div>'
+    + '<div style="overflow-x:auto">'
+    +   '<table class="bo-tbl">'
+    +     '<thead><tr><th>Contratista</th><th>No. Personas</th></tr></thead>'
+    +     '<tbody id="boPersonalBody">' + pRows + '</tbody>'
+    +     '<tfoot><tr class="bo-total-row"><td style="font-weight:700">Total</td><td id="boPersonalTotal">0</td></tr></tfoot>'
+    +   '</table>'
+    + '</div>'
+    + (canEdit ? '<button class="btn btn-ghost" style="font-size:.73rem;margin-top:6px" onclick="boAddContratista()">+ Contratista</button>' : '')
+    + '<div class="bo-sec-title">Actividades del día</div>'
+    + '<textarea class="bo-textarea" id="bo_actividades" style="min-height:100px"' + dis + '>' + esc(actividades) + '</textarea>'
+    + '<div class="bo-sec-title">Observaciones</div>'
+    + '<textarea class="bo-textarea" id="bo_observaciones"' + dis + '>' + esc(observaciones) + '</textarea>'
+    + '<div class="bo-sec-title">Ensayos y Mediciones</div>'
+    + '<div style="overflow-x:auto">'
+    +   '<table class="bo-tbl">'
+    +     '<thead><tr><th>Ensayo</th><th>Realizado</th><th>Tomas</th><th>Ubicación</th></tr></thead>'
+    +     '<tbody id="boEnsayosBody">' + eRows + '</tbody>'
+    +   '</table>'
+    + '</div>'
+    + '<div class="bo-sec-title">Equipos y Maquinaria</div>'
+    + '<div style="overflow-x:auto">'
+    +   '<table class="bo-tbl">'
+    +     '<thead><tr><th>Maquinaria</th><th>Uso</th><th>Hora inicio</th><th>Hora fin</th></tr></thead>'
+    +     '<tbody id="boEquiposBody">' + qRows + '</tbody>'
+    +   '</table>'
+    + '</div>'
+    + (canEdit ? '<button class="btn btn-ghost" style="font-size:.73rem;margin-top:6px" onclick="boAddEquipo()">+ Equipo</button>' : '')
+    + '</div>';
+}
+
+function boCalcTotal(){
+  var total = 0;
+  document.querySelectorAll('[id^="bo_p_"]').forEach(function(inp){ total += parseInt(inp.value)||0; });
+  var el = document.getElementById('boPersonalTotal');
+  if(el) el.textContent = total;
+}
+
+function boAddContratista(){
+  var nombre = prompt('Nombre del contratista:');
+  if(!nombre || !nombre.trim()) return;
+  nombre = nombre.trim();
+  var tbody = document.getElementById('boPersonalBody');
+  if(!tbody) return;
+  var i = tbody.querySelectorAll('tr').length;
+  var tr = document.createElement('tr');
+  tr.innerHTML = '<td>' + esc(nombre) + '</td>'
+    + '<td><input class="bo-tbl-in num" type="number" min="0" id="bo_p_' + i
+    + '" data-nombre="' + esc(nombre) + '" value="" oninput="boCalcTotal()"></td>';
+  tbody.appendChild(tr);
+}
+
+function boAddEquipo(){
+  var nombre = prompt('Nombre del equipo/maquinaria:');
+  if(!nombre || !nombre.trim()) return;
+  nombre = nombre.trim();
+  var tbody = document.getElementById('boEquiposBody');
+  if(!tbody) return;
+  var i = tbody.querySelectorAll('tr').length;
+  var tr = document.createElement('tr');
+  tr.innerHTML = '<td>' + esc(nombre) + '</td>'
+    + '<td><select class="bo-tbl-in" id="bo_q_u_' + i + '"><option value="No">No</option><option value="Sí">Sí</option></select></td>'
+    + '<td><input class="bo-tbl-in time" type="time" id="bo_q_hi_' + i + '"></td>'
+    + '<td><input class="bo-tbl-in time" type="time" id="bo_q_hf_' + i + '"></td>';
+  tbody.appendChild(tr);
+}
+
+function boCollectRecord(){
+  var fecha = (document.getElementById('bo_fecha')||{}).value || boTodayStr();
+  var informeNo = (document.getElementById('bo_informe_no')||{}).value || '';
+  var actividades = (document.getElementById('bo_actividades')||{}).value || '';
+  var observaciones = (document.getElementById('bo_observaciones')||{}).value || '';
+  var personal = {};
+  document.querySelectorAll('[id^="bo_p_"]').forEach(function(inp){
+    var nombre = inp.getAttribute('data-nombre');
+    if(nombre) personal[nombre] = inp.value||'';
+  });
+  var ensayos = [];
+  var eTbody = document.getElementById('boEnsayosBody');
+  if(eTbody){
+    eTbody.querySelectorAll('tr').forEach(function(tr,i){
+      var e = tr.cells[0] ? tr.cells[0].textContent.trim() : '';
+      var r = (document.getElementById('bo_e_r_'+i)||{}).value||'No';
+      var t = (document.getElementById('bo_e_t_'+i)||{}).value||'';
+      var u = (document.getElementById('bo_e_u_'+i)||{}).value||'';
+      if(e) ensayos.push({e:e,r:r,t:t,u:u});
+    });
+  }
+  var equipos = [];
+  var qTbody = document.getElementById('boEquiposBody');
+  if(qTbody){
+    qTbody.querySelectorAll('tr').forEach(function(tr,i){
+      var m = tr.cells[0] ? tr.cells[0].textContent.trim() : '';
+      var u = (document.getElementById('bo_q_u_'+i)||{}).value||'No';
+      var hi = (document.getElementById('bo_q_hi_'+i)||{}).value||'';
+      var hf = (document.getElementById('bo_q_hf_'+i)||{}).value||'';
+      if(m) equipos.push({m:m,u:u,hi:hi,hf:hf});
+    });
+  }
+  return {
+    fecha: fecha, informe_no: informeNo,
+    personal_json: JSON.stringify(personal),
+    actividades: actividades, observaciones: observaciones,
+    ensayos_json: JSON.stringify(ensayos),
+    equipos_json: JSON.stringify(equipos),
+    usuario: (CURRENT_USER && CURRENT_USER.name)||'',
+    modificado: new Date().toISOString()
+  };
+}
+
+function boGuardarDia(){
+  if(!CURRENT_USER || (CURRENT_USER.role!=='ADMIN' && CURRENT_USER.role!=='EDITOR')){
+    showToast('🔒 Sin permisos para guardar'); return;
+  }
+  var rec = boCollectRecord();
+  BO_SELECTED_DATE = rec.fecha;
+  boSaveCache(rec, function(){ renderBODiaria(); });
+}
+
+function waBitacoraDia(){
+  var rec = boCollectRecord();
+  var NL = '\n';
+  var txt = '🏗 *BITÁCORA DE OBRA — TORRE SANTA ISABEL*' + NL;
+  txt += '📅 Fecha: ' + rec.fecha + '   Informe No. ' + rec.informe_no + NL + NL;
+  var personal = {};
+  try{ personal = JSON.parse(rec.personal_json); }catch(e){}
+  var pLines = []; var total = 0;
+  Object.keys(personal).forEach(function(k){
+    var n = parseInt(personal[k])||0;
+    if(n>0){ pLines.push('  • ' + k + ': ' + n); total += n; }
+  });
+  txt += '👷 *Personal:*' + NL + (pLines.length ? pLines.join(NL) : '  Sin registro') + NL + '  *Total: ' + total + '*' + NL + NL;
+  txt += '🔨 *Actividades:*' + NL + (rec.actividades.trim()||'(sin registro)') + NL + NL;
+  txt += '📝 *Obs:*' + NL + (rec.observaciones.trim()||'(ninguna)') + NL + NL;
+  var ensayos = [];
+  try{ ensayos = JSON.parse(rec.ensayos_json); }catch(e){}
+  var eLines = ensayos
+    .filter(function(e){ return e.r==='Sí'||e.r==='Si'; })
+    .map(function(e){ return '  • ' + e.e + (e.t?' ('+e.t+' tomas)':'') + (e.u?' @ '+e.u:''); });
+  txt += '🧪 *Ensayos realizados:*' + NL + (eLines.length ? eLines.join(NL) : '  Ninguno') + NL + NL;
+  var equipos = [];
+  try{ equipos = JSON.parse(rec.equipos_json); }catch(e){}
+  var qLines = equipos
+    .filter(function(q){ return q.u==='Sí'||q.u==='Si'; })
+    .map(function(q){ return '  • ' + q.m + (q.hi?' de '+q.hi:'') + (q.hf?' a '+q.hf:''); });
+  txt += '🚜 *Equipos:*' + NL + (qLines.length ? qLines.join(NL) : '  Sin uso');
+  txt += NL + NL + '—' + NL + 'Contro360: https://miguel234567.github.io/torre-santa-isabel-dashboard/';
+  return txt;
+}
+
+function boWaDia(){ waShare(waBitacoraDia()); }
+
+function boReporteRango(tipo){
+  boLoadCache(function(list){
+    var hoy = new Date();
+    var desde, hasta;
+    if(tipo==='semanal'){
+      var dow = hoy.getDay(); var diff = dow===0 ? -6 : 1-dow;
+      var lun = new Date(hoy); lun.setDate(hoy.getDate()+diff); lun.setHours(0,0,0,0);
+      var dom = new Date(lun); dom.setDate(lun.getDate()+6);
+      desde = lun.toISOString().slice(0,10);
+      hasta = dom.toISOString().slice(0,10);
+    } else {
+      var mes = prompt('Mes (yyyy-mm):', hoy.toISOString().slice(0,7));
+      if(!mes || !/^\d{4}-\d{2}$/.test(mes)){ showToast('Formato inválido'); return; }
+      desde = mes + '-01';
+      var last = new Date(parseInt(mes.slice(0,4)), parseInt(mes.slice(5,7)), 0);
+      hasta = last.toISOString().slice(0,10);
+    }
+    var NL = '\n';
+    var dias = list
+      .filter(function(r){ return r.fecha >= desde && r.fecha <= hasta; })
+      .sort(function(a,b){ return a.fecha.localeCompare(b.fecha); });
+    var titulo = tipo==='semanal'
+      ? '📅 REPORTE SEMANAL (' + desde + ' al ' + hasta + ')'
+      : '📆 REPORTE MENSUAL (' + desde.slice(0,7) + ')';
+    var texto = '🏗 *BITÁCORA DE OBRA — TORRE SANTA ISABEL*' + NL + titulo + NL
+              + '==========================' + NL + NL;
+    if(!dias.length){
+      texto += '(Sin registros en este período)' + NL;
+    } else {
+      var totPers = {};
+      dias.forEach(function(r){
+        var personal = {};
+        try{ personal = JSON.parse(r.personal_json); }catch(e){}
+        var totalDia = 0;
+        Object.keys(personal).forEach(function(k){
+          var n = parseInt(personal[k])||0; totalDia += n;
+          if(!totPers[k]) totPers[k] = 0; totPers[k] += n;
+        });
+        texto += '📅 *' + r.fecha + '*  (Informe #' + r.informe_no + ')  👷 Total: ' + totalDia + NL;
+        var act = r.actividades.trim();
+        if(act) texto += '  ' + act.slice(0,200) + (act.length>200?'…':'') + NL;
+        var obs = r.observaciones.trim();
+        if(obs) texto += '  📝 ' + obs.slice(0,120) + (obs.length>120?'…':'') + NL;
+        texto += NL;
+      });
+      texto += '==========================' + NL + '📊 *Totales del período*' + NL;
+      texto += '  Días registrados: ' + dias.length + NL;
+      Object.keys(totPers)
+        .sort(function(a,b){ return totPers[b]-totPers[a]; })
+        .slice(0,6)
+        .forEach(function(k){ texto += '  ' + k + ': ' + totPers[k] + ' personas-día' + NL; });
+    }
+    texto += NL + '—' + NL + 'Contro360: https://miguel234567.github.io/torre-santa-isabel-dashboard/';
+    boMostrarModalReporte(titulo, texto);
+  });
+}
+
+function boCloseReporteModal(){ var el=document.getElementById('boReporteModal'); if(el) el.remove(); }
+function boSendReporteWA(){ var el=document.getElementById('boReporteTa'); if(el) waShare(el.value); }
+
+function boMostrarModalReporte(titulo, texto){
+  var ov = document.createElement('div');
+  ov.className = 'bo-modal-overlay';
+  ov.id = 'boReporteModal';
+  ov.innerHTML = ''
+    + '<div class="bo-modal-box">'
+    +   '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">'
+    +     '<strong style="font-size:.9rem">' + esc(titulo) + '</strong>'
+    +     '<button class="btn btn-ghost" style="font-size:.75rem" onclick="boCloseReporteModal()">&times; Cerrar</button>'
+    +   '</div>'
+    +   '<textarea class="bo-modal-ta" id="boReporteTa">' + esc(texto) + '</textarea>'
+    +   '<div style="display:flex;gap:8px;flex-wrap:wrap">'
+    +     '<button class="wa-btn" style="font-size:.78rem" onclick="boSendReporteWA()">📲 Enviar WhatsApp</button>'
+    +     '<button class="btn btn-ghost" style="font-size:.78rem" onclick="window.print()">🖨 Imprimir</button>'
+    +     '<button class="btn btn-ghost" style="font-size:.78rem" onclick="boCloseReporteModal()">Cerrar</button>'
+    +   '</div>'
+    + '</div>';
+  document.body.appendChild(ov);
+  ov.addEventListener('click', function(ev){ if(ev.target===ov) ov.remove(); });
+}
+
+function renderBODiariaIfActive(){
+  var panel = document.querySelector('#bitWrap .oc-panel[data-subtab="diaria"]');
+  if(panel && panel.classList.contains('on')) renderBODiaria();
+}
+
+/* ═══ FIN BITÁCORA DIARIA DE OBRA ═══ */
+
 </script>
 </body>
 </html>
