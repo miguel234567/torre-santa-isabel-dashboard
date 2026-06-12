@@ -334,6 +334,9 @@ body.light-mode .oc-bt{background:rgba(0,0,0,.06)}
 .rq-item-btn:hover:not(:disabled){background:var(--surf);border-color:var(--acc);color:var(--txt)}
 .rq-item-btn:disabled{opacity:.45;cursor:not-allowed}
 .rq-item-btn.danger:hover{border-color:var(--red);color:var(--red);background:var(--red-s)}
+/* ── WhatsApp share button ── */
+.wa-btn{background:#25D366;color:#fff;border:none;border-radius:8px;padding:7px 14px;font-weight:600;font-size:.8rem;display:inline-flex;align-items:center;gap:6px;cursor:pointer;transition:.15s;font-family:inherit}
+.wa-btn:hover{background:#1ebe5d}
 /* ── Detail footer ── */
 .rq-detail-footer{display:flex;justify-content:flex-end;padding:8px 16px;border-top:1px solid var(--bdr);font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--txt-s)}
 .rq-detail-footer b{color:var(--txt);margin-left:4px}
@@ -1974,6 +1977,7 @@ body.light-mode #toast{box-shadow:0 8px 24px rgba(15,23,42,.15)!important}
       <button class="kgrp-chip" data-grp="EXTERIORES" onclick="toggleBoardGrp('EXTERIORES',this)">Exteriores</button>
     </div>
     <span style="font-size:.78rem;color:var(--txt-m);margin-left:auto">31 fases · <span id="boardCount">—</span> visibles</span>
+    <button class="wa-btn" onclick="waShare(waReporteKanban())" style="margin-left:10px">📲 Reporte</button>
   </div>
   <div class="kanban-wrap" id="kanbanWrap"></div>
 </section>
@@ -3642,6 +3646,7 @@ function renderKPIs(){
         <button class="kpi-action-btn" onclick="switchTab('gantt')"><span class="ms" style="font-size:.9rem">view_timeline</span>Gantt</button>
         <button class="kpi-action-btn" onclick="switchTab('update')"><span class="ms" style="font-size:.9rem">edit_note</span>Actualizar</button>
         <button class="kpi-action-btn" onclick="toggleAlerts()"><span class="ms" style="font-size:.9rem">notifications</span>Alertas</button>
+        <button class="wa-btn" onclick="waShare(waReporteEjecutivo())">📲 WhatsApp</button>
       </div>
     </div>
 
@@ -6294,6 +6299,174 @@ const SHEET_ID_COMPRAS = '';  // ← pegar Sheet ID aquí cuando esté listo
 const SHEETS_COMPRAS_TABS = { rq:'Requisiciones', oc:'OC', pv:'Proveedores' };
 
 /* ── Datos mock (mientras no haya Sheet conectado) ────────── */
+
+/* ════════════════════════════════════════
+   WHATSAPP SHARE — helper + generadores
+   ════════════════════════════════════════ */
+function waShare(texto){
+  window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank');
+}
+
+function _waHead(titulo){
+  return '🏗 *TORRE SANTA ISABEL* — ' + titulo + '\n📅 ' + new Date().toLocaleDateString('es-CO') + '\n\n';
+}
+var _waFoot = '\n—\nContro360: https://miguel234567.github.io/torre-santa-isabel-dashboard/';
+
+function waReporteEjecutivo(){
+  var head = _waHead('Reporte Ejecutivo');
+  var pct  = weightedAvgProgress ? Math.round(weightedAvgProgress()) : 0;
+  var total = daysBetween ? daysBetween(PROJECT_START_MS, PROJECT_END_MS) : 0;
+  var elapsed = daysElapsed ? daysElapsed() : 0;
+  var expectedPct = total > 0 ? Math.round(elapsed / total * 100) : 0;
+  var diff = pct - expectedPct;
+  var diffStr = diff >= 0 ? '+' + diff + 'pp adelantado' : diff + 'pp de retraso';
+
+  var evm = (typeof computeEVM === 'function') ? computeEVM() : null;
+  var spiStr = (evm && evm.spi != null) ? '\n📊 SPI: *' + evm.spi.toFixed(2) + '*  SV: ' + (evm.sv >= 0 ? '+' : '') + evm.sv + 'pp' : '';
+
+  var completadas = countByStatus('COMPLETADO');
+  var atrasadas   = countByStatus('ATRASADO');
+  var enProgreso  = countByStatus('EN_PROGRESO');
+  var pendientes  = countByStatus('PENDIENTE');
+
+  var cuerpo = '📈 *Avance real:* ' + pct + '%  (esperado ' + expectedPct + '%)  — ' + diffStr + spiStr + '\n\n'
+    + '📋 *Estado de fases:*\n'
+    + '✅ Completadas: ' + completadas + '\n'
+    + '🔨 En progreso: ' + enProgreso + '\n'
+    + '🔴 Atrasadas:   ' + atrasadas + '\n'
+    + '⏳ Pendientes:  ' + pendientes + '\n';
+
+  var atrasadasList = (PHASES || []).filter(function(p){ return p.status === 'ATRASADO'; }).slice(0, 6);
+  if(atrasadasList.length > 0){
+    cuerpo += '\n🔴 *Fases atrasadas:*\n';
+    atrasadasList.forEach(function(p){
+      var real = Math.round(p.effectiveProgress || p.progress || 0);
+      var esp  = expectedPct;
+      cuerpo += '• ' + p.id + ' ' + (p.name || '') + ' (' + real + '% vs ' + esp + '%)\n';
+    });
+  }
+
+  var forecast = '';
+  try {
+    var cs = computeCurvaS();
+    if(cs && cs.forecast && cs.forecast.fechaFin != null){
+      var fd = new Date(cs.forecast.fechaFin);
+      var fds = fd.toLocaleDateString('es-CO', {day:'2-digit', month:'2-digit', year:'numeric'});
+      var delta = cs.forecast.deltaDias;
+      var deltaStr = delta > 0 ? '(+' + delta + ' días vs plan)' : delta < 0 ? '(' + delta + ' días adelante)' : '(en plan)';
+      forecast = '\n📈 *Proyección fin:* ' + fds + ' ' + deltaStr;
+    }
+  } catch(e){}
+
+  if(!forecast) forecast = '';
+  return head + cuerpo + forecast + _waFoot;
+}
+
+function waReporteKanban(){
+  var head = _waHead('Tablero Kanban');
+  var completadas = countByStatus('COMPLETADO');
+  var atrasadas   = countByStatus('ATRASADO');
+  var enProgreso  = countByStatus('EN_PROGRESO');
+  var pendientes  = countByStatus('PENDIENTE');
+
+  var cuerpo = '⏳ Pendientes:  *' + pendientes  + '*\n'
+             + '🔨 En progreso: *' + enProgreso  + '*\n'
+             + '🔴 Atrasadas:   *' + atrasadas   + '*\n'
+             + '✅ Completadas: *' + completadas  + '*\n';
+
+  var notasStr = '';
+  try {
+    var notas = loadKNotes();
+    var sinResolver = [];
+    Object.keys(notas).forEach(function(pid){
+      (notas[pid] || []).forEach(function(n){
+        if(!n.resolved) sinResolver.push({pid: pid, nota: n});
+      });
+    });
+    if(sinResolver.length > 0){
+      notasStr = '\n📌 *Notas sin resolver:*\n';
+      sinResolver.slice(0, 8).forEach(function(x){
+        var texto = String(x.nota.text || '').slice(0, 60);
+        var autor = x.nota.author || '—';
+        var fecha = x.nota.date ? new Date(x.nota.date).toLocaleDateString('es-CO') : '—';
+        notasStr += '• [' + x.pid + '] ' + texto + ' (' + autor + ', ' + fecha + ')\n';
+      });
+    } else {
+      notasStr = '\n📌 *Notas:* Sin notas pendientes\n';
+    }
+  } catch(e){ notasStr = '\n📌 *Notas:* Sin datos\n'; }
+
+  return head + cuerpo + notasStr + _waFoot;
+}
+
+function waReporteRequisicion(codigo){
+  var head = _waHead('Pedido ' + codigo);
+  var rq = (Array.isArray(RQ_DATA) ? RQ_DATA : []).find(function(x){ return x.codigo === codigo; });
+  if(!rq) return head + 'Sin datos para el pedido ' + codigo + _waFoot;
+
+  var cuerpo = '📋 *PEDIDO ' + codigo + '*\n'
+    + '🏗 Obra/Fase: ' + (rq.fase || '—') + '\n'
+    + '📅 Fecha: ' + (rq.fecha || '—') + '\n'
+    + '👷 Solicitante: ' + (rq.encargado || '—') + '\n\n';
+
+  var itemsActivos = (rq.items || []).filter(function(it){ return !it.anulado; });
+  if(itemsActivos.length === 0){
+    cuerpo += 'Sin artículos activos\n';
+  } else {
+    cuerpo += '*Materiales:*\n';
+    var entregadosCount = 0;
+    itemsActivos.forEach(function(it){
+      var cant = Number(it.cant || 0);
+      var cantFaltante = Number(it.cantFaltante || 0);
+      var ingreso = Number(it.cantIngreso || 0);
+      var linea = '• ' + cant + ' ' + (it.und || '') + ' ' + (it.articulo || '');
+      if(ingreso >= cant && cant > 0){
+        linea += ' ✅ ' + (it.entregado || '');
+        entregadosCount++;
+      } else if(cantFaltante > 0){
+        linea += ' ⏳ faltan ' + cantFaltante;
+      }
+      cuerpo += linea + '\n';
+    });
+    cuerpo += '\n';
+    if(Number(rq.valor || 0) > 0){
+      cuerpo += '💰 Total: ' + fmtCOP(Number(rq.valor)) + '\n';
+    }
+    cuerpo += '📦 Entregados: ' + entregadosCount + ' de ' + itemsActivos.length + '\n';
+  }
+  return head + cuerpo + _waFoot;
+}
+
+function waReporteCompras(){
+  var head = _waHead('Reporte Compras');
+  var OC = (typeof buildOCFromPedidos === 'function') ? buildOCFromPedidos() : [];
+  if(!OC || OC.length === 0) return head + 'Sin datos de pedidos cargados\n' + _waFoot;
+
+  var emitidas  = OC.filter(function(o){ return o.status === 'Emitida';  }).length;
+  var parciales = OC.filter(function(o){ return o.status === 'Parcial';  }).length;
+  var recibidas = OC.filter(function(o){ return o.status === 'Recibida'; }).length;
+  var vencidas  = OC.filter(function(o){ return o.status === 'Vencida';  }).length;
+  var totalVal  = OC.reduce(function(s, o){ return s + (Number(o.value) || 0); }, 0);
+
+  var cuerpo = '📦 *Totales por estado:*\n'
+    + '🔵 Emitidos:  ' + emitidas  + '\n'
+    + '🟡 Parciales: ' + parciales + '\n'
+    + '✅ Recibidos: ' + recibidas + '\n'
+    + '🔴 Vencidos:  ' + vencidas  + '\n\n';
+
+  var vencidasList = OC.filter(function(o){ return o.status === 'Vencida'; }).slice(0, 5);
+  if(vencidasList.length > 0){
+    cuerpo += '🔴 *Vencidas:*\n';
+    vencidasList.forEach(function(o){
+      cuerpo += '• ' + o.code + ' | ' + (o.prov || '—') + ' | Entrega: ' + (o.deliv || '—') + '\n';
+    });
+    cuerpo += '\n';
+  }
+
+  cuerpo += '💰 Comprometido total: ' + fmtCOP(totalVal) + '\n';
+  return head + cuerpo + _waFoot;
+}
+
 /* ── fmtCOP: formatea pesos colombianos ───────────────────── */
 function fmtCOP(n){
   if(typeof n !== 'number' || isNaN(n)) return '—';
@@ -6541,6 +6714,7 @@ function rqBuildDetail(rq){
   var sheetLink = rq.archivo
     ? ' <a class="rq-detail-sheet-link" href="' + esc(rq.archivo) + '" target="_blank">Abrir en Sheet ↗</a>'
     : '';
+  var waRqBtn = '<button class="wa-btn" style="padding:4px 10px;font-size:.75rem" title="Enviar por WhatsApp" onclick="waShare(waReporteRequisicion(' + jsAttr(rq.codigo) + '))">📲</button>';
 
   var panelHeader = '<div class="rq-detail-header">'
     + '<div class="rq-detail-header-left">'
@@ -6551,6 +6725,7 @@ function rqBuildDetail(rq){
     + '<div class="rq-detail-header-right">'
     + '<span class="rq-detail-total">Total: ' + totalStr + '</span>'
     + sheetLink
+    + waRqBtn
     + '</div>'
     + '</div>';
 
@@ -7085,6 +7260,9 @@ function renderCompras(){
           <button onclick="syncRequisiciones(()=>{renderedTabs.compras=false;renderCompras()})" style="background:none;border:none;color:var(--acc);cursor:pointer;font-size:.75rem;margin-left:6px" title="Recargar desde Sheet">🔄</button>
         </p>
       </div>
+      <div style="display:flex;align-items:center">
+        <button class="wa-btn" onclick="waShare(waReporteCompras())">📲 Reporte</button>
+      </div>
     </div>
     <div class="oc-tabs" id="oc-main-tabs">
       <button class="oc-tab on"  data-subtab="dashboard" onclick="showOCSubTab('comprasOC','dashboard')">Dashboard</button>
@@ -7583,7 +7761,7 @@ function renderPresupuesto(){
           <div class="bp-dr"><span class="bp-dl">Ayudante</span><span class="bp-dv">1.6 jor · $72.000</span></div>
           <div class="bp-dr"><span class="bp-dl">Vibrador concreto</span><span class="bp-dv">0.5 hr · $18.000</span></div>
           <div class="bp-dr"><span class="bp-dl">Bomba concreto</span><span class="bp-dv">0.25 hr · $85.000</span></div>
-          <div class="bp-dr bp-dr-sum"><span class="bp-dl" style="font-weight:700">Subtotal MO + equipo</span><span class="bp-dv bp-c-amb" style="font-family:'JetBrains Mono',monospace">$227.000/m³</span></div>
+                    <div class="bp-dr bp-dr-sum"><span class="bp-dl" style="font-weight:700">Subtotal MO + equipo</span><span class="bp-dv bp-c-amb" style="font-family:'JetBrains Mono',monospace">$227.000/m³</span></div>
         </div>
       </div>
       <div class="bp-apu-summary">
