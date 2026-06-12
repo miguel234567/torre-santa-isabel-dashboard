@@ -1704,6 +1704,11 @@ body.light-mode #toast{box-shadow:0 8px 24px rgba(15,23,42,.15)!important}
 .bo-sec-title::before{content:'';display:block;width:3px;height:14px;background:var(--acc);border-radius:2px}
 .bo-total-row td{font-weight:700;background:rgba(255,255,255,.03)!important}
 .bo-topbar{padding:10px 18px;border-bottom:1px solid var(--bdr);background:var(--surf2);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bo-firmas-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:4px}
+.bo-firma-bloque{border-top:1px solid var(--txt-m);padding-top:8px;display:flex;flex-direction:column;gap:4px}
+.bo-firma-label{font-size:.72rem;font-weight:700;color:var(--txt-m);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.bo-firma-txt{font-size:.82rem;color:var(--txt)}
+@media(max-width:768px){.bo-firmas-grid{grid-template-columns:1fr}}
 .bo-modal-overlay{position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.7)}
 .bo-modal-box{background:var(--bg-card);border:1px solid var(--border-s);border-radius:var(--r-lg);padding:24px;width:min(90vw,640px);max-height:88vh;overflow-y:auto;box-shadow:0 30px 80px rgba(0,0,0,.8);display:flex;flex-direction:column;gap:14px}
 .bo-modal-ta{background:var(--surf2);border:1px solid var(--bdr-m);border-radius:var(--r);padding:12px;color:var(--txt);font-size:.8rem;font-family:'JetBrains Mono',monospace;resize:vertical;min-height:280px;width:100%;box-sizing:border-box}
@@ -8012,7 +8017,7 @@ var BO_EQUIPOS_DEFAULT = [
   {m:'Pulidora 9"',u:'No',hi:'',hf:''}
 ];
 
-var BITACORA_OBRA_HEADERS = ['FECHA','INFORME_NO','PERSONAL_JSON','ACTIVIDADES','OBSERVACIONES','ENSAYOS_JSON','EQUIPOS_JSON','USUARIO','MODIFICADO'];
+var BITACORA_OBRA_HEADERS = ['FECHA','INFORME_NO','PERSONAL_JSON','ACTIVIDADES','OBSERVACIONES','ENSAYOS_JSON','EQUIPOS_JSON','USUARIO','MODIFICADO','CLIMA','FIRMAS_JSON'];
 
 function boTodayStr(){
   return new Date().toISOString().slice(0,10);
@@ -8029,7 +8034,8 @@ function boLoadCache(cb){
         fecha: r[0]||'', informe_no: r[1]||'',
         personal_json: r[2]||'{}', actividades: r[3]||'',
         observaciones: r[4]||'', ensayos_json: r[5]||'[]',
-        equipos_json: r[6]||'[]', usuario: r[7]||'', modificado: r[8]||''
+        equipos_json: r[6]||'[]', usuario: r[7]||'', modificado: r[8]||'',
+        clima: r[9]||'', firmas_json: r[10]||''
       };
     });
     BIT_OBRA_LOADING = false;
@@ -8048,7 +8054,8 @@ function boSaveCache(record, cb){
     BIT_OBRA = list;
     var rows = list.map(function(r){
       return [r.fecha, r.informe_no, r.personal_json, r.actividades,
-              r.observaciones, r.ensayos_json, r.equipos_json, r.usuario, r.modificado];
+              r.observaciones, r.ensayos_json, r.equipos_json, r.usuario, r.modificado,
+              r.clima||'', r.firmas_json||''];
     });
     sheetTableReplace('BITACORA_OBRA', BITACORA_OBRA_HEADERS, rows)
       .then(function(res){
@@ -8150,10 +8157,11 @@ function boRenderForm(fecha, rec, list){
   var dis = canEdit ? '' : ' disabled';
 
   var pRows = personalRows.map(function(p,i){
+    var delBtn = canEdit ? '<td><button class="rq-item-btn" title="Eliminar contratista" onclick="this.closest(\'tr\').remove();boCalcTotal()">🗑</button></td>' : '<td></td>';
     return '<tr><td style="min-width:160px">' + esc(p.nombre) + '</td>'
       + '<td><input class="bo-tbl-in num" type="number" min="0" id="bo_p_' + i + '"'
       + ' data-nombre="' + esc(p.nombre) + '" value="' + esc(p.n) + '"' + dis
-      + ' oninput="boCalcTotal()"></td></tr>';
+      + ' oninput="boCalcTotal()"></td>' + delBtn + '</tr>';
   }).join('');
 
   var eRows = ensayos.map(function(e,i){
@@ -8192,6 +8200,18 @@ function boRenderForm(fecha, rec, list){
       + '<button class="wa-btn" style="font-size:.78rem;margin-left:auto" onclick="boWaDia()">📲 WhatsApp</button>'
       + '<button class="btn btn-ghost" style="font-size:.78rem;margin-left:6px" onclick="window.print()">🖨 Imprimir</button>';
 
+  var firmas = {}; try{ firmas = JSON.parse(rec ? (rec.firmas_json||'{}') : '{}'); }catch(e){}
+  var firmaRoles = [
+    {key:'residente', label:'Ingeniero Residente'},
+    {key:'director',  label:'Director de Obra'},
+    {key:'interventoria', label:'Interventoría'}
+  ];
+  var climaVal = rec ? (rec.clima||'') : '';
+  var climaOpts = ['','Soleado','Parcialmente nublado','Nublado','Lluvia ligera','Lluvia fuerte'];
+  var climaOptions = climaOpts.map(function(o){
+    return '<option value="' + esc(o) + '"' + (o===climaVal?' selected':'') + '>' + (o==='' ? '(sin registrar)' : esc(o)) + '</option>';
+  }).join('');
+
   return '<div class="bo-form-hdr">' + btns + '</div>'
     + '<div class="bo-form-body">'
     + '<div class="bo-row">'
@@ -8201,11 +8221,14 @@ function boRenderForm(fecha, rec, list){
     +   '<div class="bo-field">Informe de obra No.'
     +     '<input class="bo-input" type="number" id="bo_informe_no" value="' + esc(informeNo) + '"' + dis + '>'
     +   '</div>'
+    +   '<div class="bo-field">🌤 Clima'
+    +     '<select class="bo-input" id="boClima"' + dis + '>' + climaOptions + '</select>'
+    +   '</div>'
     + '</div>'
     + '<div class="bo-sec-title">Personal de Obra</div>'
     + '<div style="overflow-x:auto">'
     +   '<table class="bo-tbl">'
-    +     '<thead><tr><th>Contratista</th><th>No. Personas</th></tr></thead>'
+    +     '<thead><tr><th>Contratista</th><th>No. Personas</th><th></th></tr></thead>'
     +     '<tbody id="boPersonalBody">' + pRows + '</tbody>'
     +     '<tfoot><tr class="bo-total-row"><td style="font-weight:700">Total</td><td id="boPersonalTotal">0</td></tr></tfoot>'
     +   '</table>'
@@ -8230,6 +8253,24 @@ function boRenderForm(fecha, rec, list){
     +   '</table>'
     + '</div>'
     + (canEdit ? '<button class="btn btn-ghost" style="font-size:.73rem;margin-top:6px" onclick="boAddEquipo()">+ Equipo</button>' : '')
+    + '<div class="bo-sec-title">FIRMAS</div>'
+    + '<div class="bo-firmas-grid">'
+    + firmaRoles.map(function(rol){
+        var fv = firmas[rol.key]||{n:'',f:''};
+        if(canEdit){
+          return '<div class="bo-firma-bloque">'
+            + '<div class="bo-firma-label">' + esc(rol.label) + '</div>'
+            + '<input class="bo-tbl-in" type="text" id="boFirmaN_' + rol.key + '" placeholder="Nombre" value="' + esc(fv.n||'') + '">'
+            + '<input class="bo-tbl-in" type="date" id="boFirmaF_' + rol.key + '" value="' + esc(fv.f||'') + '" style="margin-top:4px">'
+            + '</div>';
+        } else {
+          return '<div class="bo-firma-bloque">'
+            + '<div class="bo-firma-label">' + esc(rol.label) + '</div>'
+            + '<div class="bo-firma-txt">' + esc(fv.n||'—') + (fv.f ? ' (' + esc(fv.f) + ')' : '') + '</div>'
+            + '</div>';
+        }
+      }).join('')
+    + '</div>'
     + '</div>';
 }
 
@@ -8250,7 +8291,8 @@ function boAddContratista(){
   var tr = document.createElement('tr');
   tr.innerHTML = '<td>' + esc(nombre) + '</td>'
     + '<td><input class="bo-tbl-in num" type="number" min="0" id="bo_p_' + i
-    + '" data-nombre="' + esc(nombre) + '" value="" oninput="boCalcTotal()"></td>';
+    + '" data-nombre="' + esc(nombre) + '" value="" oninput="boCalcTotal()"></td>'
+    + '<td><button class="rq-item-btn" title="Eliminar contratista" onclick="this.closest(\'tr\').remove();boCalcTotal()">🗑</button></td>';
   tbody.appendChild(tr);
 }
 
@@ -8301,6 +8343,14 @@ function boCollectRecord(){
       if(m) equipos.push({m:m,u:u,hi:hi,hf:hf});
     });
   }
+  var clima = (document.getElementById('boClima')||{}).value || '';
+  var firmasRaw = {};
+  ['residente','director','interventoria'].forEach(function(rol){
+    firmasRaw[rol] = {
+      n: (document.getElementById('boFirmaN_'+rol)||{}).value||'',
+      f: (document.getElementById('boFirmaF_'+rol)||{}).value||''
+    };
+  });
   return {
     fecha: fecha, informe_no: informeNo,
     personal_json: JSON.stringify(personal),
@@ -8308,7 +8358,9 @@ function boCollectRecord(){
     ensayos_json: JSON.stringify(ensayos),
     equipos_json: JSON.stringify(equipos),
     usuario: (CURRENT_USER && CURRENT_USER.name)||'',
-    modificado: new Date().toISOString()
+    modificado: new Date().toISOString(),
+    clima: clima,
+    firmas_json: JSON.stringify(firmasRaw)
   };
 }
 
@@ -8325,7 +8377,9 @@ function waBitacoraDia(){
   var rec = boCollectRecord();
   var NL = '\n';
   var txt = '🏗 *BITÁCORA DE OBRA — TORRE SANTA ISABEL*' + NL;
-  txt += '📅 Fecha: ' + rec.fecha + '   Informe No. ' + rec.informe_no + NL + NL;
+  txt += '📅 Fecha: ' + rec.fecha + '   Informe No. ' + rec.informe_no + NL;
+  if(rec.clima) txt += '🌤 Clima: ' + rec.clima + NL;
+  txt += NL;
   var personal = {};
   try{ personal = JSON.parse(rec.personal_json); }catch(e){}
   var pLines = []; var total = 0;
@@ -8348,6 +8402,13 @@ function waBitacoraDia(){
     .filter(function(q){ return q.u==='Sí'||q.u==='Si'; })
     .map(function(q){ return '  • ' + q.m + (q.hi?' de '+q.hi:'') + (q.hf?' a '+q.hf:''); });
   txt += '🚜 *Equipos:*' + NL + (qLines.length ? qLines.join(NL) : '  Sin uso');
+  var firmasWA = {};
+  try{ firmasWA = JSON.parse(rec.firmas_json||'{}'); }catch(e){}
+  var firmaRolesWA = [{key:'residente',label:'Residente'},{key:'director',label:'Director'},{key:'interventoria',label:'Interventoría'}];
+  var firmaPartes = firmaRolesWA
+    .filter(function(r){ return firmasWA[r.key] && firmasWA[r.key].n; })
+    .map(function(r){ var fi=firmasWA[r.key]; return r.label+': '+fi.n+(fi.f?' ('+fi.f+')':''); });
+  if(firmaPartes.length) txt += NL + NL + '✍ Firmas: ' + firmaPartes.join(' · ');
   txt += NL + NL + '—' + NL + 'Contro360: https://miguel234567.github.io/torre-santa-isabel-dashboard/';
   return txt;
 }
@@ -8392,7 +8453,7 @@ function boReporteRango(tipo){
           var n = parseInt(personal[k])||0; totalDia += n;
           if(!totPers[k]) totPers[k] = 0; totPers[k] += n;
         });
-        texto += '📅 *' + r.fecha + '*  (Informe #' + r.informe_no + ')  👷 Total: ' + totalDia + NL;
+        texto += '📅 *' + r.fecha + '*  (Informe #' + r.informe_no + ')  👷 Total: ' + totalDia + (r.clima ? '  · 🌤 ' + r.clima : '') + NL;
         var act = r.actividades.trim();
         if(act) texto += '  ' + act.slice(0,200) + (act.length>200?'…':'') + NL;
         var obs = r.observaciones.trim();
@@ -8441,7 +8502,7 @@ function renderBODiariaIfActive(){
 }
 
 /* ═══ FIN BITÁCORA DIARIA DE OBRA ═══ */
-
+/* sync-marker-1 */
 </script>
 </body>
 </html>
