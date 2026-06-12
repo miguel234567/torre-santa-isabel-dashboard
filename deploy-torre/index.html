@@ -4339,7 +4339,59 @@ function toggleBoardGrp(grp, btn){
 const LS_K_NOTES='tsi_kanban_notes_v1';
 const NOTE_TYPES={Hallazgo:'#f97316',Alerta:'#ef4444','Decisión':'#3b82f6',Información:'#8b5cf6',Observación:'#10b981'};
 function loadKNotes(){try{return JSON.parse(localStorage.getItem(LS_K_NOTES)||'{}')}catch(e){return {}}}
-function saveKNotes(n){try{localStorage.setItem(LS_K_NOTES,JSON.stringify(n))}catch(e){}}
+function saveKNotes(n){try{localStorage.setItem(LS_K_NOTES,JSON.stringify(n))}catch(e){} scheduleNotasPush();}
+
+/* ── NOTAS → Sheet sync ── */
+const NOTAS_HEADERS = ['PHASE','NOTA_ID','TEXTO','TIPO','AUTOR','FECHA','RESUELTA','RESUELTA_EN'];
+function notasToRows(map){
+  const rows = [];
+  Object.entries(map).forEach(([pid,arr])=>{
+    (arr||[]).forEach(n=>{
+      rows.push([
+        String(pid), String(n.id||''), String(n.text||''),
+        String(n.type||''), String(n.author||''), String(n.date||''),
+        n.resolved ? 'SI' : 'NO', String(n.resolvedAt||'')
+      ]);
+    });
+  });
+  return rows;
+}
+function rowsToNotas(rows){
+  const map = {};
+  rows.filter(r=>r[0]&&r[0]!=='PHASE').forEach(r=>{
+    const pid = r[0];
+    if(!map[pid]) map[pid] = [];
+    map[pid].push({
+      id: isNaN(r[1]) ? r[1] : Number(r[1]),
+      text: r[2]||'', type: r[3]||'', author: r[4]||'',
+      date: r[5]||'', resolved: r[6]==='SI',
+      resolvedAt: r[7]||undefined
+    });
+  });
+  return map;
+}
+let _notasPushTimer = null;
+function scheduleNotasPush(){
+  clearTimeout(_notasPushTimer);
+  _notasPushTimer = setTimeout(()=>{
+    sheetTableReplace('NOTAS', NOTAS_HEADERS, notasToRows(loadKNotes()))
+      .then(res=>{ if(!res.ok) showToast('⚠️ Notas: no se guardó en Sheet'); })
+      .catch(()=>{ showToast('⚠️ Notas: error de red'); });
+  }, 800);
+}
+let _notasSyncDone = false;
+function initNotasSync(){
+  if(_notasSyncDone) return; _notasSyncDone = true;
+  sheetTableRead('NOTAS', (rows)=>{
+    const filtered = rows.filter(r=>r[0]&&r[0]!=='PHASE');
+    if(filtered.length){
+      localStorage.setItem(LS_K_NOTES, JSON.stringify(rowsToNotas(filtered)));
+      if(renderedTabs.board) renderBoard();
+    } else if(Object.keys(loadKNotes()).length){
+      scheduleNotasPush();
+    }
+  }, ()=>{});
+}
 function delKNote(pid,nid){const n=loadKNotes();if(n[pid])n[pid]=n[pid].filter(x=>x.id!==nid);saveKNotes(n);renderBoard();}
 function toggleNoteResolved(pid,nid){
   const n=loadKNotes();
@@ -4432,6 +4484,7 @@ function submitKNote(pid){
 }
 
 function renderBoard(){
+  initNotasSync();
   const search = (document.getElementById('boardSearch')?.value || '').toLowerCase();
   let phases = [...PHASES];
   if(BOARD.activeGrp !== 'ALL') phases = phases.filter(p => p.group === BOARD.activeGrp);
@@ -5210,9 +5263,49 @@ const CARGO_CSS = {Encargado:'cb-encargado',Oficial:'cb-oficial',Maestro:'cb-mae
 const CARGO_COLOR = {Encargado:'#60a5fa',Oficial:'#a78bfa',Maestro:'#fbbf24',Ayudante:'#34d399','Ayudante Práctico':'#94a3b8'};
 
 function loadPersonal(){ try{return JSON.parse(localStorage.getItem(LS_PERSONAL)||'[]');}catch(e){return [];} }
-function savePersonal(d){ try{localStorage.setItem(LS_PERSONAL,JSON.stringify(d));}catch(e){} }
+function savePersonal(d){ try{localStorage.setItem(LS_PERSONAL,JSON.stringify(d));}catch(e){} schedulePersonalPush(); }
+
+/* ── PERSONAL → Sheet sync ── */
+const PERSONAL_HEADERS = ['ID','NOMBRE','CARGO','CONTRATISTA','FRENTE','CEDULA','TEL','INGRESO'];
+function personalToRows(list){
+  return list.map(p=>[
+    String(p.id||''), String(p.nombre||''), String(p.cargo||''),
+    String(p.contratista||''), String(p.frente||''), String(p.cedula||''),
+    String(p.tel||''), String(p.ingreso||'')
+  ]);
+}
+function rowsToPersonal(rows){
+  return rows.filter(r=>r[0]&&r[0]!=='ID').map(r=>({
+    id: isNaN(r[0]) ? r[0] : Number(r[0]),
+    nombre: r[1]||'', cargo: r[2]||'', contratista: r[3]||'',
+    frente: r[4]||'', cedula: r[5]||'', tel: r[6]||'', ingreso: r[7]||''
+  }));
+}
+let _personalPushTimer = null;
+function schedulePersonalPush(){
+  clearTimeout(_personalPushTimer);
+  _personalPushTimer = setTimeout(()=>{
+    sheetTableReplace('PERSONAL', PERSONAL_HEADERS, personalToRows(loadPersonal()))
+      .then(res=>{ if(!res.ok) showToast('⚠️ Personal: no se guardó en Sheet'); })
+      .catch(()=>{ showToast('⚠️ Personal: error de red'); });
+  }, 800);
+}
+let _personalSyncDone = false;
+function initPersonalSync(){
+  if(_personalSyncDone) return; _personalSyncDone = true;
+  sheetTableRead('PERSONAL', (rows)=>{
+    const filtered = rows.filter(r=>r[0]&&r[0]!=='ID');
+    if(filtered.length){
+      localStorage.setItem(LS_PERSONAL, JSON.stringify(rowsToPersonal(filtered)));
+      if(renderedTabs.personal) renderPersonal();
+    } else if(loadPersonal().length){
+      schedulePersonalPush();
+    }
+  }, ()=>{});
+}
 
 function renderPersonal(){
+  initPersonalSync();
   const data = loadPersonal();
   const search = (document.getElementById('personalSearch')?.value||'').toLowerCase();
   const filtCargo = document.getElementById('personalFiltCargo')?.value||'';
@@ -5498,6 +5591,38 @@ function loadBitacora(){
 }
 function saveBitacora(entries){ try{ localStorage.setItem(LS_BIT, JSON.stringify(entries.slice(-500))); }catch(e){} }
 
+/* ── BITÁCORA → Sheet sync ── */
+const BITACORA_HEADERS = ['TS','FASE','NOMBRE_FASE','CAMPO','ANTERIOR','NUEVO','ORIGEN','USUARIO'];
+let BIT_QUEUE = [];
+let _bitPushTimer = null;
+function scheduleBitacoraPush(){
+  clearTimeout(_bitPushTimer);
+  _bitPushTimer = setTimeout(()=>{
+    if(!BIT_QUEUE.length) return;
+    const toSend = BIT_QUEUE.slice();
+    sheetTableAppend('BITACORA', BITACORA_HEADERS, toSend)
+      .then(res=>{ if(res.ok) BIT_QUEUE = BIT_QUEUE.filter(r=>!toSend.includes(r)); else showToast('⚠️ Bitácora: no se guardó en Sheet'); })
+      .catch(()=>{ showToast('⚠️ Bitácora: error de red'); });
+  }, 1200);
+}
+let _bitSyncDone = false;
+function initBitacoraSync(){
+  if(_bitSyncDone) return; _bitSyncDone = true;
+  sheetTableRead('BITACORA', (rows)=>{
+    const filtered = rows.filter(r=>r[0]&&r[0]!=='TS');
+    if(filtered.length){
+      const entries = filtered.map(r=>({
+        ts: isNaN(r[0]) ? new Date(r[0]).getTime() : Number(r[0]),
+        phaseId: r[1]||'', phaseName: r[2]||'',
+        field: r[3]||'', oldVal: r[4]||'', newVal: r[5]||'',
+        source: r[6]||'local', user: r[7]||''
+      })).sort((a,b)=>b.ts-a.ts);
+      localStorage.setItem(LS_BIT, JSON.stringify(entries.slice(0,500)));
+      if(renderedTabs.bitacora && document.getElementById('tab-bitacora')?.classList.contains('active')) renderBitacora();
+    }
+  }, ()=>{});
+}
+
 function logChange(phaseId, field, oldVal, newVal, source){
   const entries = loadBitacora();
   const phase = PHASES.find(p=>p.id===phaseId);
@@ -5512,9 +5637,11 @@ function logChange(phaseId, field, oldVal, newVal, source){
   });
   saveBitacora(entries);
   if(renderedTabs.bitacora && document.getElementById('tab-bitacora').classList.contains('active')) renderBitacora();
+  const _e = entries[0]; BIT_QUEUE.push([String(_e.ts),String(_e.phaseId),String(_e.phaseName),String(_e.field),String(_e.oldVal),String(_e.newVal),String(_e.source||'local'),String((CURRENT_USER&&CURRENT_USER.name)||'')]); scheduleBitacoraPush();
 }
 
 function renderBitacora(){
+  initBitacoraSync();
   const entries = loadBitacora().filter(e => bitFilter === 'all' || e.source === bitFilter);
   const count = document.getElementById('bitCount');
   if(count) count.textContent = entries.length + ' registro' + (entries.length !== 1 ? 's' : '');
@@ -5980,6 +6107,31 @@ function syncRequisiciones(onDone){
 /** POST genérico a WB_URL; devuelve Promise<json> y muestra toast en error */
 function jsAttr(v){ return JSON.stringify(v).replace(/"/g,'&quot;'); }
 
+/* ── Helpers genéricos de tablas en el Sheet (PERSONAL/NOTAS/BITACORA) ── */
+function sheetTableWrite(action, tab, headers, rows){
+  return fetch(WB_URL, {
+    method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ action: action, sheetId: SHEET_ID, tab: tab, headers: headers, rows: rows })
+  }).then(r=>r.json());
+}
+function sheetTableReplace(tab, headers, rows){ return sheetTableWrite('tableReplace', tab, headers, rows); }
+function sheetTableAppend(tab, headers, rows){ return sheetTableWrite('tableAppend', tab, headers, rows); }
+function sheetTableRead(tab, onOk, onErr){
+  const cb = 'gvtbl_' + Math.random().toString(36).slice(2);
+  const s = document.createElement('script');
+  s.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${encodeURIComponent(tab)}&tqx=responseHandler:${cb}&_=${Date.now()}`;
+  window[cb] = function(res){
+    delete window[cb]; s.remove();
+    try{
+      const cols = (res.table.cols||[]).map(c=>String(c.label||'').toUpperCase().trim());
+      const rows = (res.table.rows||[]).map(r=>(r.c||[]).map(c=>c ? (c.f!=null ? String(c.f) : (c.v!=null ? String(c.v) : '')) : ''));
+      onOk(rows, cols);
+    }catch(e){ if(onErr) onErr(e); }
+  };
+  s.onerror = function(){ delete window[cb]; s.remove(); if(onErr) onErr(new Error('network')); };
+  document.body.appendChild(s);
+}
+
 function rqAction(payload){
   return fetch(WB_URL, {
     method: 'POST',
@@ -6068,6 +6220,23 @@ function rqEditItem(codigo, fila, articuloLabel, cantActual, btnEl){
 }
 
 /** Construye el HTML de la tabla de ítems de una RQ (usado en la fila expandida) */
+function rqEntregarItem(codigo, fila, actual, btnEl){
+  const rq = RQ_DATA.find(r=>r.codigo===codigo); if(!rq) return;
+  const hoy = new Date().toISOString().slice(0,10);
+  const fecha = prompt('Fecha de entrega (vacío = borrar):', actual || hoy);
+  if(fecha === null) return;
+  if(btnEl) btnEl.disabled = true;
+  rqAction({ action:'pedidoEntregarItem', sheetId: RQ_SHEET_ID, tab: rq.tab, fila: fila, fecha: fecha.trim() })
+    .then(res=>{
+      if(res && res.ok){
+        const it = (rq.items||[]).find(x=>x.fila===fila);
+        if(it) it.entregado = fecha.trim();
+        showToast(fecha.trim() ? '✅ Entrega registrada: '+fecha.trim() : '↩ Entrega borrada');
+        renderRequisiciones();
+      } else { showToast('❌ '+((res&&res.error)||'Error al registrar entrega')); if(btnEl) btnEl.disabled=false; }
+    });
+}
+
 function rqBuildDetail(rq){
   var canEdit = CURRENT_USER && (CURRENT_USER.role === 'ADMIN' || CURRENT_USER.role === 'EDITOR');
 
@@ -6115,7 +6284,7 @@ function rqBuildDetail(rq){
   var header = '<div class="rq-detail-tbl-wrap"><table class="rq-items-tbl"><thead><tr>'
     + '<th>#</th><th>Artículo / Descripción</th><th>Und</th>'
     + '<th style="text-align:right">Cant.</th><th style="text-align:right">Ingresado</th><th style="text-align:right">Faltante</th>'
-    + '<th style="text-align:right">V/Unit</th><th style="text-align:right">V/Total</th><th>Proveedor</th>'
+    + '<th style="text-align:right">V/Unit</th><th style="text-align:right">V/Total</th><th>Proveedor</th><th>Entregado</th>'
     + (canEdit ? '<th style="text-align:right">Acciones</th>' : '')
     + '</tr></thead><tbody>';
 
@@ -6166,6 +6335,17 @@ function rqBuildDetail(rq){
       + '<td style="' + monoStyle + '">' + fmtV(it.vUnitario) + '</td>'
       + '<td style="' + monoStyle + ';font-weight:600">' + fmtV(it.vTotal) + '</td>'
       + '<td style="max-width:140px;overflow:hidden;text-overflow:ellipsis">' + esc(String(it.proveedor||'—')) + '</td>'
+      + (function(){
+          var f = String(it.entregado||'').trim();
+          if(f){
+            var chip = '<span style="font-size:.68rem;background:var(--grn-s);color:var(--grn);border:1px solid var(--grn-b);border-radius:100px;padding:2px 8px;white-space:nowrap;font-family:\'JetBrains Mono\',monospace' + (canEdit?';cursor:pointer':'') + '"' + (canEdit? ' title="Cambiar fecha" onclick="rqEntregarItem(' + jsAttr(rq.codigo) + ',' + jsAttr(it.fila) + ',' + jsAttr(f) + ',this)"':'') + '>✓ ' + esc(f) + '</span>';
+            return '<td style="text-align:center">' + chip + '</td>';
+          }
+          if(canEdit && !anulado){
+            return '<td style="text-align:center"><button class="rq-item-btn" title="Registrar entrega" onclick="rqEntregarItem(' + jsAttr(rq.codigo) + ',' + jsAttr(it.fila) + ',\'\',this)">✓ Entregar</button></td>';
+          }
+          return '<td style="text-align:center;color:var(--txt-m)">—</td>';
+        })()
       + acciones
       + '</tr>';
   }).join('');
